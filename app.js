@@ -208,7 +208,11 @@ numberInput.addEventListener('input',updatePreview);
 numberInput.addEventListener('keydown',e=>{
   if(e.key==='ArrowDown'&&currentMatches.length){e.preventDefault();activeIndex=(activeIndex+1)%currentMatches.length;paintActive()}
   else if(e.key==='ArrowUp'&&currentMatches.length){e.preventDefault();activeIndex=(activeIndex-1+currentMatches.length)%currentMatches.length;paintActive()}
-  else if(e.key==='Enter'){e.preventDefault();if(currentMatches.length)chooseNumber(currentMatches[activeIndex]);else amountInput.focus()}
+  else if(e.key==='Enter'){
+    e.preventDefault();
+    const n=numberInput.value.replace(/\D/g,'');
+    if(n.length===11){hideSuggestions();send()}
+  }
   else if(e.key==='Escape'){numberInput.value='';updatePreview();hideSuggestions()}
 });
 function paintActive(){[...suggestions.children].forEach((x,i)=>x.classList.toggle('active',i===activeIndex))}
@@ -387,7 +391,6 @@ function detectOperator(n){
 function showSuccessPopup(n,amount,service){
   document.getElementById('successNumber').textContent=n;
   document.getElementById('successAmount').textContent='৳'+amount;
-  document.getElementById('successOperator').textContent=detectOperator(n);
   document.getElementById('successGateway').textContent=service;
   document.getElementById('successOverlay').classList.add('show');
   document.getElementById('successDone').focus();
@@ -410,15 +413,19 @@ function messageText(n){
   const d=new Date();
   return `📱 Customer Number\n\n<code>${n}</code>\n\n💵 Amount: ৳${amountInput.value||'0'}\n💳 Gateway: ${selectedService}\n\n📅 Date: ${d.toLocaleDateString('en-GB')}\n⏰ Time: ${d.toLocaleTimeString('en-GB',{hour12:false})}`;
 }
+let isSending=false;
 async function send(){
+  if(isSending)return;
   if(!currentUser){setStatus('আগে Login করুন',false);return}
   const n=numberInput.value.replace(/\D/g,'');
-  const amount=(amountInput.value||'').trim();
-  if(!validNumber(n)){setStatus('আগে সঠিক ১১ সংখ্যার নাম্বার দিন',false);numberInput.focus();return}
-  if(!amount||Number(amount)<=0){setStatus('আগে সঠিক Amount দিন',false);amountInput.focus();return}
+  const amount=((amountInput.value||'').trim()||'0');
+  if(!validNumber(n)){setStatus('সঠিক ১১ সংখ্যার মোবাইল নম্বর দিন',false);numberInput.focus();return}
 
+  isSending=true;
   const buttons=[...document.querySelectorAll('.service')];
   buttons.forEach(x=>x.disabled=true);
+  numberInput.disabled=true;
+  amountInput.disabled=true;
   setStatus(`${selectedService} পাঠানো হচ্ছে...`,true);
   try{
     const r=await fetch('/api/send',{
@@ -440,7 +447,12 @@ async function send(){
     console.error(err);
     setCloud('☁️ Sync Error','error');
     setStatus(location.protocol==='file:'?'ফাইল ডাবল-ক্লিক নয়—Render link দিয়ে চালান':err.message,false);
-  }finally{buttons.forEach(x=>x.disabled=false)}
+  }finally{
+    isSending=false;
+    buttons.forEach(x=>x.disabled=false);
+    numberInput.disabled=false;
+    amountInput.disabled=false;
+  }
 }
 function setStatus(t,ok){statusEl.textContent=t;statusEl.style.color=ok?'#43d679':'#ff5b5b'}
 window.addEventListener('online',()=>document.getElementById('offline').classList.remove('show'));
@@ -475,7 +487,5 @@ function renderDashboard(){
 function tickDateTime(){const e=document.getElementById('currentDateTime');if(e)e.textContent=new Date().toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}
 setInterval(tickDateTime,1000);tickDateTime();
 const globalSearch=document.getElementById('globalSearch');
-if(globalSearch){globalSearch.addEventListener('input',()=>{numberInput.value=globalSearch.value.replace(/\D/g,'').slice(0,11);updatePreview()});globalSearch.addEventListener('keydown',e=>{if(e.key==='Enter'){numberInput.focus();amountInput.focus()}})}
-document.addEventListener('keydown',e=>{if(e.ctrlKey&&e.key==='/'){e.preventDefault();globalSearch?.focus()}});
 document.getElementById('recentViewAll')?.addEventListener('click',openHistory);
 document.getElementById('topViewAll')?.addEventListener('click',openCustomers);

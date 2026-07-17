@@ -1,13 +1,11 @@
-# Infinity Telecom V3.1 — Full Screen Preview
+# Infinity Telecom V3.1
 
-এই সংস্করণে:
+এই আপডেটে:
 
-- Customer Number Preview একটি পূর্ণ স্ক্রিন উচ্চতার অংশ
-- বড় Number ও বড় Digit Group Box
-- নিচের Service buttons, Statistics, History ও Summary স্ক্রল করলে দেখা যাবে
-- উপরের Input area ছোট ও এক লাইনে রাখা হয়েছে
-- উপরের Service selector লুকানো হয়েছে; নিচের Service buttons আগের মতো কাজ করবে
-- Firebase, Telegram, Login, History, All Numbers, Suggestions ও Theme-এর কোড পরিবর্তন করা হয়নি
-
-## আপডেট
-ZIP Extract করুন → সব ফাইল GitHub repository folder-এ Replace করুন → Commit → Push origin → Render Live হলে Ctrl + F5 চাপুন।
+- উপরের Search Customer বক্স সরানো হয়েছে।
+- মোবাইল নম্বর ১১ ডিজিট হলে Number Input-এ Enter চাপলেই Telegram-এ Send হবে।
+- বারবার Enter চাপলে Duplicate Send হবে না।
+- Amount খালি থাকলে 0 হিসেবে পাঠাবে; Amount থাকলে সেটিই যাবে।
+- Success popup আগের সুন্দর ডিজাইনের মতো রাখা হয়েছে।
+- Success popup থেকে Operator সরানো হয়েছে।
+- Firebase, History, All Numbers, Suggestions, Theme এবং অন্য সব ফিচার আগের মতো রাখা হয়েছে।

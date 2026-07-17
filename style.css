@@ -392,3 +392,107 @@ html{scroll-snap-type:y proximity}
   .digitBox{height:68px!important;font-size:32px!important}
   .summary{grid-template-columns:1fr}
 }
+
+
+/* V3.1 — clean top bar, instant Enter send, refined success popup */
+.topbar{
+  grid-template-columns:auto 1fr auto;
+}
+.topActions{
+  justify-self:center;
+}
+.userArea{
+  justify-self:end;
+}
+.successCard{
+  width:min(470px,92vw);
+  padding:34px 38px 38px;
+  border-radius:26px;
+  background:linear-gradient(180deg,#101a33,#0b1328);
+  border:1px solid #263754;
+  box-shadow:0 32px 90px rgba(0,0,0,.55);
+}
+.successIcon{
+  width:120px;
+  height:120px;
+  margin:0 auto 22px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:rgba(20,184,166,.12);
+  box-shadow:inset 0 0 0 25px rgba(20,184,166,.08);
+}
+.successIcon span{
+  width:52px;
+  height:52px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:#18c7a4;
+  color:#06271f;
+  font-size:28px;
+  font-weight:1000;
+}
+.successTitle{
+  margin:0;
+  font-size:30px;
+  letter-spacing:-.5px;
+}
+.successText{
+  margin:10px auto 28px;
+  max-width:330px;
+  color:#9caccc;
+  line-height:1.55;
+}
+.successNumber{
+  font-size:24px;
+  font-weight:950;
+  letter-spacing:.8px;
+  padding:0 0 20px;
+  border-bottom:1px solid #263754;
+}
+.successDetails{
+  margin-top:8px;
+  padding:8px 0;
+  background:transparent;
+  border:0;
+}
+.successRow{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:13px 0;
+  color:#9caccc;
+}
+.successRow strong{
+  color:#f8fbff;
+  font-size:18px;
+}
+.successRow:first-child strong{color:#22e3ae}
+.successDone{
+  width:100%;
+  height:62px;
+  margin-top:18px;
+  border-radius:14px;
+  background:linear-gradient(135deg,#5f45ff,#6e36ff);
+  font-size:18px;
+  box-shadow:0 14px 32px rgba(94,65,255,.30);
+}
+body.light-theme .successCard{
+  background:linear-gradient(180deg,#ffffff,#f7f9fd);
+  border-color:#d7e1ee;
+}
+body.light-theme .successTitle,
+body.light-theme .successNumber,
+body.light-theme .successRow strong{color:#13233d}
+body.light-theme .successText,
+body.light-theme .successRow{color:#71839a}
+body.light-theme .successNumber{border-bottom-color:#e0e7f0}
+body.light-theme .successRow:first-child strong{color:#0aaf83}
+
+@media(max-width:900px){
+  .topbar{grid-template-columns:1fr auto;gap:10px}
+  .brand{grid-column:1}
+  .topActions{grid-column:1/-1;grid-row:2;justify-self:stretch}
+  .userArea{grid-column:2;grid-row:1}
+}
