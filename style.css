@@ -980,3 +980,31 @@ body.light-theme .successLanguageToggle{background:#eef6ff;color:#17324f;border-
 .miniServiceIcon{width:24px;height:24px;flex:0 0 24px;background:#fff;border-radius:6px;padding:2px;object-fit:contain}
 body.light-theme .selectedServiceInputIcon,body.light-theme .selectedServicePreviewIcon{box-shadow:0 8px 20px #23508022}
 @media(max-width:700px){.bigNumberWrap{gap:10px}.selectedServicePreviewIcon{width:48px;height:48px;flex-basis:48px;border-radius:12px}.customerServiceIcon{width:30px;height:30px;flex-basis:30px}}
+
+/* Professional high-resolution service logos — uses the user's supplied artwork */
+.serviceBrandIcon{
+  width:100%;height:100%;display:block;object-fit:contain!important;
+  border-radius:0!important;background:transparent!important;padding:0!important;
+  filter:drop-shadow(0 4px 8px rgba(0,0,0,.28));
+  image-rendering:auto;
+}
+.logoBox,
+.transactionLogo:has(.serviceBrandIcon),
+.serviceChoiceMenu button img{
+  background:transparent!important;border-radius:0!important;padding:0!important;
+  box-shadow:none!important;overflow:visible!important;
+}
+.logoBox{width:44px!important;height:44px!important;flex:0 0 44px!important}
+.serviceChoiceMenu button img{width:44px!important;height:44px!important;flex:0 0 44px!important}
+.suggestionLogo{width:38px!important;height:38px!important;flex-basis:38px!important}
+.transactionLogo{width:46px!important;height:46px!important;flex-basis:46px!important;padding:0!important}
+.selectedServiceInputIcon{width:38px;height:38px;display:grid;place-items:center;flex:0 0 38px}
+.selectedServicePreviewIcon{width:58px;height:58px;display:grid;place-items:center;flex:0 0 58px}
+.inputServiceIcon{transform:scale(1.14)}
+.previewServiceIcon{transform:scale(1.12)}
+.summaryIcon:has(.serviceBrandIcon){background:transparent!important;padding:0!important;overflow:visible!important}
+@media(max-width:700px){
+  .suggestionLogo{width:34px!important;height:34px!important;flex-basis:34px!important}
+  .transactionLogo{width:40px!important;height:40px!important;flex-basis:40px!important}
+  .selectedServicePreviewIcon{width:46px;height:46px;flex-basis:46px}
+}
