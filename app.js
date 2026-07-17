@@ -18,6 +18,10 @@ const numberInput=document.getElementById('numberInput');
 const amountInput=document.getElementById('amountInput');
 const previewAmountInput=document.getElementById('previewAmountInput');
 const summaryAmountCard=document.getElementById('summaryAmountCard');
+const summaryServiceCard=document.getElementById('summaryServiceCard');
+const serviceChoiceMenu=document.getElementById('serviceChoiceMenu');
+const amountChoiceMenu=document.getElementById('amountChoiceMenu');
+const previewAmountText=document.getElementById('previewAmountText');
 const suggestions=document.getElementById('suggestions');
 const bigNumber=document.getElementById('bigNumber');
 const statusEl=document.getElementById('status');
@@ -236,24 +240,60 @@ function setAmount(value,source='main'){
   if(source!=='main') amountInput.value=cleaned;
   if(source!=='preview') previewAmountInput.value=cleaned;
   document.querySelectorAll('.pill').forEach(x=>x.classList.toggle('active',x.dataset.amount===cleaned));
+  if(previewAmountText) previewAmountText.textContent='৳'+(cleaned||'0.00');
+  document.querySelectorAll('[data-preview-amount]').forEach(x=>x.classList.toggle('active',x.dataset.previewAmount===cleaned));
 }
 amountInput.addEventListener('input',()=>setAmount(amountInput.value,'main'));
 previewAmountInput.addEventListener('input',()=>setAmount(previewAmountInput.value,'preview'));
-previewAmountInput.addEventListener('keydown',e=>{
-  if(e.key==='Enter'){e.preventDefault();numberInput.focus()}
+function closeSummaryMenus(){
+  serviceChoiceMenu?.classList.remove('show');
+  amountChoiceMenu?.classList.remove('show');
+  summaryServiceCard?.setAttribute('aria-expanded','false');
+  summaryAmountCard?.setAttribute('aria-expanded','false');
+}
+function toggleSummaryMenu(type){
+  const menu=type==='service'?serviceChoiceMenu:amountChoiceMenu;
+  const card=type==='service'?summaryServiceCard:summaryAmountCard;
+  const willOpen=!menu.classList.contains('show');
+  closeSummaryMenus();
+  if(willOpen){menu.classList.add('show');card.setAttribute('aria-expanded','true')}
+}
+summaryServiceCard?.addEventListener('click',e=>{
+  if(e.target.closest('[data-preview-service]'))return;
+  toggleSummaryMenu('service');
 });
-summaryAmountCard.addEventListener('click',e=>{
-  if(e.target!==previewAmountInput) previewAmountInput.focus();
+summaryAmountCard?.addEventListener('click',e=>{
+  if(e.target.closest('[data-preview-amount]'))return;
+  toggleSummaryMenu('amount');
+});
+summaryServiceCard?.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleSummaryMenu('service')}});
+summaryAmountCard?.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleSummaryMenu('amount')}});
+serviceChoiceMenu?.addEventListener('click',e=>{
+  const b=e.target.closest('[data-preview-service]');if(!b)return;
+  selectedService=b.dataset.previewService;
+  document.getElementById('selectedService').textContent=selectedService;
+  const sdt=document.getElementById('serviceDisplayText');if(sdt)sdt.textContent=selectedService;
+  document.querySelectorAll('.service').forEach(x=>x.classList.toggle('selected',x.dataset.service===selectedService));
+  closeSummaryMenus();numberInput.focus();
+});
+amountChoiceMenu?.addEventListener('click',e=>{
+  const b=e.target.closest('[data-preview-amount]');if(!b)return;
+  setAmount(b.dataset.previewAmount,'choice');
+  closeSummaryMenus();numberInput.focus();
+});
+document.addEventListener('click',e=>{
+  if(!e.target.closest('#summaryServiceCard')&&!e.target.closest('#summaryAmountCard'))closeSummaryMenus();
 });
 function updateAmount(){setAmount(amountInput.value)}
 
-document.querySelectorAll('.service').forEach(b=>b.addEventListener('click',async()=>{
+document.querySelectorAll('.service').forEach(b=>b.addEventListener('click',()=>{
   document.querySelectorAll('.service').forEach(x=>x.classList.remove('selected'));
   b.classList.add('selected');
   selectedService=b.dataset.service;
   document.getElementById('selectedService').textContent=selectedService;
   const sdt=document.getElementById('serviceDisplayText'); if(sdt)sdt.textContent=selectedService;
-  await send();
+  closeSummaryMenus();
+  numberInput.focus();
 }));
 
 async function saveTransaction(number,amount,service){

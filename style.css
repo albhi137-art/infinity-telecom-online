@@ -688,3 +688,24 @@ body.light-theme .summaryAmountCard{border-color:#b9cce1}
 body.light-theme .summaryAmountCard:hover,body.light-theme .summaryAmountCard:focus-within{border-color:#438be8;box-shadow:0 0 0 3px rgba(67,139,232,.12),0 12px 28px rgba(42,72,110,.12)}
 body.light-theme .summaryAmountField input{color:#10233f}
 body.light-theme .summaryAmountField>span{color:#6a4de8}
+
+
+/* V3.6 clickable preview selectors */
+.summarySelectorCard{position:relative;cursor:pointer;overflow:visible;user-select:none;z-index:8}
+.summarySelectorCard:focus-visible{outline:2px solid #4c9cff;outline-offset:3px}
+.summarySelectorContent{min-width:0;flex:1}
+.summarySelectorValue{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:4px}
+.summaryChevron{color:#65b8ff;font-size:18px;transition:transform .18s ease}
+.summarySelectorCard[aria-expanded="true"] .summaryChevron{transform:rotate(180deg)}
+.summaryChoiceMenu{position:absolute;left:0;right:0;bottom:calc(100% + 12px);z-index:120;display:none;padding:9px;border:1px solid #2f6598;border-radius:13px;background:rgba(4,18,35,.98);box-shadow:0 22px 55px rgba(0,0,0,.55),0 0 0 1px rgba(77,157,255,.08);backdrop-filter:blur(16px)}
+.summaryChoiceMenu.show{display:grid;animation:summaryMenuIn .16s ease-out}
+.serviceChoiceMenu{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.amountChoiceMenu{grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}
+.summaryChoiceMenu button{min-height:43px;border:1px solid #244d72;border-radius:9px;background:#081a2e;color:#f6fbff;font-weight:850;font-size:14px;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:.16s ease}
+.summaryChoiceMenu button:hover,.summaryChoiceMenu button.active{transform:translateY(-1px);border-color:#4b9cff;background:linear-gradient(135deg,#174071,#31258c);box-shadow:0 8px 22px rgba(31,113,255,.22)}
+.hiddenAmountInput{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+@keyframes summaryMenuIn{from{opacity:0;transform:translateY(7px) scale(.98)}to{opacity:1;transform:none}}
+body.light-theme .summaryChoiceMenu{background:rgba(255,255,255,.98);border-color:#a9c5e3;box-shadow:0 22px 55px rgba(36,67,104,.22)}
+body.light-theme .summaryChoiceMenu button{background:#f5f9fe;border-color:#bfd1e4;color:#10233f}
+body.light-theme .summaryChoiceMenu button:hover,body.light-theme .summaryChoiceMenu button.active{background:linear-gradient(135deg,#e7f1ff,#eee9ff);border-color:#438be8}
+@media(max-width:760px){.serviceChoiceMenu{grid-template-columns:1fr}.amountChoiceMenu{grid-template-columns:repeat(3,1fr)}.summaryChoiceMenu{bottom:auto;top:calc(100% + 8px)}}
