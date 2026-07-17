@@ -139,6 +139,7 @@ async function loadCloudData(){
         timestamp:x.createdAt?.toDate?.().toISOString()||x.timestamp||new Date(0).toISOString()
       };
     }).sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));
+    renderDashboard();
   }catch(e){
     console.error(e);
     setCloud('☁️ Sync Error','error');
@@ -229,6 +230,7 @@ document.querySelectorAll('.service').forEach(b=>b.addEventListener('click',asyn
   b.classList.add('selected');
   selectedService=b.dataset.service;
   document.getElementById('selectedService').textContent=selectedService;
+  const sdt=document.getElementById('serviceDisplayText'); if(sdt)sdt.textContent=selectedService;
   await send();
 }));
 
@@ -248,7 +250,8 @@ async function saveTransaction(number,amount,service){
   ]);
   transactionHistory.unshift({...item,id:String(Date.now())});
   historyList=[number,...historyList.filter(x=>x!==number)];
-  setCloud('☁️ Cloud Synced');
+  renderDashboard();
+  setCloud('☁️ Cloud Sync: Active');
 }
 
 const historyOverlay=document.getElementById('historyOverlay');
@@ -444,3 +447,35 @@ window.addEventListener('online',()=>document.getElementById('offline').classLis
 window.addEventListener('offline',()=>document.getElementById('offline').classList.add('show'));
 if(!navigator.onLine)document.getElementById('offline').classList.add('show');
 updatePreview();updateAmount();
+
+
+function formatMoney(v){return '৳'+Number(v||0).toLocaleString('en-US')}
+function sameDay(a,b){return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate()}
+function renderDashboard(){
+  const tx=transactionHistory||[];
+  const unique=[...new Set(tx.map(x=>x.number).filter(Boolean))];
+  const total=tx.reduce((s,x)=>s+Number(x.amount||0),0);
+  const now=new Date();
+  const today=tx.filter(x=>sameDay(new Date(x.timestamp),now)).reduce((s,x)=>s+Number(x.amount||0),0);
+  const set=(id,val)=>{const e=document.getElementById(id);if(e)e.textContent=val};
+  set('statNumbers',historyList.length.toLocaleString('en-US'));
+  set('statCustomers',unique.length.toLocaleString('en-US'));
+  set('statRecharge',formatMoney(total)); set('statToday',formatMoney(today));
+  const recent=document.getElementById('recentHistoryList');
+  if(recent) recent.innerHTML=tx.slice(0,4).map(x=>`<div class="miniRow"><strong>${x.number}</strong><span>${x.service}</span><em>${formatMoney(x.amount)}</em></div>`).join('')||'<div class="emptyMini">No recharge history yet</div>';
+  const counts={};
+  tx.forEach(x=>{const c=counts[x.number]||(counts[x.number]={count:0,total:0});c.count++;c.total+=Number(x.amount||0)});
+  const top=Object.entries(counts).sort((a,b)=>b[1].count-a[1].count).slice(0,4);
+  const topEl=document.getElementById('topCustomersList');
+  if(topEl) topEl.innerHTML=top.map(([n,v])=>`<div class="miniRow"><strong>${n}</strong><span>${v.count} Times</span><em>${formatMoney(v.total)}</em></div>`).join('')||'<div class="emptyMini">No customer data yet</div>';
+  const sums={}; tx.forEach(x=>{const k=x.service||'Unknown';const s=sums[k]||(sums[k]={count:0,total:0});s.count++;s.total+=Number(x.amount||0)});
+  const sumEl=document.getElementById('serviceSummaryList');
+  if(sumEl) sumEl.innerHTML=Object.entries(sums).slice(0,4).map(([k,v])=>`<div class="miniRow"><strong>${k}</strong><span>${formatMoney(v.total)}</span><em>${v.count}</em></div>`).join('')||'<div class="emptyMini">No service data yet</div>';
+}
+function tickDateTime(){const e=document.getElementById('currentDateTime');if(e)e.textContent=new Date().toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}
+setInterval(tickDateTime,1000);tickDateTime();
+const globalSearch=document.getElementById('globalSearch');
+if(globalSearch){globalSearch.addEventListener('input',()=>{numberInput.value=globalSearch.value.replace(/\D/g,'').slice(0,11);updatePreview()});globalSearch.addEventListener('keydown',e=>{if(e.key==='Enter'){numberInput.focus();amountInput.focus()}})}
+document.addEventListener('keydown',e=>{if(e.ctrlKey&&e.key==='/'){e.preventDefault();globalSearch?.focus()}});
+document.getElementById('recentViewAll')?.addEventListener('click',openHistory);
+document.getElementById('topViewAll')?.addEventListener('click',openCustomers);
