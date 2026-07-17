@@ -1546,3 +1546,8 @@ body.light-theme .bigNumber{
 .summaryValue{font-size:12px!important;margin-top:2px!important;}
 .summaryAmountField>span{font-size:14px!important;}
 .summaryAmountField input{font-size:14px!important;padding:0!important;}
+
+/* spacing cleanup */
+.groups{margin-bottom:22px!important;}
+.summary{margin-top:22px!important;gap:18px!important;}
+.warningBar,.warning-banner,.warningWrapper{margin-top:22px!important;}
