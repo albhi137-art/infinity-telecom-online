@@ -334,47 +334,74 @@ const historyListEl=document.getElementById('historyList');
 function openHistory(){
   historyOverlay.classList.add('show');
   historySearch.value='';
-  historyResult.classList.remove('show');
-  historyEmpty.style.display='flex';
-  historyEmpty.textContent='নাম্বার লিখলে এখানে সম্পূর্ণ History দেখাবে।';
+  renderCustomerHistory();
   setTimeout(()=>historySearch.focus(),80);
 }
 function closeHistory(){historyOverlay.classList.remove('show')}
 function formatHistoryDate(iso){
   const d=new Date(iso);
-  return d.toLocaleDateString('en-GB')+' • '+d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  if(Number.isNaN(d.getTime()))return '—';
+  return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})+' '+
+    d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+}
+function transactionLogo(service,operator){
+  const text=String(service||operator||'').toLowerCase();
+  if(text.includes('bkash'))return 'b';
+  if(text.includes('nagad'))return 'N';
+  if(text.includes('rocket'))return 'R';
+  if(text.includes('grameen')||text.includes('gp'))return 'GP';
+  if(text.includes('robi'))return 'R';
+  if(text.includes('airtel'))return 'A';
+  if(text.includes('banglalink'))return 'BL';
+  if(text.includes('teletalk'))return 'T';
+  return '৳';
+}
+function transactionLogoClass(service,operator){
+  const text=String(service||operator||'').toLowerCase();
+  if(text.includes('bkash'))return 'bkash';
+  if(text.includes('nagad'))return 'nagad';
+  if(text.includes('rocket'))return 'rocket';
+  if(text.includes('airtel'))return 'airtel';
+  if(text.includes('banglalink'))return 'banglalink';
+  if(text.includes('grameen')||text.includes('gp'))return 'gp';
+  if(text.includes('robi'))return 'robi';
+  if(text.includes('teletalk'))return 'teletalk';
+  return 'recharge';
 }
 function renderCustomerHistory(){
   const q=historySearch.value.replace(/\D/g,'').slice(0,11);
   historySearch.value=q;
-  if(q.length<3){
-    historyResult.classList.remove('show');historyEmpty.style.display='flex';
-    historyEmpty.textContent='কমপক্ষে ৩টি সংখ্যা লিখুন।';return;
-  }
-  const matches=transactionHistory.filter(x=>x.number.includes(q));
-  if(!matches.length){
-    historyResult.classList.remove('show');historyEmpty.style.display='flex';
-    historyEmpty.textContent='এই নাম্বারের কোনো History পাওয়া যায়নি।';return;
-  }
-  const exact=matches.filter(x=>x.number===q);
-  const rows=exact.length?exact:matches;
-  const shownNumber=exact.length?q:rows[0].number;
-  const sameNumberRows=rows.filter(x=>x.number===shownNumber);
-  const total=sameNumberRows.reduce((sum,x)=>sum+Number(x.amount||0),0);
-  const last=sameNumberRows[0];
-
-  document.getElementById('historyCustomer').textContent=shownNumber;
-  document.getElementById('historyCount').textContent=sameNumberRows.length+' বার';
+  const rows=transactionHistory
+    .filter(x=>!q||String(x.number||'').includes(q))
+    .sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));
+  const total=rows.reduce((sum,x)=>sum+Number(x.amount||0),0);
+  document.getElementById('historyCount').textContent=rows.length.toLocaleString('en-BD');
   document.getElementById('historyTotal').textContent='৳'+total.toLocaleString('en-BD');
-  document.getElementById('historyLast').textContent=last?last.service:'—';
-  historyListEl.innerHTML=sameNumberRows.map((x,i)=>`
-    <div class="historyItem">
-      <div class="historyIndex">${i+1}</div>
-      <div class="historyMeta"><strong>${x.service}</strong>
-      <span>${x.operator} • ${formatHistoryDate(x.timestamp)}</span></div>
-      <div class="historyAmount">৳${Number(x.amount).toLocaleString('en-BD')}</div>
-    </div>`).join('');
-  historyEmpty.style.display='none';historyResult.classList.add('show');
+  if(!rows.length){
+    historyListEl.innerHTML='';
+    historyResult.classList.remove('show');
+    historyEmpty.style.display='flex';
+    historyEmpty.textContent=q?'এই নাম্বারের কোনো সফল লেনদেন পাওয়া যায়নি।':'কোনো সফল লেনদেন পাওয়া যায়নি।';
+    return;
+  }
+  historyListEl.innerHTML=rows.map(x=>`
+    <article class="recentTransactionCard">
+      <div class="transactionIdentity">
+        <div class="transactionLogo ${transactionLogoClass(x.service,x.operator)}">${transactionLogo(x.service,x.operator)}</div>
+        <div class="transactionMain">
+          <strong class="transactionNumber">${x.number||'—'}</strong>
+          <span class="transactionType">${x.service||'Mobile Recharge'}</span>
+          <small class="transactionOperator">${x.operator||'Prepaid'}</small>
+        </div>
+      </div>
+      <div class="transactionDetails">
+        <div class="transactionAmount">TK ${Number(x.amount||0).toLocaleString('en-BD')}</div>
+        <time>${formatHistoryDate(x.timestamp)}</time>
+        <span class="transactionSuccess">Success</span>
+      </div>
+    </article>`).join('');
+  historyEmpty.style.display='none';
+  historyResult.classList.add('show');
 }
 
 

@@ -99,38 +99,27 @@
 </div>
 </div>
 <div class="historyOverlay" id="historyOverlay">
-<div aria-labelledby="historyTitle" aria-modal="true" class="historyModal" role="dialog">
-<div class="historyHeader">
+<div aria-labelledby="historyTitle" aria-modal="true" class="historyModal recentTransactionsModal" role="dialog">
+<div class="historyHeader recentTransactionsHeader">
 <div>
-<h2 id="historyTitle">Customer History</h2>
-<p>নাম্বার লিখে আগের সব সার্ভিস দেখুন</p>
+<h2 id="historyTitle">Recent Transactions</h2>
+<p>সফল হওয়া সব লেনদেন নতুন থেকে পুরোনো ক্রমে</p>
 </div>
 <button aria-label="Close" class="historyClose" id="historyClose">×</button>
 </div>
+<div class="recentTransactionsToolbar">
 <div class="historySearchWrap">
 <span>🔎</span>
-<input id="historySearch" inputmode="numeric" maxlength="11" placeholder="Customer number লিখুন"/>
+<input id="historySearch" inputmode="numeric" maxlength="11" placeholder="নাম্বার দিয়ে খুঁজুন"/>
 </div>
-<div class="historyEmpty" id="historyEmpty">
-      নাম্বার লিখলে এখানে সম্পূর্ণ History দেখাবে।
-    </div>
-<div class="historyResult" id="historyResult">
-<div class="historyCustomer" id="historyCustomer">01XXXXXXXXX</div>
-<div class="historyStats">
-<div class="historyStat">
-<small>মোট সার্ভিস</small>
-<strong id="historyCount">0 বার</strong>
-</div>
-<div class="historyStat">
-<small>মোট Amount</small>
-<strong id="historyTotal">৳0</strong>
-</div>
-<div class="historyStat">
-<small>সর্বশেষ সার্ভিস</small>
-<strong id="historyLast">—</strong>
+<div class="recentTransactionsStats">
+<span>Success: <strong id="historyCount">0</strong></span>
+<span>Total: <strong id="historyTotal">৳0</strong></span>
 </div>
 </div>
-<div class="historyList" id="historyList"></div>
+<div class="historyEmpty" id="historyEmpty">কোনো সফল লেনদেন পাওয়া যায়নি।</div>
+<div class="historyResult recentTransactionsResult" id="historyResult">
+<div class="historyList recentTransactionsList" id="historyList"></div>
 </div>
 </div>
 </div>
