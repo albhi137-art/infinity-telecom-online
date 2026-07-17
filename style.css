@@ -1008,3 +1008,31 @@ body.light-theme .selectedServiceInputIcon,body.light-theme .selectedServicePrev
   .transactionLogo{width:40px!important;height:40px!important;flex-basis:40px!important}
   .selectedServicePreviewIcon{width:46px;height:46px;flex-basis:46px}
 }
+
+/* Suggestions manager — History ও All Numbers-এর জায়গায় একটিমাত্র control */
+.suggestionsManagerOverlay{position:fixed;inset:0;z-index:930;background:#010712d9;display:none;place-items:center;padding:20px}
+.suggestionsManagerOverlay.show{display:grid}
+.suggestionsManagerModal{width:min(820px,96vw);max-height:88vh;overflow:auto;border:1px solid #2c5279;border-radius:17px;background:#07172a;padding:22px;box-shadow:0 35px 100px #000}
+.suggestionsManagerSearchWrap{margin-top:16px}
+.suggestionsManagerCount{padding:13px 2px;color:#86a3bf;font-weight:800}
+.suggestionsManagerList{display:grid;gap:10px}
+.suggestionsManagerItem{display:flex;align-items:center;justify-content:space-between;gap:16px;border:1px solid #234665;background:#0a1c30;border-radius:12px;padding:13px 15px}
+.suggestionsManagerIdentity{display:flex;align-items:center;gap:13px;min-width:0}
+.suggestionsManagerIdentity>div:last-child{display:flex;flex-direction:column;gap:4px;min-width:0}
+.suggestionsManagerIdentity strong{color:#fff;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.suggestionsManagerIdentity span{color:#9db8d2;font-weight:800;letter-spacing:.4px}
+.suggestionsManagerIcon{width:42px;height:42px;display:grid;place-items:center;flex:0 0 42px}
+.suggestionsManagerIcon .serviceBrandIcon,.suggestionsManagerIcon .brandSvg{width:100%;height:100%;object-fit:contain}
+.suggestionsManagerActions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.suggestionsManagerActions button{height:38px;padding:0 13px;border-radius:9px;font-weight:850;cursor:pointer}
+.suggestionEditButton{border:1px solid #376895;background:#102944;color:#dceeff}
+.suggestionRemoveButton{border:1px solid #873b49;background:#32131b;color:#ff9aa7}
+.suggestionsManagerEmpty{padding:40px 16px;text-align:center;color:#7896b4;border:1px dashed #284866;border-radius:12px}
+.suggestionCustomerName{display:block;color:var(--ui-accent,#775cff);font-size:12px;font-weight:900;margin-bottom:1px}
+body.light-theme .suggestionsManagerModal{background:#fff;border-color:#b9cce1;color:#10213a}
+body.light-theme .suggestionsManagerItem{background:#f5f9fd;border-color:#c5d7e8}
+body.light-theme .suggestionsManagerIdentity strong{color:#10213a}
+body.light-theme .suggestionsManagerIdentity span{color:#526d88}
+body.light-theme .suggestionsManagerSearchWrap{background:#f7faff;border-color:#b9cce1}
+body.light-theme .suggestionsManagerSearchWrap input{color:#10213a}
+@media(max-width:700px){.suggestionsManagerItem{align-items:flex-start;flex-direction:column}.suggestionsManagerActions{width:100%}.suggestionsManagerActions button{flex:1}}

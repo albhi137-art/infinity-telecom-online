@@ -5,7 +5,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 import {
   getFirestore, collection, doc, setDoc, addDoc, getDocs,
-  serverTimestamp, query, orderBy, increment
+  serverTimestamp, query, orderBy, increment, deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 import { firebaseConfig } from "./firebase-config.js";
 
@@ -35,6 +35,7 @@ let transactionHistory=[];
 let currentMatches=[];
 let activeIndex=0;
 let currentUser=null;
+let customerProfiles=new Map();
 
 const loginOverlay=document.getElementById('loginOverlay');
 const loginEmail=document.getElementById('loginEmail');
@@ -124,8 +125,9 @@ async function loadCloudData(){
   if(!currentUser)return;
   try{
     const customersSnap=await getDocs(collection(db,'users',currentUser.uid,'customers'));
-    historyList=customersSnap.docs
-      .map(d=>d.data())
+    const customerDocs=customersSnap.docs.map(d=>({id:d.id,...d.data()}));
+    customerProfiles=new Map(customerDocs.filter(x=>x.number).map(x=>[x.number,x]));
+    historyList=customerDocs
       .sort((a,b)=>(b.visitCount||0)-(a.visitCount||0))
       .map(x=>x.number)
       .filter(Boolean);
@@ -214,8 +216,10 @@ function updateSuggestions(){
     const rows=transactionHistory.filter(x=>x.number===n);
     const last=rows[0];
     const operator=last?.operator||detectOperator(n);
+    const profile=customerProfiles.get(n)||{};
+    const name=String(profile.name||'').trim();
     const meta=last?`শেষ ৳${Number(last.amount||0).toLocaleString('en-BD')} • ${rows.length} বার`:'Saved number';
-    return `<button class="suggestion${i===0?' active':''}" data-number="${n}"><div class="suggestionIdentity"><div class="suggestionLogo">${brandSvg(last?.service||'Mobile Recharge',operator)}</div><div class="suggestionText"><strong>${n}</strong><small>${meta}</small></div></div><span class="suggestionEnter">Enter</span></button>`;
+    return `<button class="suggestion${i===0?' active':''}" data-number="${n}"><div class="suggestionIdentity"><div class="suggestionLogo">${brandSvg(last?.service||'Mobile Recharge',operator)}</div><div class="suggestionText">${name?`<span class="suggestionCustomerName">${escapeHtml(name)}</span>`:''}<strong>${n}</strong><small>${meta}</small></div></div><span class="suggestionEnter">Enter</span></button>`;
   }).join('');
   suggestions.classList.add('show');
 }
@@ -332,6 +336,7 @@ async function saveTransaction(number,amount,service){
   ]);
   transactionHistory.unshift({...item,id:String(Date.now())});
   historyList=[number,...historyList.filter(x=>x!==number)];
+  customerProfiles.set(number,{...(customerProfiles.get(number)||{}),number,lastService:service,lastAmount:Number(amount)});
   renderDashboard();
   setCloud('☁️ Cloud Sync: Active');
 }
@@ -488,7 +493,7 @@ function openCustomers(){
   setTimeout(()=>customersSearch.focus(),80);
 }
 function closeCustomers(){customersOverlay.classList.remove('show')}
-document.getElementById('customersButton').addEventListener('click',openCustomers);
+document.getElementById('customersButton')?.addEventListener('click',openCustomers);
 document.getElementById('customersClose').addEventListener('click',closeCustomers);
 customersOverlay.addEventListener('click',e=>{if(e.target===customersOverlay)closeCustomers()});
 customersSearch.addEventListener('input',renderAllCustomers);
@@ -499,10 +504,64 @@ customersListEl.addEventListener('click',e=>{
   updatePreview(); updateAmount(); closeCustomers(); numberInput.focus();
 });
 
-document.getElementById('historyButton').addEventListener('click',openHistory);
+document.getElementById('historyButton')?.addEventListener('click',openHistory);
 document.getElementById('historyClose').addEventListener('click',closeHistory);
 historyOverlay.addEventListener('click',e=>{if(e.target===historyOverlay)closeHistory()});
 historySearch.addEventListener('input',renderCustomerHistory);
+
+
+function escapeHtml(value){
+  return String(value??'').replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+}
+const suggestionsManagerOverlay=document.getElementById('suggestionsManagerOverlay');
+const suggestionsManagerSearch=document.getElementById('suggestionsManagerSearch');
+const suggestionsManagerList=document.getElementById('suggestionsManagerList');
+const suggestionsManagerCount=document.getElementById('suggestionsManagerCount');
+function suggestionManagerRows(){
+  return historyList.map(number=>({number,name:String(customerProfiles.get(number)?.name||'').trim()}));
+}
+function renderSuggestionsManager(){
+  const q=String(suggestionsManagerSearch?.value||'').trim().toLowerCase();
+  const rows=suggestionManagerRows().filter(x=>!q||x.number.includes(q)||x.name.toLowerCase().includes(q));
+  suggestionsManagerCount.textContent=`${rows.length} suggestion`;
+  if(!rows.length){suggestionsManagerList.innerHTML='<div class="suggestionsManagerEmpty">কোনো Suggestion পাওয়া যায়নি।</div>';return}
+  suggestionsManagerList.innerHTML=rows.map(x=>`<article class="suggestionsManagerItem" data-number="${x.number}">
+    <div class="suggestionsManagerIdentity">
+      <div class="suggestionsManagerIcon">${brandSvg(transactionHistory.find(t=>t.number===x.number)?.service||'Mobile Recharge',detectOperator(x.number))}</div>
+      <div><strong>${x.name?escapeHtml(x.name):'নাম দেওয়া হয়নি'}</strong><span>${x.number}</span></div>
+    </div>
+    <div class="suggestionsManagerActions"><button class="suggestionEditButton" type="button">✎ নাম Edit</button><button class="suggestionRemoveButton" type="button">⌫ Remove</button></div>
+  </article>`).join('');
+}
+function openSuggestionsManager(){suggestionsManagerOverlay.classList.add('show');suggestionsManagerSearch.value='';renderSuggestionsManager();setTimeout(()=>suggestionsManagerSearch.focus(),80)}
+function closeSuggestionsManager(){suggestionsManagerOverlay.classList.remove('show')}
+document.getElementById('suggestionsManageButton')?.addEventListener('click',openSuggestionsManager);
+document.getElementById('suggestionsManagerClose')?.addEventListener('click',closeSuggestionsManager);
+suggestionsManagerOverlay?.addEventListener('click',e=>{if(e.target===suggestionsManagerOverlay)closeSuggestionsManager()});
+suggestionsManagerSearch?.addEventListener('input',renderSuggestionsManager);
+suggestionsManagerList?.addEventListener('click',async e=>{
+  const item=e.target.closest('.suggestionsManagerItem'); if(!item||!currentUser)return;
+  const number=item.dataset.number;
+  if(e.target.closest('.suggestionEditButton')){
+    const oldName=customerProfiles.get(number)?.name||'';
+    const name=prompt('এই নাম্বারের জন্য নাম লিখুন:',oldName);
+    if(name===null)return;
+    const clean=name.trim().slice(0,50);
+    try{
+      await setDoc(doc(db,'users',currentUser.uid,'customers',number),{number,name:clean,updatedAt:serverTimestamp()},{merge:true});
+      customerProfiles.set(number,{...(customerProfiles.get(number)||{}),number,name:clean});
+      renderSuggestionsManager(); updateSuggestions(); setCloud('☁️ Cloud Sync: Active');
+    }catch(err){setStatus('নাম পরিবর্তন করা যায়নি: '+err.message,false)}
+  }
+  if(e.target.closest('.suggestionRemoveButton')){
+    if(!confirm(`${number} নাম্বারটি Suggestions থেকে সরাবেন?`))return;
+    try{
+      await deleteDoc(doc(db,'users',currentUser.uid,'customers',number));
+      historyList=historyList.filter(n=>n!==number); customerProfiles.delete(number);
+      renderSuggestionsManager(); updateSuggestions(); renderDashboard(); setCloud('☁️ Cloud Sync: Active');
+    }catch(err){setStatus('Suggestion সরানো যায়নি: '+err.message,false)}
+  }
+});
 
 function detectOperator(n){
   const p=n.slice(0,3);
@@ -545,6 +604,7 @@ function closeSuccessPopup(){
 document.getElementById('successDone').addEventListener('click',closeSuccessPopup);
 document.getElementById('successOverlay').addEventListener('click',e=>{if(e.target.id==='successOverlay')closeSuccessPopup()});
 document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&suggestionsManagerOverlay?.classList.contains('show')){closeSuggestionsManager();return}
   if(e.key==='Escape'&&customersOverlay.classList.contains('show')){closeCustomers();return}
   if(e.key==='Escape'&&historyOverlay.classList.contains('show')){closeHistory();return}
   if(e.key==='Escape'&&document.getElementById('successOverlay').classList.contains('show'))closeSuccessPopup();
