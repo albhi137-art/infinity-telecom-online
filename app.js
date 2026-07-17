@@ -222,10 +222,18 @@ function chooseNumber(n){numberInput.value=n;updatePreview();hideSuggestions();n
 suggestions.addEventListener('click',e=>{const b=e.target.closest('.suggestion');if(b)chooseNumber(b.dataset.number)});
 numberInput.addEventListener('input',updatePreview);
 numberInput.addEventListener('keydown',e=>{
-  if(e.key==='ArrowDown'&&currentMatches.length){e.preventDefault();activeIndex=(activeIndex+1)%currentMatches.length;paintActive()}
-  else if(e.key==='ArrowUp'&&currentMatches.length){e.preventDefault();activeIndex=(activeIndex-1+currentMatches.length)%currentMatches.length;paintActive()}
+  const visibleMatches=currentMatches.slice(0,15);
+  if(e.key==='ArrowDown'&&visibleMatches.length){e.preventDefault();activeIndex=(activeIndex+1)%visibleMatches.length;paintActive()}
+  else if(e.key==='ArrowUp'&&visibleMatches.length){e.preventDefault();activeIndex=(activeIndex-1+visibleMatches.length)%visibleMatches.length;paintActive()}
   else if(e.key==='Enter'){
     e.preventDefault();
+
+    // Suggestion দেখা গেলে Enter চাপলে active number-টি আগে select হবে।
+    if(suggestions.classList.contains('show')&&visibleMatches.length){
+      chooseNumber(visibleMatches[activeIndex]||visibleMatches[0]);
+      return;
+    }
+
     const n=numberInput.value.replace(/\D/g,'');
     if(n.length===11){hideSuggestions();send()}
   }
@@ -634,3 +642,38 @@ document.addEventListener('keydown',e=>{
   }
 });
 checkTelegramStatus();setInterval(checkTelegramStatus,45000);
+
+/* UI Color Wheel — keeps the original layout unchanged */
+const colorButton=document.getElementById('colorButton');
+const colorOverlay=document.getElementById('colorOverlay');
+const colorClose=document.getElementById('colorClose');
+const uiColorPicker=document.getElementById('uiColorPicker');
+const uiColorValue=document.getElementById('uiColorValue');
+const shadowRange=document.getElementById('shadowRange');
+const shadowValue=document.getElementById('shadowValue');
+const colorResetButton=document.getElementById('colorResetButton');
+function hexToRgb(hex){
+  const clean=hex.replace('#','');
+  const full=clean.length===3?clean.split('').map(x=>x+x).join(''):clean;
+  return [parseInt(full.slice(0,2),16),parseInt(full.slice(2,4),16),parseInt(full.slice(4,6),16)];
+}
+function applyUiColor(hex,shadow,save=true){
+  const rgb=hexToRgb(hex);
+  const strength=Math.max(0,Math.min(100,Number(shadow)))/100;
+  document.documentElement.style.setProperty('--ui-accent',hex);
+  document.documentElement.style.setProperty('--ui-accent-rgb',rgb.join(','));
+  document.documentElement.style.setProperty('--ui-shadow-strength',String(strength));
+  uiColorPicker.value=hex;uiColorValue.textContent=hex.toUpperCase();
+  shadowRange.value=String(Math.round(strength*100));shadowValue.textContent=`${Math.round(strength*100)}%`;
+  if(save){localStorage.setItem('infinityUiColor',hex);localStorage.setItem('infinityUiShadow',String(Math.round(strength*100)))}
+}
+const savedUiColor=localStorage.getItem('infinityUiColor')||'#775cff';
+const savedUiShadow=localStorage.getItem('infinityUiShadow')||'45';
+applyUiColor(savedUiColor,savedUiShadow,false);
+colorButton?.addEventListener('click',()=>colorOverlay.classList.add('show'));
+colorClose?.addEventListener('click',()=>colorOverlay.classList.remove('show'));
+colorOverlay?.addEventListener('click',e=>{if(e.target===colorOverlay)colorOverlay.classList.remove('show')});
+uiColorPicker?.addEventListener('input',()=>applyUiColor(uiColorPicker.value,shadowRange.value));
+shadowRange?.addEventListener('input',()=>applyUiColor(uiColorPicker.value,shadowRange.value));
+colorResetButton?.addEventListener('click',()=>applyUiColor('#775cff',45));
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&colorOverlay?.classList.contains('show'))colorOverlay.classList.remove('show')});

@@ -30,6 +30,7 @@
 <button class="historyButton" id="historyButton">◷ History</button>
 <button class="customersButton" id="customersButton">▦ All Numbers</button>
 <button class="themeButton" id="themeButton" type="button">☀️ Light</button>
+<button class="colorButton" id="colorButton" type="button">🎨 Color</button>
 </nav>
 <div class="userArea" id="userArea"><span id="userEmail"></span><span class="onlineBadge">● ONLINE</span><button id="logoutButton">Logout</button></div>
 </header>
@@ -133,6 +134,29 @@
 <div class="customersCount" id="customersCount">0 customer</div>
 <div class="customersList" id="customersList"></div>
 </div>
+</div>
+
+<div class="colorOverlay" id="colorOverlay">
+  <div class="colorModal" role="dialog" aria-modal="true" aria-labelledby="colorTitle">
+    <div class="colorHeader">
+      <div><h2 id="colorTitle">UI Color Control</h2><p>Color wheel থেকে পুরো UI-এর accent ও shadow পরিবর্তন করুন</p></div>
+      <button class="historyClose" id="colorClose" aria-label="Close">×</button>
+    </div>
+    <div class="colorControlGrid">
+      <label class="colorWheelCard">
+        <span>UI COLOR</span>
+        <input id="uiColorPicker" type="color" value="#775cff" aria-label="UI color"/>
+        <strong id="uiColorValue">#775CFF</strong>
+      </label>
+      <label class="shadowControlCard">
+        <span>SHADOW INTENSITY</span>
+        <input id="shadowRange" type="range" min="0" max="100" value="45"/>
+        <strong id="shadowValue">45%</strong>
+      </label>
+    </div>
+    <div class="colorPreviewBar"><span></span><b>Live Preview</b></div>
+    <button class="colorResetButton" id="colorResetButton" type="button">Default Color ফিরিয়ে আনুন</button>
+  </div>
 </div>
 <script src="app.js" type="module"></script></body>
 </html>
