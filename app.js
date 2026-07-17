@@ -787,3 +787,48 @@ previewPanel?.addEventListener('click',event=>{
   const end=numberInput.value.length;
   try{numberInput.setSelectionRange(end,end)}catch(_error){}
 });
+
+
+/* Double-press Enter: instantly return to the Mobile Number box.
+   The second Enter is consumed so it cannot accidentally send twice. */
+let lastEnterPressAt = 0;
+const DOUBLE_ENTER_DELAY = 500;
+
+document.addEventListener('keydown', event => {
+  if (
+    event.key !== 'Enter' ||
+    event.repeat ||
+    event.ctrlKey ||
+    event.metaKey ||
+    event.altKey
+  ) return;
+
+  const now = Date.now();
+
+  if (now - lastEnterPressAt <= DOUBLE_ENTER_DELAY) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    lastEnterPressAt = 0;
+
+    hideSuggestions();
+    closeSummaryMenus();
+
+    /* Close the success popup first, when it is currently open. */
+    const successOverlay = document.getElementById('successOverlay');
+    if (successOverlay?.classList.contains('show')) {
+      successOverlay.classList.remove('show');
+      numberInput.value = '';
+      setAmount('');
+      updatePreview();
+      updateAmount();
+      setStatus('', true);
+    }
+
+    numberInput.disabled = false;
+    numberInput.focus();
+    numberInput.select();
+    return;
+  }
+
+  lastEnterPressAt = now;
+}, true);
