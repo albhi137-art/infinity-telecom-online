@@ -214,7 +214,7 @@ function updateSuggestions(){
     const last=rows[0];
     const operator=last?.operator||detectOperator(n);
     const meta=last?`শেষ ৳${Number(last.amount||0).toLocaleString('en-BD')} • ${rows.length} বার`:'Saved number';
-    return `<button class="suggestion${i===0?' active':''}" data-number="${n}"><span class="suggestionIdentity"><span class="suggestionLogo">${brandSvg('',operator)}</span><span><strong>${n}</strong><small>${meta}</small></span></span><span>Enter</span></button>`;
+    return `<button class="suggestion${i===0?' active':''}" data-number="${n}"><div class="suggestionIdentity"><div class="suggestionLogo">${brandSvg('',operator)}</div><div class="suggestionText"><strong>${n}</strong><small>${meta}</small></div></div><span class="suggestionEnter">Enter</span></button>`;
   }).join('');
   suggestions.classList.add('show');
 }
