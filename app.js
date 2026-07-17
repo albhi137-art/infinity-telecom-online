@@ -15,13 +15,11 @@ const auth=getAuth(firebaseApp);
 const db=getFirestore(firebaseApp);
 
 const numberInput=document.getElementById('numberInput');
-const amountInput=document.getElementById('amountInput');
 const previewAmountInput=document.getElementById('previewAmountInput');
+const amountInput=previewAmountInput;
 const summaryAmountCard=document.getElementById('summaryAmountCard');
 const summaryServiceCard=document.getElementById('summaryServiceCard');
 const serviceChoiceMenu=document.getElementById('serviceChoiceMenu');
-const amountChoiceMenu=document.getElementById('amountChoiceMenu');
-const previewAmountText=document.getElementById('previewAmountText');
 const suggestions=document.getElementById('suggestions');
 const bigNumber=document.getElementById('bigNumber');
 const statusEl=document.getElementById('status');
@@ -223,78 +221,48 @@ numberInput.addEventListener('keydown',e=>{
 });
 function paintActive(){[...suggestions.children].forEach((x,i)=>x.classList.toggle('active',i===activeIndex))}
 
-document.querySelectorAll('.pill').forEach(b=>b.addEventListener('click',()=>{
-  setAmount(b.dataset.amount);
-}));
-
 function cleanAmount(value){
   let cleaned=String(value||'').replace(/[^0-9.]/g,'');
   const firstDot=cleaned.indexOf('.');
-  if(firstDot!==-1){
-    cleaned=cleaned.slice(0,firstDot+1)+cleaned.slice(firstDot+1).replace(/\./g,'');
-  }
+  if(firstDot!==-1) cleaned=cleaned.slice(0,firstDot+1)+cleaned.slice(firstDot+1).replace(/\./g,'');
   return cleaned.slice(0,10);
 }
-function setAmount(value,source='main'){
+function setAmount(value){
   const cleaned=cleanAmount(value);
-  if(source!=='main') amountInput.value=cleaned;
-  if(source!=='preview') previewAmountInput.value=cleaned;
-  document.querySelectorAll('.pill').forEach(x=>x.classList.toggle('active',x.dataset.amount===cleaned));
-  if(previewAmountText) previewAmountText.textContent='৳'+(cleaned||'0.00');
-  document.querySelectorAll('[data-preview-amount]').forEach(x=>x.classList.toggle('active',x.dataset.previewAmount===cleaned));
+  previewAmountInput.value=cleaned;
 }
-amountInput.addEventListener('input',()=>setAmount(amountInput.value,'main'));
-previewAmountInput.addEventListener('input',()=>setAmount(previewAmountInput.value,'preview'));
+previewAmountInput.addEventListener('input',()=>setAmount(previewAmountInput.value));
+previewAmountInput.addEventListener('keydown',e=>{
+  if(e.key==='Enter'){
+    e.preventDefault();
+    const n=numberInput.value.replace(/\D/g,'');
+    if(n.length===11) send(); else { setStatus('সঠিক ১১ সংখ্যার মোবাইল নম্বর দিন',false); numberInput.focus(); }
+  }
+  if(e.key==='Escape'){previewAmountInput.value='';numberInput.focus()}
+});
 function closeSummaryMenus(){
   serviceChoiceMenu?.classList.remove('show');
-  amountChoiceMenu?.classList.remove('show');
   summaryServiceCard?.setAttribute('aria-expanded','false');
-  summaryAmountCard?.setAttribute('aria-expanded','false');
 }
-function toggleSummaryMenu(type){
-  const menu=type==='service'?serviceChoiceMenu:amountChoiceMenu;
-  const card=type==='service'?summaryServiceCard:summaryAmountCard;
-  const willOpen=!menu.classList.contains('show');
+function toggleServiceMenu(){
+  const willOpen=!serviceChoiceMenu.classList.contains('show');
   closeSummaryMenus();
-  if(willOpen){menu.classList.add('show');card.setAttribute('aria-expanded','true')}
+  if(willOpen){serviceChoiceMenu.classList.add('show');summaryServiceCard.setAttribute('aria-expanded','true')}
 }
 summaryServiceCard?.addEventListener('click',e=>{
   if(e.target.closest('[data-preview-service]'))return;
-  toggleSummaryMenu('service');
+  toggleServiceMenu();
 });
-summaryAmountCard?.addEventListener('click',e=>{
-  if(e.target.closest('[data-preview-amount]'))return;
-  toggleSummaryMenu('amount');
-});
-summaryServiceCard?.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleSummaryMenu('service')}});
-summaryAmountCard?.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleSummaryMenu('amount')}});
+summaryServiceCard?.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleServiceMenu()}});
 serviceChoiceMenu?.addEventListener('click',e=>{
   const b=e.target.closest('[data-preview-service]');if(!b)return;
   selectedService=b.dataset.previewService;
   document.getElementById('selectedService').textContent=selectedService;
-  const sdt=document.getElementById('serviceDisplayText');if(sdt)sdt.textContent=selectedService;
-  document.querySelectorAll('.service').forEach(x=>x.classList.toggle('selected',x.dataset.service===selectedService));
   closeSummaryMenus();numberInput.focus();
 });
-amountChoiceMenu?.addEventListener('click',e=>{
-  const b=e.target.closest('[data-preview-amount]');if(!b)return;
-  setAmount(b.dataset.previewAmount,'choice');
-  closeSummaryMenus();numberInput.focus();
-});
-document.addEventListener('click',e=>{
-  if(!e.target.closest('#summaryServiceCard')&&!e.target.closest('#summaryAmountCard'))closeSummaryMenus();
-});
-function updateAmount(){setAmount(amountInput.value)}
+document.addEventListener('click',e=>{if(!e.target.closest('#summaryServiceCard'))closeSummaryMenus()});
+function updateAmount(){setAmount(previewAmountInput.value)}
 
-document.querySelectorAll('.service').forEach(b=>b.addEventListener('click',()=>{
-  document.querySelectorAll('.service').forEach(x=>x.classList.remove('selected'));
-  b.classList.add('selected');
-  selectedService=b.dataset.service;
-  document.getElementById('selectedService').textContent=selectedService;
-  const sdt=document.getElementById('serviceDisplayText'); if(sdt)sdt.textContent=selectedService;
-  closeSummaryMenus();
-  numberInput.focus();
-}));
 
 async function saveTransaction(number,amount,service){
   if(!currentUser)throw new Error('আগে Login করুন');
@@ -456,7 +424,6 @@ function showSuccessPopup(n,amount,service){
 function closeSuccessPopup(){
   document.getElementById('successOverlay').classList.remove('show');
   numberInput.value='';setAmount('');
-  document.querySelectorAll('.pill').forEach(x=>x.classList.remove('active'));
   updatePreview();updateAmount();setStatus('',true);numberInput.focus();
 }
 document.getElementById('successDone').addEventListener('click',closeSuccessPopup);
@@ -478,12 +445,11 @@ async function send(){
   const n=numberInput.value.replace(/\D/g,'');
   const amount=((amountInput.value||'').trim()||'0');
   if(!validNumber(n)){setStatus('সঠিক ১১ সংখ্যার মোবাইল নম্বর দিন',false);numberInput.focus();return}
+  if(!amount || Number(amount)<=0){setStatus('Amount লিখুন',false);previewAmountInput.focus();return}
 
   isSending=true;
-  const buttons=[...document.querySelectorAll('.service')];
-  buttons.forEach(x=>x.disabled=true);
   numberInput.disabled=true;
-  amountInput.disabled=true;previewAmountInput.disabled=true;
+  previewAmountInput.disabled=true;
   setStatus(`${selectedService} পাঠানো হচ্ছে...`,true);
   try{
     const r=await fetch('/api/send',{
@@ -507,9 +473,8 @@ async function send(){
     setStatus(location.protocol==='file:'?'ফাইল ডাবল-ক্লিক নয়—Render link দিয়ে চালান':err.message,false);
   }finally{
     isSending=false;
-    buttons.forEach(x=>x.disabled=false);
     numberInput.disabled=false;
-    amountInput.disabled=false;previewAmountInput.disabled=false;
+    previewAmountInput.disabled=false;
   }
 }
 function setStatus(t,ok){statusEl.textContent=t;statusEl.style.color=ok?'#43d679':'#ff5b5b'}
