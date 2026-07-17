@@ -1293,3 +1293,236 @@ body.light-theme .historyItem:hover{
   justify-content:center !important;
 }
 
+
+
+/* ===== Professional Light Mode — all overlays, modals, cards and lists ===== */
+body.light-theme{
+  background:
+    radial-gradient(circle at 15% 10%, rgba(74,144,226,.10), transparent 34%),
+    radial-gradient(circle at 85% 12%, rgba(16,185,129,.08), transparent 30%),
+    linear-gradient(180deg,#edf3f8 0%,#e7eef6 100%)!important;
+  color:#10233d!important;
+}
+
+body.light-theme .topbar,
+body.light-theme .inputSection,
+body.light-theme .previewSection,
+body.light-theme .summaryCard,
+body.light-theme .actionCard,
+body.light-theme .warningBar,
+body.light-theme .panel,
+body.light-theme .card{
+  background:linear-gradient(180deg,#f8fbfe 0%,#f1f6fb 100%)!important;
+  border-color:#bfd0e1!important;
+  box-shadow:0 10px 28px rgba(39,70,105,.10)!important;
+}
+
+body.light-theme .previewSection{
+  background:
+    radial-gradient(circle at 50% 28%,rgba(37,99,235,.09),transparent 32%),
+    linear-gradient(145deg,#f4f9fd 0%,#eaf2f8 100%)!important;
+}
+
+body.light-theme .segment,
+body.light-theme .field,
+body.light-theme input,
+body.light-theme .amountEditor,
+body.light-theme .searchInput,
+body.light-theme .modalSearch,
+body.light-theme textarea{
+  background:#f9fbfd!important;
+  border-color:#c7d6e5!important;
+  color:#13263f!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.8)!important;
+}
+
+body.light-theme input:focus,
+body.light-theme .amountEditor:focus,
+body.light-theme .searchInput:focus,
+body.light-theme .modalSearch:focus{
+  border-color:#4f8edc!important;
+  box-shadow:0 0 0 4px rgba(79,142,220,.14)!important;
+}
+
+body.light-theme .muted,
+body.light-theme .subText,
+body.light-theme .meta,
+body.light-theme small,
+body.light-theme .suggestionText small,
+body.light-theme .transactionOperator,
+body.light-theme .modalSubtitle{
+  color:#6c7f95!important;
+}
+
+body.light-theme .suggestions{
+  background:rgba(238,244,249,.98)!important;
+  border-color:#b8cadb!important;
+  box-shadow:0 24px 70px rgba(31,55,82,.22)!important;
+}
+
+body.light-theme .suggestion{
+  background:linear-gradient(180deg,#ffffff 0%,#f6f9fc 100%)!important;
+  border-color:#d3dee9!important;
+  color:#14263d!important;
+}
+
+body.light-theme .suggestion:hover,
+body.light-theme .suggestion.active{
+  background:linear-gradient(135deg,#e7f1ff,#dcecff)!important;
+  border-color:#4e91df!important;
+  box-shadow:0 8px 22px rgba(78,145,223,.18)!important;
+}
+
+body.light-theme .modalOverlay,
+body.light-theme .successOverlay{
+  background:rgba(20,38,60,.38)!important;
+  backdrop-filter:blur(8px)!important;
+}
+
+body.light-theme .modal,
+body.light-theme .modalPanel,
+body.light-theme .historyModal,
+body.light-theme .customersModal,
+body.light-theme .suggestionsManagerModal,
+body.light-theme .successModal,
+body.light-theme .colorModal{
+  background:linear-gradient(180deg,#f7fafc 0%,#edf3f8 100%)!important;
+  border:1px solid #b9cadb!important;
+  color:#11253d!important;
+  box-shadow:0 28px 80px rgba(26,50,76,.30)!important;
+}
+
+body.light-theme .modalHeader,
+body.light-theme .modalToolbar,
+body.light-theme .modalFooter{
+  background:rgba(245,249,252,.92)!important;
+  border-color:#cedae6!important;
+}
+
+body.light-theme .modalClose,
+body.light-theme .iconButton,
+body.light-theme .secondaryButton,
+body.light-theme .topbar button{
+  background:linear-gradient(180deg,#f8fbfd,#edf3f8)!important;
+  border-color:#c0d0df!important;
+  color:#1a3552!important;
+  box-shadow:0 5px 14px rgba(40,68,98,.09)!important;
+}
+
+body.light-theme .modalClose:hover,
+body.light-theme .iconButton:hover,
+body.light-theme .secondaryButton:hover,
+body.light-theme .topbar button:hover{
+  background:#e4eef7!important;
+  border-color:#87a9c8!important;
+}
+
+body.light-theme .transactionCard,
+body.light-theme .historyItem,
+body.light-theme .customerCard,
+body.light-theme .managerItem{
+  background:linear-gradient(180deg,#ffffff 0%,#f7f9fb 100%)!important;
+  border:1px solid #d5e0ea!important;
+  color:#11253d!important;
+  box-shadow:0 6px 16px rgba(33,60,89,.07)!important;
+}
+
+body.light-theme .transactionCard:hover,
+body.light-theme .historyItem:hover,
+body.light-theme .customerCard:hover,
+body.light-theme .managerItem:hover{
+  background:#f0f6fb!important;
+  border-color:#9db8d2!important;
+  transform:translateY(-1px);
+}
+
+body.light-theme .transactionNumber,
+body.light-theme .historyNumber,
+body.light-theme .customerNumber,
+body.light-theme .managerNumber{
+  color:#5a55d8!important;
+}
+
+body.light-theme .transactionAmount,
+body.light-theme .historyAmount,
+body.light-theme .customerAmount{
+  color:#ef4444!important;
+}
+
+body.light-theme .successBadge{
+  background:linear-gradient(180deg,#36b95d,#249847)!important;
+  color:#fff!important;
+  box-shadow:0 5px 12px rgba(36,152,71,.22)!important;
+}
+
+body.light-theme .statBadge,
+body.light-theme .summaryStat,
+body.light-theme .countBadge{
+  background:#f8fbfd!important;
+  border:1px solid #d2dde8!important;
+  color:#243d58!important;
+}
+
+body.light-theme .serviceChoiceMenu{
+  background:#f3f7fb!important;
+  border-color:#becfdf!important;
+  box-shadow:0 18px 45px rgba(32,58,86,.22)!important;
+}
+
+body.light-theme .serviceChoiceMenu button{
+  background:#ffffff!important;
+  border-color:#d5e0ea!important;
+  color:#17304b!important;
+}
+
+body.light-theme .serviceChoiceMenu button:hover{
+  background:#e7f1fa!important;
+  border-color:#77a2ca!important;
+}
+
+body.light-theme .warningBar{
+  background:linear-gradient(180deg,#fff8e8,#fff2d2)!important;
+  border-color:#e9c86c!important;
+  color:#7a5a11!important;
+}
+
+body.light-theme .successModal{
+  background:
+    radial-gradient(circle at 50% 0%,rgba(16,185,129,.10),transparent 34%),
+    linear-gradient(180deg,#f8fbfd,#edf4f8)!important;
+}
+
+body.light-theme .successDetails{
+  background:#f7fafc!important;
+  border-color:#cad8e5!important;
+}
+
+body.light-theme ::-webkit-scrollbar-track{
+  background:#e8eff5!important;
+}
+
+body.light-theme ::-webkit-scrollbar-thumb{
+  background:#9fb4c8!important;
+  border:3px solid #e8eff5!important;
+}
+
+body.light-theme ::-webkit-scrollbar-thumb:hover{
+  background:#7f9bb4!important;
+}
+
+/* Better contrast for professional light mode */
+body.light-theme h1,
+body.light-theme h2,
+body.light-theme h3,
+body.light-theme h4,
+body.light-theme .label,
+body.light-theme .sectionTitle,
+body.light-theme .modalTitle{
+  color:#10243c!important;
+}
+
+body.light-theme .previewNumber,
+body.light-theme .bigNumber{
+  color:#147da6!important;
+  text-shadow:0 10px 0 rgba(20,125,166,.12),0 0 24px rgba(20,125,166,.20)!important;
+}
