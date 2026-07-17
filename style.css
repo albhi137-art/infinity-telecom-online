@@ -586,3 +586,90 @@ body.light-theme .suggestion span:last-child{
 @media(max-width:700px){
   .suggestions{left:0;right:0;width:100%;top:calc(100% + 10px);max-height:240px}
 }
+
+/* ===== V3.4 Fixed dropdown stacking and clean full-width suggestions ===== */
+.inputPanel{
+  position:relative;
+  z-index:120;
+  overflow:visible!important;
+}
+.previewPanel,
+.services,
+.dashboardGrid,
+.appFooter{
+  position:relative;
+  z-index:1;
+}
+.numberColumn{
+  position:relative;
+  z-index:130;
+}
+.suggestions{
+  left:0!important;
+  right:0!important;
+  top:calc(100% + 10px)!important;
+  width:100%!important;
+  max-height:310px;
+  padding:10px;
+  z-index:9999!important;
+  border:1px solid #2f5f8d;
+  border-radius:14px;
+  background:#06172b;
+  box-shadow:0 22px 55px rgba(0,0,0,.62),0 0 0 1px rgba(77,157,255,.10);
+}
+.suggestions.show{
+  display:flex!important;
+  flex-direction:column;
+  gap:9px;
+}
+.suggestion{
+  flex:0 0 auto;
+  width:100%;
+  min-height:52px;
+  padding:0 16px;
+  border:1px solid #28557f;
+  border-radius:10px;
+  background:#0a2039;
+  color:#fff;
+  font-size:16px;
+  font-weight:850;
+  letter-spacing:.35px;
+  text-align:left;
+}
+.suggestion:hover,.suggestion.active{
+  transform:none;
+  background:#123d6c;
+  border-color:#58a9ff;
+  box-shadow:inset 4px 0 0 #58a9ff,0 7px 20px rgba(0,91,190,.22);
+}
+.suggestion span:first-child{
+  display:flex;
+  align-items:center;
+}
+.suggestion span:first-child::before{
+  content:'📱';
+  margin-right:11px;
+  font-size:15px;
+}
+.suggestion span:last-child{
+  display:none!important;
+}
+body.light-theme .suggestions{
+  background:#fff;
+  border-color:#b8cde2;
+  box-shadow:0 22px 50px rgba(42,72,110,.22),0 0 0 1px rgba(60,126,199,.06);
+}
+body.light-theme .suggestion{
+  color:#17324e;
+  background:#f7fbff;
+  border-color:#c5d8ea;
+}
+body.light-theme .suggestion:hover,
+body.light-theme .suggestion.active{
+  background:#eaf4ff;
+  border-color:#5c9ee2;
+  box-shadow:inset 4px 0 0 #448fe0,0 7px 18px rgba(69,112,158,.14);
+}
+@media(max-width:700px){
+  .suggestions{top:calc(100% + 8px)!important;max-height:250px}
+}
