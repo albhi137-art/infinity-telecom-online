@@ -37,7 +37,7 @@
 <section class="inputPanel">
 <div class="inputColumn numberColumn">
 <label class="label">MOBILE NUMBER</label>
-<div class="field"><span class="fieldIcon">📱</span><input autocomplete="off" id="numberInput" inputmode="numeric" maxlength="11" placeholder="01X XXXX XXXX"/></div>
+<div class="field"><span class="fieldIcon selectedServiceInputIcon" id="selectedServiceInputIcon"></span><input autocomplete="off" id="numberInput" inputmode="numeric" maxlength="11" placeholder="01X XXXX XXXX"/></div>
 <div class="inputHelp">⌕ Type to see suggestions...</div>
 <div class="suggestions" id="suggestions"></div>
 </div>
@@ -47,7 +47,7 @@
 </section>
 <section class="previewPanel">
 <div class="rightTitle">CUSTOMER NUMBER PREVIEW</div>
-<div class="bigNumber" id="bigNumber">01XXXXXXXXX</div>
+<div class="bigNumberWrap"><span class="selectedServicePreviewIcon" id="selectedServicePreviewIcon"></span><div class="bigNumber" id="bigNumber">01XXXXXXXXX</div></div>
 <div class="groups"><div class="digitBox" id="g1"></div><div class="digitBox" id="g2"></div><div class="digitBox" id="g3"></div><div class="digitBox" id="g4"></div><div class="digitBox" id="g5"></div></div>
 <div class="customerSummary" id="customerSummary" aria-live="polite">
 <div><small>মোট ভিজিট</small><strong id="summaryVisits">—</strong></div>
@@ -59,10 +59,10 @@
 <div aria-expanded="false" class="summaryCard summarySelectorCard" id="summaryServiceCard" role="button" tabindex="0">
 <span class="summaryIcon">➤</span><div class="summarySelectorContent"><div class="summaryLabel">SELECTED SERVICE</div><div class="summarySelectorValue"><span class="summaryValue" id="selectedService">Mobile Recharge</span><span class="summaryChevron">⌄</span></div></div>
 <div class="summaryChoiceMenu serviceChoiceMenu" id="serviceChoiceMenu">
-<button data-preview-service="bKash" type="button"><span>🩷</span>bKash</button>
-<button data-preview-service="Nagad" type="button"><span>🟧</span>Nagad</button>
-<button data-preview-service="Rocket" type="button"><span>🟣</span>Rocket</button>
-<button data-preview-service="Mobile Recharge" type="button"><span>📱</span>Mobile Recharge</button>
+<button data-preview-service="bKash" type="button"><img src="./assets/bkash.png" alt="bKash">bKash</button>
+<button data-preview-service="Nagad" type="button"><img src="./assets/nagad.png" alt="Nagad">Nagad</button>
+<button data-preview-service="Rocket" type="button"><img src="./assets/rocket.png" alt="Rocket">Rocket</button>
+<button data-preview-service="Mobile Recharge" type="button"><img src="./assets/mobile-recharge.png" alt="Mobile Recharge">Mobile Recharge</button>
 </div></div>
 <div class="summaryCard summaryAmountCard directAmountCard" id="summaryAmountCard"><span class="summaryIcon">৳</span>
 <div class="directAmountContent">

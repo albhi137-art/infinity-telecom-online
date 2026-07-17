@@ -958,3 +958,25 @@ body.light-theme .suggestionEnter{color:#587795!important}
 .successLanguageToggle{position:absolute;top:16px;right:16px;min-width:54px;height:34px;padding:0 12px;border:1px solid #315d89;border-radius:999px;background:#0c2540;color:#eef7ff;font-size:12px;font-weight:900;cursor:pointer;transition:.18s ease}
 .successLanguageToggle:hover{transform:translateY(-1px);border-color:#56a5ff;background:#123354}
 body.light-theme .successLanguageToggle{background:#eef6ff;color:#17324f;border-color:#aac8e6}
+
+
+/* Service logo icons shown consistently beside customer numbers */
+.serviceBrandIcon{display:block;width:100%;height:100%;object-fit:contain;border-radius:inherit}
+.selectedServiceInputIcon{width:34px;height:34px;flex:0 0 34px;display:grid;place-items:center;background:#fff;border-radius:9px;padding:3px;overflow:hidden}
+.inputServiceIcon{width:100%;height:100%}
+.bigNumberWrap{position:relative;display:flex;align-items:center;justify-content:center;gap:22px;margin:18px 0 28px}
+.bigNumberWrap .bigNumber{margin:0!important}
+.selectedServicePreviewIcon{width:74px;height:74px;flex:0 0 74px;display:grid;place-items:center;background:#fff;border-radius:18px;padding:6px;box-shadow:0 10px 30px #0007;overflow:hidden}
+.previewServiceIcon{width:100%;height:100%}
+.serviceChoiceMenu button img{width:32px;height:32px;object-fit:contain;background:#fff;border-radius:8px;padding:2px;flex:0 0 32px}
+.suggestionLogo .serviceBrandIcon,.transactionLogo .serviceBrandIcon{width:100%;height:100%;object-fit:contain}
+.transactionLogo:has(.serviceBrandIcon){background:#fff!important;padding:3px}
+.customerPhoneRow{display:flex;align-items:center;gap:10px}
+.customerServiceIcon{width:34px;height:34px;flex:0 0 34px;background:#fff;border-radius:9px;padding:3px;object-fit:contain}
+.successNumber{display:flex;align-items:center;justify-content:center;gap:12px}
+.successServiceIcon{width:48px;height:48px;flex:0 0 48px;background:#fff;border-radius:12px;padding:4px;object-fit:contain}
+.miniNumberWithIcon{display:flex;align-items:center;gap:7px;min-width:0}
+.miniNumberWithIcon span{overflow:hidden;text-overflow:ellipsis;color:inherit}
+.miniServiceIcon{width:24px;height:24px;flex:0 0 24px;background:#fff;border-radius:6px;padding:2px;object-fit:contain}
+body.light-theme .selectedServiceInputIcon,body.light-theme .selectedServicePreviewIcon{box-shadow:0 8px 20px #23508022}
+@media(max-width:700px){.bigNumberWrap{gap:10px}.selectedServicePreviewIcon{width:48px;height:48px;flex-basis:48px;border-radius:12px}.customerServiceIcon{width:30px;height:30px;flex-basis:30px}}

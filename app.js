@@ -57,6 +57,7 @@ function applyTheme(theme){
 }
 
 applyTheme(localStorage.getItem('infinityTheme')||'dark');
+refreshSelectedServiceIcons();
 
 themeButton.addEventListener('click',()=>{
   const nextTheme=document.body.classList.contains('light-theme')?'dark':'light';
@@ -214,7 +215,7 @@ function updateSuggestions(){
     const last=rows[0];
     const operator=last?.operator||detectOperator(n);
     const meta=last?`শেষ ৳${Number(last.amount||0).toLocaleString('en-BD')} • ${rows.length} বার`:'Saved number';
-    return `<button class="suggestion${i===0?' active':''}" data-number="${n}"><div class="suggestionIdentity"><div class="suggestionLogo">${brandSvg('',operator)}</div><div class="suggestionText"><strong>${n}</strong><small>${meta}</small></div></div><span class="suggestionEnter">Enter</span></button>`;
+    return `<button class="suggestion${i===0?' active':''}" data-number="${n}"><div class="suggestionIdentity"><div class="suggestionLogo">${brandSvg(last?.service||'Mobile Recharge',operator)}</div><div class="suggestionText"><strong>${n}</strong><small>${meta}</small></div></div><span class="suggestionEnter">Enter</span></button>`;
   }).join('');
   suggestions.classList.add('show');
 }
@@ -286,6 +287,7 @@ serviceChoiceMenu?.addEventListener('click',e=>{
   const b=e.target.closest('[data-preview-service]');if(!b)return;
   selectedService=b.dataset.previewService;
   document.getElementById('selectedService').textContent=selectedService;
+  refreshSelectedServiceIcons();
   closeSummaryMenus();numberInput.focus();
 });
 document.addEventListener('click',e=>{if(!e.target.closest('#summaryServiceCard'))closeSummaryMenus()});
@@ -353,12 +355,30 @@ function formatHistoryDate(iso){
   return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})+' '+
     d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
 }
+function serviceIconSrc(service){
+  const text=String(service||'').toLowerCase();
+  if(text.includes('bkash'))return './assets/bkash.png';
+  if(text.includes('nagad'))return './assets/nagad.png';
+  if(text.includes('rocket'))return './assets/rocket.png';
+  return './assets/mobile-recharge.png';
+}
+function serviceIconHtml(service,extraClass=''){
+  const safe=String(service||'Mobile Recharge').replace(/"/g,'&quot;');
+  return `<img class="serviceBrandIcon ${extraClass}" src="${serviceIconSrc(service)}" alt="${safe}" loading="lazy">`;
+}
+function refreshSelectedServiceIcons(){
+  const inputIcon=document.getElementById('selectedServiceInputIcon');
+  const previewIcon=document.getElementById('selectedServicePreviewIcon');
+  if(inputIcon)inputIcon.innerHTML=serviceIconHtml(selectedService,'inputServiceIcon');
+  if(previewIcon)previewIcon.innerHTML=serviceIconHtml(selectedService,'previewServiceIcon');
+}
 function brandSvg(service,operator){
   const text=String(service||operator||'').toLowerCase();
   const svg=(body,label)=>`<svg class="brandSvg" viewBox="0 0 48 48" role="img" aria-label="${label}" xmlns="http://www.w3.org/2000/svg">${body}</svg>`;
-  if(text.includes('bkash'))return svg('<path fill="#E2136E" d="M7 8h23l11 8-12 5 8 9-14-4-7 14-2-17L7 8Z"/><path fill="#fff" d="m16 14 13 5-10 4-3-9Z"/>','bKash');
-  if(text.includes('nagad'))return svg('<circle cx="24" cy="24" r="21" fill="#F26522"/><path fill="#fff" d="M13 29c4-12 15-16 24-11-7 1-12 5-15 12 5-3 10-4 14-3-7 7-16 8-23 2Z"/>','Nagad');
-  if(text.includes('rocket'))return svg('<circle cx="24" cy="24" r="21" fill="#8B1E78"/><path fill="#fff" d="M16 35V13h10c8 0 12 4 12 10 0 5-3 8-8 9l8 3h-8l-8-7v7h-6Zm6-12h4c4 0 6-1 6-4 0-2-2-3-6-3h-4v7Z"/>','Rocket');
+  if(text.includes('bkash'))return serviceIconHtml('bKash');
+  if(text.includes('nagad'))return serviceIconHtml('Nagad');
+  if(text.includes('rocket'))return serviceIconHtml('Rocket');
+  if(text.includes('mobile recharge')||text.includes('recharge'))return serviceIconHtml('Mobile Recharge');
   if(text.includes('grameen')||text.includes('gp'))return svg('<path fill="#16A4E0" d="M24 4c5 0 9 4 9 9 0 3-1 5-3 7 6 1 11 6 11 12 0 7-6 12-13 12-5 0-10-3-12-8-2 2-4 3-7 3-5 0-9-4-9-9 0-6 5-10 11-10h2c-1-2-1-4-1-6 0-6 5-10 12-10Z"/><circle cx="24" cy="24" r="6" fill="#fff"/>','Grameenphone');
   if(text.includes('robi'))return svg('<circle cx="24" cy="24" r="21" fill="#E8242F"/><path fill="#fff" d="M12 31c4-11 12-17 25-17-8 4-13 9-16 16 5-3 10-4 15-3-6 6-15 8-24 4Z"/>','Robi');
   if(text.includes('airtel'))return svg('<circle cx="24" cy="24" r="21" fill="#E51C23"/><path fill="#fff" d="M13 28c8-2 13-7 15-15 5 7 6 14 2 20-5 6-12 5-17-5Z"/>','Airtel');
@@ -425,16 +445,16 @@ function customerRows(){
   const map=new Map();
   for(const x of transactionHistory){
     if(!x.number) continue;
-    const old=map.get(x.number)||{number:x.number,count:0,total:0,last:null,lastAmount:0,lastService:'—'};
+    const old=map.get(x.number)||{number:x.number,count:0,total:0,last:null,lastAmount:0,lastService:'—',operator:detectOperator(x.number||'')};
     old.count+=1;
     old.total+=Number(x.amount||0);
     if(!old.last || new Date(x.timestamp)>new Date(old.last)){
-      old.last=x.timestamp; old.lastAmount=Number(x.amount||0); old.lastService=x.service||'—';
+      old.last=x.timestamp; old.lastAmount=Number(x.amount||0); old.lastService=x.service||'—'; old.operator=x.operator||detectOperator(x.number||'');
     }
     map.set(x.number,old);
   }
   for(const n of historyList){
-    if(!map.has(n)) map.set(n,{number:n,count:0,total:0,last:null,lastAmount:0,lastService:'—'});
+    if(!map.has(n)) map.set(n,{number:n,count:0,total:0,last:null,lastAmount:0,lastService:'—',operator:detectOperator(n)});
   }
   return [...map.values()].sort((a,b)=>{
     const ad=a.last?new Date(a.last).getTime():0, bd=b.last?new Date(b.last).getTime():0;
@@ -454,7 +474,7 @@ function renderAllCustomers(){
   if(!rows.length){customersListEl.innerHTML='<div class="historyNoMatch">কোনো নাম্বার পাওয়া যায়নি।</div>';return}
   customersListEl.innerHTML=rows.map(x=>`
     <button class="customerCard" data-number="${x.number}" data-amount="${x.lastAmount||''}">
-      <div class="customerPhone">${x.number}</div>
+      <div class="customerPhoneRow">${serviceIconHtml(x.lastService,'customerServiceIcon')}<div class="customerPhone">${x.number}</div></div>
       <div class="customerAmount">৳${Number(x.lastAmount||0).toLocaleString('en-BD')}</div>
       <div class="customerMeta">${x.lastService} • ${x.count} বার</div>
       <div class="customerTime">${formatCustomerLast(x.last)}</div>
@@ -511,7 +531,7 @@ document.getElementById('successLanguageToggle').addEventListener('click',()=>{
 
 function showSuccessPopup(n,amount,service){
   setSuccessPopupLanguage('bn');
-  document.getElementById('successNumber').textContent=n;
+  document.getElementById('successNumber').innerHTML=`${serviceIconHtml(service,'successServiceIcon')}<span>${n}</span>`;
   document.getElementById('successAmount').textContent='৳'+amount;
   document.getElementById('successGateway').textContent=service;
   document.getElementById('successOverlay').classList.add('show');
@@ -602,7 +622,7 @@ function renderDashboard(){
   set('statCustomers',unique.length.toLocaleString('en-US'));
   set('statRecharge',formatMoney(total)); set('statToday',formatMoney(today)); set('statTodayCount',todayRows.length+' টি লেনদেন');
   const recent=document.getElementById('recentHistoryList');
-  if(recent) recent.innerHTML=tx.slice(0,4).map(x=>`<div class="miniRow"><strong>${x.number}</strong><span>${x.service}</span><em>${formatMoney(x.amount)}</em></div>`).join('')||'<div class="emptyMini">No recharge history yet</div>';
+  if(recent) recent.innerHTML=tx.slice(0,4).map(x=>`<div class="miniRow"><strong class="miniNumberWithIcon">${serviceIconHtml(x.service,'miniServiceIcon')}<span>${x.number}</span></strong><span>${x.service}</span><em>${formatMoney(x.amount)}</em></div>`).join('')||'<div class="emptyMini">No recharge history yet</div>';
   const counts={};
   tx.forEach(x=>{const c=counts[x.number]||(counts[x.number]={count:0,total:0});c.count++;c.total+=Number(x.amount||0)});
   const top=Object.entries(counts).sort((a,b)=>b[1].count-a[1].count).slice(0,4);
