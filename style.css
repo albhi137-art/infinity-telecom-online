@@ -1532,7 +1532,7 @@ body.light-theme .bigNumber{
 .verificationBanner .vbBody{background:#ffeb3b;color:#000;text-align:center;font-size:28px;font-weight:800;line-height:1.45;padding:18px}
 
 /* tightened verification banner */
-.verificationBanner{max-width:1180px!important;margin:16px auto 0!important;}
+.verificationBanner{max-width:1180px!important;margin:8px auto 0!important;}
 .verificationBanner .vbTop,.verificationBanner .vbBody{display:inline-block;vertical-align:middle}
 .verificationBanner{display:flex!important;align-items:stretch;justify-content:center}
 .verificationBanner .vbTop{width:360px!important;display:flex!important;align-items:center;justify-content:center;padding:0 20px!important}
@@ -1546,8 +1546,3 @@ body.light-theme .bigNumber{
 .summaryValue{font-size:12px!important;margin-top:2px!important;}
 .summaryAmountField>span{font-size:14px!important;}
 .summaryAmountField input{font-size:14px!important;padding:0!important;}
-
-/* spacing cleanup */
-.groups{margin-bottom:22px!important;}
-.summary{margin-top:22px!important;gap:18px!important;}
-.warningBar,.warning-banner,.warningWrapper{margin-top:22px!important;}
