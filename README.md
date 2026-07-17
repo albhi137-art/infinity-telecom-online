@@ -1,11 +1,9 @@
-# Infinity Telecom V3.1
+# Infinity Telecom V3.3 — Professional Suggestions
 
 এই আপডেটে:
-
-- উপরের Search Customer বক্স সরানো হয়েছে।
-- মোবাইল নম্বর ১১ ডিজিট হলে Number Input-এ Enter চাপলেই Telegram-এ Send হবে।
-- বারবার Enter চাপলে Duplicate Send হবে না।
-- Amount খালি থাকলে 0 হিসেবে পাঠাবে; Amount থাকলে সেটিই যাবে।
-- Success popup আগের সুন্দর ডিজাইনের মতো রাখা হয়েছে।
-- Success popup থেকে Operator সরানো হয়েছে।
-- Firebase, History, All Numbers, Suggestions, Theme এবং অন্য সব ফিচার আগের মতো রাখা হয়েছে।
+- Suggestion box এখন Mobile Number box-এর সমান পূর্ণ প্রস্থের।
+- প্রতিটি Number আলাদা professional card হিসেবে দেখাবে।
+- প্রতিটি suggestion-এর মাঝখানে সুন্দর spacing আছে।
+- Amount suggestion দেখানো হয় না—শুধু customer number দেখায়।
+- Dark এবং Light theme দুটিতেই matching design আছে।
+- আগের Firebase, Telegram, Enter Send, History, All Numbers ও অন্যান্য function অপরিবর্তিত।

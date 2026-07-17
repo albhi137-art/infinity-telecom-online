@@ -197,7 +197,7 @@ function updateSuggestions(){
   if(!currentMatches.length){hideSuggestions();return}
   activeIndex=0;
   suggestions.innerHTML=currentMatches.slice(0,15).map((n,i)=>
-    `<button class="suggestion${i===0?' active':''}" data-number="${n}"><span>${n}</span><span>↵</span></button>`
+    `<button class="suggestion${i===0?' active':''}" data-number="${n}"><span>${n}</span><span>Enter</span></button>`
   ).join('');
   suggestions.classList.add('show');
 }
