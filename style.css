@@ -1185,3 +1185,98 @@ body.light-theme .historyItem:hover{
   background:#dceaf5!important;
   border-color:#79a8c6!important;
 }
+
+
+/* ===== Compact right-side Suggestions panel =====
+   Keeps the number preview visible while suggestions are open. */
+@media (min-width: 901px){
+  .suggestions{
+    position:fixed!important;
+    left:auto!important;
+    right:28px!important;
+    top:270px!important;
+    width:min(390px,28vw)!important;
+    max-height:calc(100vh - 300px)!important;
+    padding:8px!important;
+    border-radius:14px!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    background:rgba(5,19,36,.97)!important;
+    border:1px solid #2a5782!important;
+    box-shadow:0 22px 60px rgba(0,0,0,.48)!important;
+    backdrop-filter:blur(16px);
+  }
+
+  .suggestions.show{
+    display:grid!important;
+    gap:7px!important;
+  }
+
+  .suggestion{
+    min-height:68px!important;
+    height:auto!important;
+    padding:9px 12px!important;
+    border:1px solid #183b5c!important;
+    border-radius:11px!important;
+    background:#0a2038!important;
+    transform:none!important;
+  }
+
+  .suggestion:hover,
+  .suggestion.active{
+    background:linear-gradient(135deg,#123d68,#174f84)!important;
+    border-color:#4b9df2!important;
+    box-shadow:0 0 0 1px rgba(79,157,242,.2),0 8px 20px rgba(0,0,0,.2)!important;
+    transform:none!important;
+  }
+
+  .suggestionIdentity{
+    gap:11px!important;
+  }
+
+  .suggestionLogo{
+    width:42px!important;
+    height:42px!important;
+    flex-basis:42px!important;
+  }
+
+  .suggestionText strong{
+    font-size:15px!important;
+  }
+
+  .suggestionText small,
+  .suggestionCustomerName,
+  .suggestionEnter{
+    font-size:10px!important;
+  }
+
+  body.light-theme .suggestions{
+    background:rgba(241,246,252,.98)!important;
+    border-color:#aac1d9!important;
+    box-shadow:0 22px 55px rgba(31,56,88,.22)!important;
+  }
+
+  body.light-theme .suggestion{
+    background:#ffffff!important;
+    border-color:#d3dfec!important;
+    color:#10213a!important;
+  }
+
+  body.light-theme .suggestion:hover,
+  body.light-theme .suggestion.active{
+    background:linear-gradient(135deg,#e9f3ff,#dcecff)!important;
+    border-color:#5e9ee0!important;
+  }
+}
+
+/* On smaller screens keep the original full-width dropdown. */
+@media (max-width: 900px){
+  .suggestions{
+    position:absolute!important;
+    left:0!important;
+    right:0!important;
+    top:calc(100% + 8px)!important;
+    width:100%!important;
+    max-height:250px!important;
+  }
+}
