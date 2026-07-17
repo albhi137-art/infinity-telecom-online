@@ -393,106 +393,65 @@ html{scroll-snap-type:y proximity}
   .summary{grid-template-columns:1fr}
 }
 
-
-/* V3.1 — clean top bar, instant Enter send, refined success popup */
-.topbar{
-  grid-template-columns:auto 1fr auto;
+/* =========================================================
+   V3.2 — Data entry inside full-screen preview
+   Number and amount controls are placed at the bottom of the hero.
+   ========================================================= */
+.previewPanel{
+  justify-content:center;
+  gap:0;
 }
-.topActions{
-  justify-self:center;
-}
-.userArea{
-  justify-self:end;
-}
-.successCard{
-  width:min(470px,92vw);
-  padding:34px 38px 38px;
-  border-radius:26px;
-  background:linear-gradient(180deg,#101a33,#0b1328);
-  border:1px solid #263754;
-  box-shadow:0 32px 90px rgba(0,0,0,.55);
-}
-.successIcon{
-  width:120px;
-  height:120px;
-  margin:0 auto 22px;
-  border-radius:50%;
-  display:grid;
-  place-items:center;
-  background:rgba(20,184,166,.12);
-  box-shadow:inset 0 0 0 25px rgba(20,184,166,.08);
-}
-.successIcon span{
-  width:52px;
-  height:52px;
-  display:grid;
-  place-items:center;
-  border-radius:50%;
-  background:#18c7a4;
-  color:#06271f;
-  font-size:28px;
-  font-weight:1000;
-}
-.successTitle{
-  margin:0;
-  font-size:30px;
-  letter-spacing:-.5px;
-}
-.successText{
-  margin:10px auto 28px;
-  max-width:330px;
-  color:#9caccc;
-  line-height:1.55;
-}
-.successNumber{
-  font-size:24px;
-  font-weight:950;
-  letter-spacing:.8px;
-  padding:0 0 20px;
-  border-bottom:1px solid #263754;
-}
-.successDetails{
-  margin-top:8px;
-  padding:8px 0;
-  background:transparent;
-  border:0;
-}
-.successRow{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:13px 0;
-  color:#9caccc;
-}
-.successRow strong{
-  color:#f8fbff;
-  font-size:18px;
-}
-.successRow:first-child strong{color:#22e3ae}
-.successDone{
+.embeddedInputPanel{
+  position:relative;
   width:100%;
-  height:62px;
-  margin-top:18px;
+  margin-top:clamp(16px,2.5vh,30px);
+  padding:14px 16px;
+  grid-template-columns:minmax(0,1fr) minmax(0,1.15fr)!important;
+  gap:18px;
   border-radius:14px;
-  background:linear-gradient(135deg,#5f45ff,#6e36ff);
-  font-size:18px;
-  box-shadow:0 14px 32px rgba(94,65,255,.30);
+  border:1px solid #214d79;
+  background:linear-gradient(180deg,#07182b,#04101e);
+  box-shadow:inset 0 1px 0 #ffffff0a,0 14px 34px #0005;
 }
-body.light-theme .successCard{
-  background:linear-gradient(180deg,#ffffff,#f7f9fd);
-  border-color:#d7e1ee;
+.embeddedInputPanel .inputColumn+.inputColumn{
+  border-left:1px solid #1c3b5d;
+  padding-left:18px;
 }
-body.light-theme .successTitle,
-body.light-theme .successNumber,
-body.light-theme .successRow strong{color:#13233d}
-body.light-theme .successText,
-body.light-theme .successRow{color:#71839a}
-body.light-theme .successNumber{border-bottom-color:#e0e7f0}
-body.light-theme .successRow:first-child strong{color:#0aaf83}
+.embeddedInputPanel .field{height:48px}
+.embeddedInputPanel .field input{font-size:21px}
+.embeddedInputPanel .amountPills{margin-top:8px}
+.embeddedInputPanel .suggestions{
+  left:16px;
+  top:102px;
+  width:calc(50% - 25px);
+}
+body.light-theme .embeddedInputPanel{
+  background:linear-gradient(180deg,#ffffff,#f7faff);
+  border-color:#c4d5e8;
+  box-shadow:0 14px 32px rgba(37,70,110,.14);
+}
+body.light-theme .embeddedInputPanel .inputColumn+.inputColumn{border-left-color:#dbe5f0}
 
-@media(max-width:900px){
-  .topbar{grid-template-columns:1fr auto;gap:10px}
-  .brand{grid-column:1}
-  .topActions{grid-column:1/-1;grid-row:2;justify-self:stretch}
-  .userArea{grid-column:2;grid-row:1}
+/* Keep the whole preview and the embedded controls visible on a 27-inch 1080p screen. */
+@media (min-width:1200px){
+  .previewPanel{min-height:calc(100vh - 20px)!important;padding:24px 34px 26px}
+  .rightTitle{margin-bottom:10px}
+  .bigNumber{font-size:clamp(100px,9.2vw,188px)!important;margin:8px 0 22px}
+  .digitBox{height:clamp(90px,10.5vh,125px)!important;font-size:clamp(48px,4vw,76px)!important}
+  .summary{margin-top:14px}
+  .summaryCard{min-height:70px!important}
+}
+@media (max-height:800px) and (min-width:901px){
+  .previewPanel{padding-top:16px;padding-bottom:16px}
+  .bigNumber{font-size:clamp(82px,8vw,145px)!important;margin:4px 0 14px}
+  .digitBox{height:78px!important;font-size:44px!important}
+  .summaryCard{min-height:60px!important;padding:9px 15px}
+  .embeddedInputPanel{margin-top:10px;padding:10px 14px}
+  .embeddedInputPanel .field{height:42px}
+  .embeddedInputPanel .pill{height:30px}
+}
+@media(max-width:700px){
+  .embeddedInputPanel{grid-template-columns:1fr!important}
+  .embeddedInputPanel .inputColumn+.inputColumn{border-left:0;padding-left:0}
+  .embeddedInputPanel .suggestions{left:12px;width:calc(100% - 24px);top:98px}
 }
