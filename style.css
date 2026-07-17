@@ -1537,3 +1537,12 @@ body.light-theme .bigNumber{
 .verificationBanner{display:flex!important;align-items:stretch;justify-content:center}
 .verificationBanner .vbTop{width:360px!important;display:flex!important;align-items:center;justify-content:center;padding:0 20px!important}
 .verificationBanner .vbBody{flex:1!important;padding:18px 24px!important}
+
+/* compact summary override */
+.summary{gap:8px!important;margin-top:8px!important;}
+.summaryCard{min-height:48px!important;padding:8px 12px!important;border-radius:10px!important;}
+.summaryIcon{width:28px!important;height:28px!important;font-size:14px!important;border-radius:8px!important;}
+.summaryLabel{font-size:8px!important;letter-spacing:.4px!important;}
+.summaryValue{font-size:12px!important;margin-top:2px!important;}
+.summaryAmountField>span{font-size:14px!important;}
+.summaryAmountField input{font-size:14px!important;padding:0!important;}
