@@ -925,3 +925,10 @@ body.light-theme .colorHeader p{color:#637b98}
 body.light-theme .colorWheelCard,body.light-theme .shadowControlCard{background:#f7faff}
 body.light-theme .colorResetButton{color:#17324f;background:rgba(var(--ui-accent-rgb),.10)}
 @media(max-width:700px){.colorControlGrid{grid-template-columns:1fr}.colorWheelCard,.shadowControlCard{min-height:140px}}
+
+/* Preview area can be clicked to focus the mobile-number field */
+.previewPanel{cursor:text}
+.previewPanel button,
+.previewPanel input,
+.previewPanel [role="button"]{cursor:pointer}
+.previewPanel input{cursor:text}

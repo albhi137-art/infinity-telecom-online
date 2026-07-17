@@ -677,3 +677,13 @@ uiColorPicker?.addEventListener('input',()=>applyUiColor(uiColorPicker.value,sha
 shadowRange?.addEventListener('input',()=>applyUiColor(uiColorPicker.value,shadowRange.value));
 colorResetButton?.addEventListener('click',()=>applyUiColor('#775cff',45));
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&colorOverlay?.classList.contains('show'))colorOverlay.classList.remove('show')});
+
+/* Click anywhere on the customer preview area to return focus to Mobile Number.
+   Interactive controls inside the preview keep their normal behavior. */
+const previewPanel=document.querySelector('.previewPanel');
+previewPanel?.addEventListener('click',event=>{
+  if(event.target.closest('button,input,select,textarea,a,[role="button"],.summaryChoiceMenu')) return;
+  numberInput.focus();
+  const end=numberInput.value.length;
+  try{numberInput.setSelectionRange(end,end)}catch(_error){}
+});
