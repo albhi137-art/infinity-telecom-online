@@ -358,7 +358,7 @@ function formatHistoryDate(iso){
   const d=new Date(iso);
   if(Number.isNaN(d.getTime()))return '—';
   return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})+' '+
-    d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+    d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
 }
 function serviceIconSrc(service){
   const text=String(service||'').toLowerCase();
@@ -469,7 +469,7 @@ function customerRows(){
 function formatCustomerLast(iso){
   if(!iso)return 'কোনো সময় নেই';
   const d=new Date(iso);
-  return d.toLocaleDateString('en-GB')+' • '+d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  return d.toLocaleDateString('en-GB')+' • '+d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
 }
 function renderAllCustomers(){
   const q=customersSearch.value.replace(/\D/g,'').slice(0,11);
@@ -692,7 +692,7 @@ function renderDashboard(){
   const sumEl=document.getElementById('serviceSummaryList');
   if(sumEl) sumEl.innerHTML=Object.entries(sums).slice(0,4).map(([k,v])=>`<div class="miniRow"><strong>${k}</strong><span>${formatMoney(v.total)}</span><em>${v.count}</em></div>`).join('')||'<div class="emptyMini">No service data yet</div>';
 }
-function tickDateTime(){const e=document.getElementById('currentDateTime');if(e)e.textContent=new Date().toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}
+function tickDateTime(){const e=document.getElementById('currentDateTime');if(e)e.textContent=new Date().toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'})}
 setInterval(tickDateTime,1000);tickDateTime();
 const globalSearch=document.getElementById('globalSearch');
 document.getElementById('recentViewAll')?.addEventListener('click',openHistory);
