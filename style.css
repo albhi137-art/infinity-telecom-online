@@ -1280,3 +1280,16 @@ body.light-theme .historyItem:hover{
     max-height:250px!important;
   }
 }
+
+
+/* Hide only the large logo beside the customer number preview */
+.selectedServicePreviewIcon{
+  display:none !important;
+}
+
+.previewNumberRow,
+.customerPreviewNumberRow,
+.bigNumberRow{
+  justify-content:center !important;
+}
+
