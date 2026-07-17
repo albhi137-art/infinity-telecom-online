@@ -288,3 +288,107 @@ body.light-theme .successDone{
   .digitBox{height:62px;font-size:32px}
   body.light-theme .inputColumn+.inputColumn{border-left:0}
 }
+
+/* =========================================================
+   V3.1 FULL-SCREEN PREVIEW MODE
+   Preview occupies one complete monitor-height section.
+   Existing Firebase, Telegram, History and customer logic unchanged.
+   ========================================================= */
+
+/* Keep the data-entry area clean and compact. */
+.inputPanel{
+  grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);
+  align-items:end;
+  padding:12px 18px;
+  gap:20px;
+}
+.serviceColumn{display:none!important}
+.inputColumn+.inputColumn{padding-left:20px}
+.field{height:44px}
+.amountPills{margin-top:7px}
+.pill{height:32px}
+.inputHelp{margin-top:6px}
+
+/* One full screen is reserved for the customer preview. */
+.previewPanel{
+  min-height:calc(100vh - 24px)!important;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:30px 34px 28px;
+  margin-top:16px;
+  scroll-snap-align:start;
+  scroll-margin-top:12px;
+}
+.rightTitle{
+  font-size:clamp(13px,1vw,18px);
+  margin-bottom:clamp(10px,2vh,24px);
+}
+.bigNumber{
+  font-size:clamp(112px,10.8vw,220px)!important;
+  line-height:.92;
+  margin:clamp(8px,2vh,24px) 0 clamp(26px,4vh,52px);
+  white-space:nowrap;
+}
+.groups{
+  grid-template-columns:1.3fr repeat(4,1fr);
+  gap:clamp(10px,1.15vw,20px);
+}
+.digitBox{
+  height:clamp(105px,13vh,150px)!important;
+  font-size:clamp(54px,4.5vw,88px)!important;
+  border-radius:16px;
+}
+.summary{
+  margin-top:clamp(14px,2.5vh,28px);
+  gap:clamp(10px,1vw,18px);
+}
+.summaryCard{
+  min-height:clamp(78px,9vh,108px)!important;
+  padding:14px 22px;
+  border-radius:14px;
+}
+.summaryIcon{
+  width:46px;
+  height:46px;
+  border-radius:12px;
+  font-size:20px;
+}
+.summaryLabel{font-size:11px}
+.summaryValue{font-size:clamp(17px,1.3vw,24px)}
+
+/* Everything below the preview remains available by scrolling. */
+.services{margin-top:18px}
+.dashboardGrid{margin-top:16px}
+html{scroll-snap-type:y proximity}
+
+@media (min-width:1600px){
+  .previewPanel{min-height:calc(100vh - 26px)!important;padding:34px 42px 32px}
+  .bigNumber{font-size:clamp(145px,11vw,235px)!important}
+  .digitBox{height:clamp(120px,14vh,165px)!important}
+}
+
+@media (max-height:850px) and (min-width:901px){
+  .previewPanel{min-height:calc(100vh - 18px)!important;padding:20px 26px}
+  .bigNumber{font-size:clamp(96px,9vw,170px)!important;margin:8px 0 22px}
+  .digitBox{height:96px!important;font-size:52px!important}
+  .summaryCard{min-height:68px!important}
+}
+
+@media(max-width:1100px){
+  .inputPanel{grid-template-columns:1fr 1fr}
+  .previewPanel{min-height:calc(100vh - 20px)!important}
+  .bigNumber{font-size:clamp(68px,11vw,132px)!important}
+  .digitBox{height:82px!important;font-size:42px!important}
+}
+
+@media(max-width:700px){
+  html{scroll-snap-type:none}
+  .inputPanel{grid-template-columns:1fr}
+  .inputColumn+.inputColumn{padding-left:0}
+  .previewPanel{min-height:calc(100vh - 20px)!important;padding:24px 12px}
+  .bigNumber{font-size:clamp(48px,13vw,84px)!important;white-space:normal}
+  .groups{gap:5px}
+  .digitBox{height:68px!important;font-size:32px!important}
+  .summary{grid-template-columns:1fr}
+}
