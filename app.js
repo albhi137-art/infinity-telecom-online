@@ -40,6 +40,24 @@ const loginSubmit=document.getElementById('loginSubmit');
 const registerSubmit=document.getElementById('registerSubmit');
 const cloudSync=document.getElementById('cloudSync');
 
+const themeButton=document.getElementById('themeButton');
+
+function applyTheme(theme){
+  const isLight=theme==='light';
+  document.body.classList.toggle('light-theme',isLight);
+  themeButton.textContent=isLight?'🌙 Dark':'☀️ Light';
+  themeButton.setAttribute('aria-label',isLight?'Dark theme চালু করুন':'Light theme চালু করুন');
+}
+
+applyTheme(localStorage.getItem('infinityTheme')||'dark');
+
+themeButton.addEventListener('click',()=>{
+  const nextTheme=document.body.classList.contains('light-theme')?'dark':'light';
+  localStorage.setItem('infinityTheme',nextTheme);
+  applyTheme(nextTheme);
+});
+
+
 function setCloud(text,state='ok'){
   cloudSync.textContent=text;
   cloudSync.className='cloudSync'+(state==='busy'?' busy':state==='error'?' error':'');
@@ -284,6 +302,71 @@ function renderCustomerHistory(){
     </div>`).join('');
   historyEmpty.style.display='none';historyResult.classList.add('show');
 }
+
+
+const customersOverlay=document.getElementById('customersOverlay');
+const customersSearch=document.getElementById('customersSearch');
+const customersListEl=document.getElementById('customersList');
+const customersCount=document.getElementById('customersCount');
+
+function customerRows(){
+  const map=new Map();
+  for(const x of transactionHistory){
+    if(!x.number) continue;
+    const old=map.get(x.number)||{number:x.number,count:0,total:0,last:null,lastAmount:0,lastService:'—'};
+    old.count+=1;
+    old.total+=Number(x.amount||0);
+    if(!old.last || new Date(x.timestamp)>new Date(old.last)){
+      old.last=x.timestamp; old.lastAmount=Number(x.amount||0); old.lastService=x.service||'—';
+    }
+    map.set(x.number,old);
+  }
+  for(const n of historyList){
+    if(!map.has(n)) map.set(n,{number:n,count:0,total:0,last:null,lastAmount:0,lastService:'—'});
+  }
+  return [...map.values()].sort((a,b)=>{
+    const ad=a.last?new Date(a.last).getTime():0, bd=b.last?new Date(b.last).getTime():0;
+    return bd-ad || b.count-a.count;
+  });
+}
+function formatCustomerLast(iso){
+  if(!iso)return 'কোনো সময় নেই';
+  const d=new Date(iso);
+  return d.toLocaleDateString('en-GB')+' • '+d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+}
+function renderAllCustomers(){
+  const q=customersSearch.value.replace(/\D/g,'').slice(0,11);
+  customersSearch.value=q;
+  const rows=customerRows().filter(x=>!q||x.number.includes(q));
+  customersCount.textContent=rows.length+' customer';
+  if(!rows.length){customersListEl.innerHTML='<div class="historyNoMatch">কোনো নাম্বার পাওয়া যায়নি।</div>';return}
+  customersListEl.innerHTML=rows.map(x=>`
+    <button class="customerCard" data-number="${x.number}" data-amount="${x.lastAmount||''}">
+      <div class="customerPhone">${x.number}</div>
+      <div class="customerAmount">৳${Number(x.lastAmount||0).toLocaleString('en-BD')}</div>
+      <div class="customerMeta">${x.lastService} • ${x.count} বার</div>
+      <div class="customerTime">${formatCustomerLast(x.last)}</div>
+      <div class="customerUse">ক্লিক করলে নাম্বার বসবে</div>
+    </button>`).join('');
+}
+function openCustomers(){
+  customersOverlay.classList.add('show');
+  customersSearch.value='';
+  renderAllCustomers();
+  setTimeout(()=>customersSearch.focus(),80);
+}
+function closeCustomers(){customersOverlay.classList.remove('show')}
+document.getElementById('customersButton').addEventListener('click',openCustomers);
+document.getElementById('customersClose').addEventListener('click',closeCustomers);
+customersOverlay.addEventListener('click',e=>{if(e.target===customersOverlay)closeCustomers()});
+customersSearch.addEventListener('input',renderAllCustomers);
+customersListEl.addEventListener('click',e=>{
+  const card=e.target.closest('.customerCard'); if(!card)return;
+  numberInput.value=card.dataset.number;
+  if(card.dataset.amount) amountInput.value=card.dataset.amount;
+  updatePreview(); updateAmount(); closeCustomers(); numberInput.focus();
+});
+
 document.getElementById('historyButton').addEventListener('click',openHistory);
 document.getElementById('historyClose').addEventListener('click',closeHistory);
 historyOverlay.addEventListener('click',e=>{if(e.target===historyOverlay)closeHistory()});
@@ -315,6 +398,7 @@ function closeSuccessPopup(){
 document.getElementById('successDone').addEventListener('click',closeSuccessPopup);
 document.getElementById('successOverlay').addEventListener('click',e=>{if(e.target.id==='successOverlay')closeSuccessPopup()});
 document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&customersOverlay.classList.contains('show')){closeCustomers();return}
   if(e.key==='Escape'&&historyOverlay.classList.contains('show')){closeHistory();return}
   if(e.key==='Escape'&&document.getElementById('successOverlay').classList.contains('show'))closeSuccessPopup();
 });

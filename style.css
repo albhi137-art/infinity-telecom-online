@@ -655,3 +655,244 @@ body{
   .userArea span{display:none}
   .loginCard{padding:23px}
 }
+
+
+/* ===== All Customers ===== */
+.topActions{margin-left:auto;margin-right:112px;display:flex;gap:9px;align-items:center}
+.topActions .historyButton{margin:0}
+.customersButton{border:1px solid #315a8c;background:#10243d;color:#dbeafe;height:34px;padding:0 13px;border-radius:10px;font-size:13px;font-weight:850;cursor:pointer;transition:.18s}
+.customersButton:hover{background:#17365c;border-color:#60a5fa;transform:translateY(-1px)}
+.customersOverlay{position:fixed;inset:0;z-index:1250;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(2,6,23,.84);backdrop-filter:blur(8px)}
+.customersOverlay.show{display:flex}
+.customersModal{width:min(900px,96vw);max-height:92vh;overflow:hidden;background:linear-gradient(180deg,#111f35,#0a1322);border:1px solid #315176;border-radius:24px;box-shadow:0 35px 100px rgba(0,0,0,.62);animation:historyPop .25s ease}
+.customersCount{padding:0 22px 10px;color:#8db7e8;font-size:13px}
+.customersList{max-height:62vh;overflow:auto;padding:0 20px 20px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.customerCard{position:relative;text-align:left;border:1px solid #315176;background:#0f2038;color:#fff;border-radius:15px;padding:15px 16px;cursor:pointer;transition:.18s;display:grid;grid-template-columns:1fr auto;gap:5px 12px}
+.customerCard:hover{transform:translateY(-2px);border-color:#60a5fa;background:#132a48}
+.customerPhone{font-size:19px;font-weight:900;letter-spacing:.5px}
+.customerAmount{font-size:19px;font-weight:950;color:#f8fafc}
+.customerMeta{color:#8db7e8;font-size:14px}
+.customerTime{color:#7693b7;font-size:13px;text-align:right}
+.customerUse{grid-column:1/-1;color:#4ade80;font-size:11px;margin-top:6px;border-top:1px solid #294766;padding-top:8px}
+@media(max-width:760px){.topActions{margin-right:0;gap:6px}.customersButton,.topActions .historyButton{height:32px;padding:0 9px;font-size:11px}.customersList{grid-template-columns:1fr}.customerPhone,.customerAmount{font-size:17px}}
+
+
+/* ===== Dark / Light Theme Switch ===== */
+.themeButton{
+  border:1px solid #52657f;
+  background:#17243a;
+  color:#f8fafc;
+  height:34px;
+  padding:0 13px;
+  border-radius:10px;
+  font-size:13px;
+  font-weight:850;
+  cursor:pointer;
+  transition:.18s;
+}
+.themeButton:hover{
+  transform:translateY(-1px);
+  border-color:#93c5fd;
+  background:#20314d;
+}
+
+body,
+.app,
+.left,.right,
+.field,.pill,.service,
+.summaryCard,.digitBox,
+.loginOverlay,.loginCard,
+.customersOverlay,.customersModal,.customerCard,
+.historyOverlay,.historyModal,.historyItem{
+  transition:background-color .25s ease,border-color .25s ease,color .25s ease,box-shadow .25s ease;
+}
+
+body.light-theme{
+  --bg:#eef4fb;
+  --panel:#ffffff;
+  --panel2:#f6f9fd;
+  --line:#cbd8e8;
+  --muted:#526b89;
+  --text:#10213a;
+  background:
+    radial-gradient(circle at top left,#dbeafe 0,transparent 34%),
+    linear-gradient(135deg,#eef5fc,#f8fbff);
+  color:#10213a;
+}
+body.light-theme .app{
+  background:#ffffff;
+  border-color:#cbd8e8;
+  box-shadow:0 25px 70px rgba(42,72,110,.18);
+}
+body.light-theme .top{color:#10213a}
+body.light-theme .top::after{
+  color:#16803a;
+  border-color:#86d6a1;
+  background:#eaf9ef;
+}
+body.light-theme .left{
+  background:#ffffff;
+  border-color:#cfdaea;
+}
+body.light-theme .right{
+  background:#f7fbff;
+  border-color:#6fc68a;
+  box-shadow:inset 0 0 0 1px rgba(34,197,94,.07);
+}
+body.light-theme .label,
+body.light-theme .rightTitle,
+body.light-theme .summaryLabel,
+body.light-theme .hint{
+  color:#476887;
+}
+body.light-theme .field{
+  background:#f7faff;
+  border-color:#b9cbe0;
+}
+body.light-theme .field input{
+  color:#10213a;
+}
+body.light-theme .field input::placeholder{
+  color:#8094ac;
+}
+body.light-theme .amountPrefix{color:#526b89}
+body.light-theme .pill{
+  background:#f3f7fc;
+  border-color:#c3d0e0;
+  color:#233c5a;
+}
+body.light-theme .pill:hover,
+body.light-theme .pill.active{
+  border-color:#22a552;
+  background:#e7f8ed;
+  color:#117334;
+}
+body.light-theme .digitBox{
+  background:#ffffff;
+  border-color:#c7d7e8;
+  color:#2866a5;
+  box-shadow:0 8px 22px rgba(42,72,110,.08);
+}
+body.light-theme .summary{
+  border-top-color:#d4dfeb;
+}
+body.light-theme .summaryCard{
+  background:#ffffff;
+  border-color:#cbd8e8;
+}
+body.light-theme .summaryValue{
+  color:#10213a;
+}
+body.light-theme .service{
+  color:#ffffff;
+}
+body.light-theme .suggestions{
+  border-color:#cbd8e8;
+  box-shadow:0 18px 40px rgba(42,72,110,.18);
+}
+body.light-theme .historyButton,
+body.light-theme .customersButton,
+body.light-theme .themeButton,
+body.light-theme .userArea button{
+  background:#eef4fb;
+  border-color:#b8c9dc;
+  color:#193553;
+}
+body.light-theme .historyButton:hover,
+body.light-theme .customersButton:hover,
+body.light-theme .themeButton:hover,
+body.light-theme .userArea button:hover{
+  background:#dfeaf6;
+  border-color:#77a4d2;
+}
+body.light-theme .userArea{
+  color:#365d84;
+}
+body.light-theme .cloudSync{
+  background:#eaf9ef;
+  border-color:#8bd2a2;
+  color:#16803a;
+}
+body.light-theme .cloudSync.busy{
+  background:#fff8dd;
+  border-color:#e7c85d;
+  color:#8a6500;
+}
+body.light-theme .cloudSync.error{
+  background:#fff0f1;
+  border-color:#e6a6ac;
+  color:#b4232d;
+}
+
+/* Login screen in Light Theme */
+body.light-theme .loginOverlay{
+  background:
+    radial-gradient(circle at 50% 0,#d9eaff 0,transparent 42%),
+    linear-gradient(180deg,#eef6ff,#f9fcff);
+}
+body.light-theme .loginCard{
+  background:linear-gradient(180deg,#ffffff,#f6f9fd);
+  border-color:#bdd0e5;
+  box-shadow:0 30px 80px rgba(42,72,110,.20);
+}
+body.light-theme .loginCard h1{color:#10213a}
+body.light-theme .loginCard>p,
+body.light-theme .loginCard small{color:#597491}
+body.light-theme .loginCard label{color:#365d84}
+body.light-theme .loginCard input{
+  background:#ffffff;
+  border-color:#bdcee0;
+  color:#10213a;
+}
+body.light-theme .registerSubmit{
+  background:#edf4fb;
+  border-color:#b9cbe0;
+  color:#214d78;
+}
+
+/* Customers / History popup in Light Theme */
+body.light-theme .customersOverlay,
+body.light-theme .historyOverlay,
+body.light-theme .successOverlay{
+  background:rgba(219,232,246,.76);
+}
+body.light-theme .customersModal,
+body.light-theme .historyModal{
+  background:linear-gradient(180deg,#ffffff,#f4f8fc);
+  border-color:#bdd0e5;
+  box-shadow:0 30px 85px rgba(42,72,110,.24);
+  color:#10213a;
+}
+body.light-theme .customersModal h2,
+body.light-theme .historyModal h2{
+  color:#10213a;
+}
+body.light-theme .customersCount,
+body.light-theme .customerMeta,
+body.light-theme .customerTime,
+body.light-theme .historyMeta,
+body.light-theme .historyMeta span{
+  color:#56718e;
+}
+body.light-theme .customerCard,
+body.light-theme .historyItem{
+  background:#ffffff;
+  border-color:#c4d3e3;
+  color:#10213a;
+}
+body.light-theme .customerCard:hover,
+body.light-theme .historyItem:hover{
+  background:#eef6ff;
+  border-color:#6fa3d7;
+}
+body.light-theme .customerAmount{color:#10213a}
+body.light-theme .customerUse{border-top-color:#d5e0eb;color:#16803a}
+body.light-theme .historyAmount{color:#16803a}
+
+@media(max-width:760px){
+  .themeButton{
+    height:32px;
+    padding:0 9px;
+    font-size:11px;
+  }
+}

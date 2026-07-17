@@ -1,29 +1,15 @@
-# Infinity Telecom Online
+# Infinity Telecom — Theme + All Numbers
 
-## Render সেটিং
+এই আপডেটে যোগ করা হয়েছে:
 
-Build Command:
-npm install
+- ☀️ Light Theme / 🌙 Dark Theme
+- Theme পছন্দ Browser-এ Save থাকবে
+- 📋 All Numbers বাটন
+- সব সেভ করা Customer Number দেখা
+- Search
+- শেষ Amount
+- মোট ব্যবহারের সংখ্যা
+- Number-এ ক্লিক করলে Number ও Amount অটো পূরণ
 
-Start Command:
-npm start
-
-Environment Variables:
-TELEGRAM_BOT_TOKEN = আপনার Telegram bot token
-TELEGRAM_CHAT_ID = আপনার Telegram chat ID
-
-## Firebase
-
-Firestore Rules ট্যাবে `firestore-rules.txt` ফাইলের কোড Publish করুন।
-
-## GitHub-এ যেসব ফাইল আপলোড করবেন
-
-- index.html
-- style.css
-- app.js
-- firebase-config.js
-- server.js
-- package.json
-- firestore-rules.txt
-
-সব ফাইল একই জায়গায় রাখবেন।
+চালানোর নিয়ম:
+ফাইলগুলো আপনার GitHub repository folder-এ Replace করুন, GitHub Desktop থেকে Commit এবং Push করুন। Render স্বয়ংক্রিয়ভাবে Deploy করবে।

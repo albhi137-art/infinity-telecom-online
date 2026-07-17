@@ -25,7 +25,7 @@
 </div>
 <div class="offline" id="offline">OFFLINE</div>
 <main class="app">
-<div class="top"><span class="bolt">ϟ</span> Infinity Telecom<button class="historyButton" id="historyButton">🕘 History</button>
+<div class="top"><span class="bolt">ϟ</span> Infinity Telecom<div class="topActions"><button class="historyButton" id="historyButton">🕘 History</button><button class="customersButton" id="customersButton">📋 All Numbers</button><button class="themeButton" id="themeButton" type="button">☀️ Light</button></div>
 <div class="userArea" id="userArea">
 <span id="userEmail"></span>
 <button id="logoutButton">Logout</button>
@@ -108,6 +108,18 @@
 </div>
 <div class="historyList" id="historyList"></div>
 </div>
+</div>
+</div>
+
+<div class="customersOverlay" id="customersOverlay">
+<div aria-labelledby="customersTitle" aria-modal="true" class="customersModal" role="dialog">
+<div class="historyHeader">
+<div><h2 id="customersTitle">All Customers</h2><p>সব সেভ করা নাম্বার, শেষ Amount এবং মোট ব্যবহার</p></div>
+<button aria-label="Close" class="historyClose" id="customersClose">×</button>
+</div>
+<div class="historySearchWrap"><span>🔎</span><input id="customersSearch" inputmode="numeric" maxlength="11" placeholder="Search number..."/></div>
+<div class="customersCount" id="customersCount">0 customer</div>
+<div class="customersList" id="customersList"></div>
 </div>
 </div>
 <script src="app.js" type="module"></script></body>
