@@ -1,0 +1,16 @@
+{
+  "name": "infinity-telecom-online",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Infinity Telecom online recharge history and Firebase login system",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
