@@ -896,3 +896,153 @@ body.light-theme .historyAmount{color:#16803a}
     font-size:11px;
   }
 }
+
+/* ===== 27-inch Full Screen Professional Layout =====
+   Visual-only update: existing functions, IDs and JavaScript stay unchanged. */
+@media (min-width: 1100px){
+  html,body{width:100%;min-height:100%;}
+  body{
+    min-height:100vh;
+    align-items:stretch;
+    justify-content:stretch;
+    padding:14px;
+    overflow-x:hidden;
+  }
+  .app{
+    width:100%;
+    max-width:none;
+    min-height:calc(100vh - 28px);
+    margin:0;
+    padding:18px 22px 16px;
+    border-radius:22px;
+    display:flex;
+    flex-direction:column;
+    background:
+      radial-gradient(circle at 12% 0,rgba(37,99,235,.09),transparent 26%),
+      linear-gradient(180deg,#0b1424,#08111f);
+  }
+  .top{
+    min-height:64px;
+    margin:0 0 14px;
+    padding:0 4px 14px;
+    border-bottom:1px solid rgba(125,162,205,.18);
+    display:flex;
+    align-items:center;
+    gap:12px;
+    white-space:nowrap;
+    font-size:25px;
+  }
+  .bolt{margin-right:0}
+  .topActions{
+    margin-left:auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
+  }
+  .historyButton,.customersButton,.themeButton{
+    margin:0 !important;
+    min-width:118px;
+    height:38px;
+    padding:0 15px;
+    border-radius:11px;
+    font-size:13px;
+    box-shadow:0 7px 20px rgba(0,0,0,.14);
+  }
+  .userArea{
+    margin-left:14px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    min-width:245px;
+    justify-content:flex-end;
+  }
+  .userArea span{
+    max-width:185px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .userArea button{height:38px;padding:0 14px}
+  .top::after{
+    margin-left:8px;
+    min-width:86px;
+    text-align:center;
+    padding:8px 12px;
+  }
+  .layout{
+    display:grid;
+    grid-template-columns:minmax(430px,34%) minmax(0,66%);
+    gap:14px;
+    flex:1;
+    min-height:0;
+  }
+  .left{
+    grid-template-columns:minmax(0,1.55fr) minmax(260px,.85fr);
+    align-content:start;
+    padding:15px;
+    gap:9px 14px;
+    border-radius:17px;
+  }
+  .field{height:48px}
+  .field input{font-size:19px}
+  .amountPills{gap:7px}
+  .pill{padding:7px 12px}
+  .right{
+    margin-top:0;
+    min-height:0;
+    height:100%;
+    padding:20px 24px 18px;
+    border-radius:19px;
+  }
+  .rightTitle{margin-bottom:8px}
+  .bigNumber{
+    font-size:clamp(68px,7.2vw,128px);
+    margin:8px 0 18px;
+    line-height:1.05;
+  }
+  .groups{gap:12px}
+  .digitBox{
+    height:clamp(100px,15vh,150px);
+    font-size:clamp(42px,4vw,62px);
+  }
+  .summary{margin-top:15px}
+  .hint{margin-top:11px}
+  .services{
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:12px;
+    margin-top:14px;
+  }
+  .service{
+    height:84px;
+    min-height:84px;
+    font-size:16px;
+    border-radius:15px;
+  }
+  .logoBox{width:46px;height:46px}
+  .cloudSync{right:20px;bottom:18px}
+}
+
+/* Extra room for common 27-inch 1920×1080 viewports */
+@media (min-width: 1500px) and (min-height: 820px){
+  body{padding:16px}
+  .app{min-height:calc(100vh - 32px);padding:20px 26px 18px}
+  .top{min-height:68px;font-size:27px}
+  .historyButton,.customersButton,.themeButton{min-width:128px;height:40px;font-size:14px}
+  .layout{grid-template-columns:minmax(520px,35%) minmax(0,65%);gap:17px}
+  .left{padding:17px}
+  .right{padding:24px 30px 20px}
+  .field{height:51px}
+  .bigNumber{font-size:clamp(82px,7.5vw,142px);margin:12px 0 22px}
+  .digitBox{height:clamp(118px,16vh,162px)}
+  .services{gap:14px;margin-top:16px}
+  .service{height:90px;min-height:90px}
+}
+
+/* Keep the header clean if browser zoom or window width is smaller */
+@media (min-width:1100px) and (max-width:1320px){
+  .top{font-size:22px}
+  .historyButton,.customersButton,.themeButton{min-width:auto;padding:0 11px}
+  .userArea{min-width:auto;margin-left:5px}
+  .userArea span{max-width:125px}
+  .layout{grid-template-columns:minmax(390px,39%) minmax(0,61%)}
+}

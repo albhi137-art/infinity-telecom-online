@@ -1,15 +1,12 @@
-# Infinity Telecom — Theme + All Numbers
+# Infinity Telecom — 27-inch Full Screen UI
 
-এই আপডেটে যোগ করা হয়েছে:
+এই সংস্করণে শুধু UI layout উন্নত করা হয়েছে। আগের JavaScript, Firebase, Telegram, Login, History, All Numbers এবং Theme ফাংশন পরিবর্তন করা হয়নি।
 
-- ☀️ Light Theme / 🌙 Dark Theme
-- Theme পছন্দ Browser-এ Save থাকবে
-- 📋 All Numbers বাটন
-- সব সেভ করা Customer Number দেখা
-- Search
-- শেষ Amount
-- মোট ব্যবহারের সংখ্যা
-- Number-এ ক্লিক করলে Number ও Amount অটো পূরণ
+উন্নতি:
+- 27-inch / 1920×1080 মনিটরে প্রায় পুরো স্ক্রিন ব্যবহার করবে
+- দুই পাশের অপ্রয়োজনীয় ফাঁকা জায়গা দূর করা হয়েছে
+- উপরের History, All Numbers, Theme, Email, Logout ও Online অংশ সুন্দরভাবে সাজানো হয়েছে
+- Number form, preview ও service buttons বড় স্ক্রিন অনুযায়ী responsive করা হয়েছে
+- Dark ও Light theme দুটোই থাকবে
 
-চালানোর নিয়ম:
-ফাইলগুলো আপনার GitHub repository folder-এ Replace করুন, GitHub Desktop থেকে Commit এবং Push করুন। Render স্বয়ংক্রিয়ভাবে Deploy করবে।
+ফাইলগুলো GitHub repository-তে Replace করে Commit ও Push করুন।
