@@ -673,3 +673,18 @@ body.light-theme .suggestion.active{
 @media(max-width:700px){
   .suggestions{top:calc(100% + 8px)!important;max-height:250px}
 }
+
+
+/* V3.5 — Editable amount in preview */
+.summaryAmountCard{cursor:text;border-color:#285b88;transition:.18s ease}
+.summaryAmountCard:hover,.summaryAmountCard:focus-within{border-color:#4b9cff;box-shadow:0 0 0 3px rgba(53,137,255,.12),0 12px 28px rgba(0,0,0,.22);transform:translateY(-1px)}
+.summaryAmountContent{min-width:0;flex:1}
+.summaryAmountField{display:flex;align-items:center;gap:8px;margin-top:3px}
+.summaryAmountField>span{color:#d84dff;font-size:clamp(18px,1.35vw,25px);font-weight:950}
+.summaryAmountField input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:#f8fbff;font:inherit;font-size:clamp(18px,1.45vw,26px);font-weight:950;line-height:1.15;padding:2px 0}
+.summaryAmountField input::placeholder{color:#6f8aa7}
+.summaryAmountField input:disabled{cursor:not-allowed;opacity:.65}
+body.light-theme .summaryAmountCard{border-color:#b9cce1}
+body.light-theme .summaryAmountCard:hover,body.light-theme .summaryAmountCard:focus-within{border-color:#438be8;box-shadow:0 0 0 3px rgba(67,139,232,.12),0 12px 28px rgba(42,72,110,.12)}
+body.light-theme .summaryAmountField input{color:#10233f}
+body.light-theme .summaryAmountField>span{color:#6a4de8}

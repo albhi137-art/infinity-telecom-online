@@ -1,7 +1,3 @@
-# Infinity Telecom V3.4 — Fixed Suggestions
+# Infinity Telecom V3.5
 
-- Suggestion dropdown এখন Number box-এর পূর্ণ প্রস্থে দেখাবে।
-- Preview section আর dropdown ঢেকে রাখবে না।
-- প্রতিটি নাম্বার আলাদা পরিষ্কার row হিসেবে থাকবে।
-- Amount suggestion থাকবে না।
-- Dark ও Light theme দুটিতেই কাজ করবে।
+Preview-এর AMOUNT কার্ডে ক্লিক করে সরাসরি Amount লেখা বা পরিবর্তন করা যাবে। মূল Amount box, Quick Amount button এবং Preview Amount সবসময় Sync থাকবে।

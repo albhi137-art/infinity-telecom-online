@@ -16,6 +16,8 @@ const db=getFirestore(firebaseApp);
 
 const numberInput=document.getElementById('numberInput');
 const amountInput=document.getElementById('amountInput');
+const previewAmountInput=document.getElementById('previewAmountInput');
+const summaryAmountCard=document.getElementById('summaryAmountCard');
 const suggestions=document.getElementById('suggestions');
 const bigNumber=document.getElementById('bigNumber');
 const statusEl=document.getElementById('status');
@@ -218,16 +220,32 @@ numberInput.addEventListener('keydown',e=>{
 function paintActive(){[...suggestions.children].forEach((x,i)=>x.classList.toggle('active',i===activeIndex))}
 
 document.querySelectorAll('.pill').forEach(b=>b.addEventListener('click',()=>{
-  amountInput.value=b.dataset.amount;
-  document.querySelectorAll('.pill').forEach(x=>x.classList.remove('active'));
-  b.classList.add('active');updateAmount();
+  setAmount(b.dataset.amount);
 }));
-amountInput.addEventListener('input',()=>{
-  amountInput.value=amountInput.value.replace(/[^0-9.]/g,'');
-  document.querySelectorAll('.pill').forEach(x=>x.classList.remove('active'));
-  updateAmount();
+
+function cleanAmount(value){
+  let cleaned=String(value||'').replace(/[^0-9.]/g,'');
+  const firstDot=cleaned.indexOf('.');
+  if(firstDot!==-1){
+    cleaned=cleaned.slice(0,firstDot+1)+cleaned.slice(firstDot+1).replace(/\./g,'');
+  }
+  return cleaned.slice(0,10);
+}
+function setAmount(value,source='main'){
+  const cleaned=cleanAmount(value);
+  if(source!=='main') amountInput.value=cleaned;
+  if(source!=='preview') previewAmountInput.value=cleaned;
+  document.querySelectorAll('.pill').forEach(x=>x.classList.toggle('active',x.dataset.amount===cleaned));
+}
+amountInput.addEventListener('input',()=>setAmount(amountInput.value,'main'));
+previewAmountInput.addEventListener('input',()=>setAmount(previewAmountInput.value,'preview'));
+previewAmountInput.addEventListener('keydown',e=>{
+  if(e.key==='Enter'){e.preventDefault();numberInput.focus()}
 });
-function updateAmount(){document.getElementById('selectedAmount').textContent='৳'+(amountInput.value||'0.00')}
+summaryAmountCard.addEventListener('click',e=>{
+  if(e.target!==previewAmountInput) previewAmountInput.focus();
+});
+function updateAmount(){setAmount(amountInput.value)}
 
 document.querySelectorAll('.service').forEach(b=>b.addEventListener('click',async()=>{
   document.querySelectorAll('.service').forEach(x=>x.classList.remove('selected'));
@@ -370,7 +388,7 @@ customersSearch.addEventListener('input',renderAllCustomers);
 customersListEl.addEventListener('click',e=>{
   const card=e.target.closest('.customerCard'); if(!card)return;
   numberInput.value=card.dataset.number;
-  if(card.dataset.amount) amountInput.value=card.dataset.amount;
+  if(card.dataset.amount) setAmount(card.dataset.amount);
   updatePreview(); updateAmount(); closeCustomers(); numberInput.focus();
 });
 
@@ -397,7 +415,7 @@ function showSuccessPopup(n,amount,service){
 }
 function closeSuccessPopup(){
   document.getElementById('successOverlay').classList.remove('show');
-  numberInput.value='';amountInput.value='';
+  numberInput.value='';setAmount('');
   document.querySelectorAll('.pill').forEach(x=>x.classList.remove('active'));
   updatePreview();updateAmount();setStatus('',true);numberInput.focus();
 }
@@ -425,7 +443,7 @@ async function send(){
   const buttons=[...document.querySelectorAll('.service')];
   buttons.forEach(x=>x.disabled=true);
   numberInput.disabled=true;
-  amountInput.disabled=true;
+  amountInput.disabled=true;previewAmountInput.disabled=true;
   setStatus(`${selectedService} পাঠানো হচ্ছে...`,true);
   try{
     const r=await fetch('/api/send',{
@@ -451,7 +469,7 @@ async function send(){
     isSending=false;
     buttons.forEach(x=>x.disabled=false);
     numberInput.disabled=false;
-    amountInput.disabled=false;
+    amountInput.disabled=false;previewAmountInput.disabled=false;
   }
 }
 function setStatus(t,ok){statusEl.textContent=t;statusEl.style.color=ok?'#43d679':'#ff5b5b'}
