@@ -1,13 +1,14 @@
-# Infinity Telecom Final V4
+# Infinity Telecom Final V5 Smart
 
-এই Final Version-এ:
-- উপরের Amount quick buttons এবং Service box সরানো হয়েছে
-- নিচের বড় ৪টি Service button সরানো হয়েছে
-- Preview-এর Amount card সরাসরি edit করা যায়
-- Preview-এর Service card থেকে service নির্বাচন করা যায়
-- ১১ ডিজিট নাম্বার + Amount দিয়ে Enter চাপলে Telegram-এ send হয়
-- Professional full-width number suggestions
-- Dark mode-এ All Numbers ও History লেখা পরিষ্কার দেখা যায়
-- Professional Light/Dark theme
-- সতর্কতা বার যোগ করা হয়েছে
-- Firebase, Telegram, History, All Numbers এবং Cloud Sync আগের মতো রাখা হয়েছে
+Final V4-এর UI অপরিবর্তিত রেখে যোগ করা হয়েছে:
+
+- Customer Summary
+- Daily transaction count + amount
+- Telegram online/offline status
+- Offline Queue ও নেট এলে Auto Retry
+- Amount অনুযায়ী রঙ
+- Smart partial number search
+- Daily Telegram report (অ্যাপ খোলা থাকলে রাত ১২টার পর; বন্ধ থাকলে পরের login-এ আগের দিনের report)
+- Keyboard mode: F2 Number, F3 Amount, F4 Service, Service menu-তে 1-4, Enter Send
+
+Update: Extract করে GitHub repository folder-এ Replace → Commit → Push।
