@@ -1053,3 +1053,135 @@ body.light-theme .suggestionsManagerSearchWrap input{color:#10213a}
 .miniServiceIcon{width:30px!important;height:30px!important;flex-basis:30px!important}
 .logoBox,.serviceChoiceMenu button img{background:transparent!important;padding:0!important;border-radius:0!important;box-shadow:none!important;overflow:visible!important}
 @media(max-width:700px){.suggestionLogo{width:46px!important;height:46px!important;flex-basis:46px!important}.suggestion{min-height:72px!important;padding:8px 13px!important}.transactionLogo,.suggestionsManagerIcon{width:48px!important;height:48px!important;flex-basis:48px!important}.selectedServicePreviewIcon{width:54px!important;height:54px!important;flex-basis:54px!important}}
+
+/* ===== FINAL PROFESSIONAL SOFT-LIGHT THEME =====
+   Reduces pure-white glare while preserving the existing layout and functions. */
+body.light-theme{
+  --pro-bg:#e7edf5;
+  --pro-bg-deep:#dde6f1;
+  --pro-panel:#f2f6fb;
+  --pro-panel-2:#eaf1f8;
+  --pro-card:#edf3f9;
+  --pro-line:#bccbdd;
+  --pro-line-soft:#ced9e6;
+  --pro-text:#12243a;
+  --pro-muted:#60758d;
+  --pro-accent:#167fa8;
+  color:var(--pro-text);
+  background:
+    radial-gradient(circle at 8% -10%,rgba(91,103,216,.12),transparent 31%),
+    radial-gradient(circle at 90% 2%,rgba(18,143,177,.12),transparent 28%),
+    linear-gradient(145deg,var(--pro-bg) 0%,#edf2f8 48%,var(--pro-bg-deep) 100%)!important;
+}
+body.light-theme .topbar{
+  background:linear-gradient(135deg,rgba(244,248,252,.96),rgba(232,239,247,.94))!important;
+  border-color:#c1cfde!important;
+  box-shadow:0 12px 30px rgba(28,54,83,.11)!important;
+}
+body.light-theme .inputPanel,
+body.light-theme .dashCard{
+  background:linear-gradient(145deg,#eef4fa,#e7eef6)!important;
+  border-color:#c0cfdf!important;
+  box-shadow:0 14px 34px rgba(33,59,88,.10)!important;
+}
+body.light-theme .previewPanel{
+  background:
+    radial-gradient(circle at 50% 2%,rgba(25,145,181,.13),transparent 41%),
+    linear-gradient(145deg,#edf4fa 0%,#e3edf6 55%,#dce8f3 100%)!important;
+  border-color:#7fb5cf!important;
+  box-shadow:0 22px 48px rgba(31,72,101,.14),inset 0 0 55px rgba(28,127,164,.045)!important;
+}
+body.light-theme .field,
+body.light-theme .serviceDisplay,
+body.light-theme .globalSearch,
+body.light-theme .historySearchWrap{
+  background:#e8f0f7!important;
+  border-color:#b8c9da!important;
+  color:var(--pro-text)!important;
+  box-shadow:inset 0 1px 2px rgba(22,43,68,.045)!important;
+}
+body.light-theme .numberColumn .field{
+  background:linear-gradient(180deg,#edf7f3,#e4f1ec)!important;
+  border-color:#4aa57d!important;
+  box-shadow:0 0 0 3px rgba(38,157,108,.09),inset 0 1px 0 rgba(255,255,255,.45)!important;
+}
+body.light-theme .digitBox,
+body.light-theme .summaryCard,
+body.light-theme .historyStat,
+body.light-theme .customerCard,
+body.light-theme .historyItem{
+  background:linear-gradient(145deg,#edf3f8,#e4ecf4)!important;
+  border-color:#bccbdc!important;
+  box-shadow:0 9px 22px rgba(36,62,91,.085),inset 0 1px 0 rgba(255,255,255,.55)!important;
+}
+body.light-theme .digitBox{color:#17304c!important}
+body.light-theme .bigNumber{
+  color:#0f87ae!important;
+  text-shadow:0 7px 0 rgba(19,91,119,.11),0 11px 22px rgba(12,122,160,.19)!important;
+}
+body.light-theme .rightTitle,
+body.light-theme .label,
+body.light-theme .summaryLabel,
+body.light-theme .cardHead{color:#16799d!important}
+body.light-theme .field input,
+body.light-theme .globalSearch input,
+body.light-theme .historySearchWrap input,
+body.light-theme .summaryValue,
+body.light-theme .miniRow strong,
+body.light-theme .miniRow em{color:var(--pro-text)!important}
+body.light-theme .inputHelp,
+body.light-theme .miniRow span,
+body.light-theme .emptyMini,
+body.light-theme .statGrid small,
+body.light-theme .appFooter{color:var(--pro-muted)!important}
+body.light-theme .topActions button,
+body.light-theme .userArea button,
+body.light-theme .themeButton{
+  background:linear-gradient(145deg,#edf3f8,#e3ebf3)!important;
+  border-color:#b9c9da!important;
+  color:#18324d!important;
+  box-shadow:0 6px 14px rgba(32,58,87,.085)!important;
+}
+body.light-theme .topActions button:hover,
+body.light-theme .userArea button:hover,
+body.light-theme .themeButton:hover{
+  background:#dceaf5!important;
+  border-color:#70a6c7!important;
+}
+body.light-theme .suggestions{
+  background:#e7eff7!important;
+  border-color:#9fb7cd!important;
+  box-shadow:0 22px 48px rgba(31,58,86,.20)!important;
+}
+body.light-theme .suggestion{
+  color:#17304b!important;
+  border-bottom-color:#c7d5e2!important;
+  background:linear-gradient(180deg,#edf3f8,#e5edf5)!important;
+}
+body.light-theme .suggestion:hover,
+body.light-theme .suggestion.active{
+  background:linear-gradient(135deg,#d9eaf7,#dfe8fb)!important;
+}
+body.light-theme .historyOverlay,
+body.light-theme .customersOverlay,
+body.light-theme .successOverlay{
+  background:rgba(39,57,79,.48)!important;
+}
+body.light-theme .historyModal,
+body.light-theme .customersModal,
+body.light-theme .successCard{
+  background:linear-gradient(145deg,#edf3f8,#dfe8f1)!important;
+  border-color:#aabed1!important;
+  color:var(--pro-text)!important;
+  box-shadow:0 35px 90px rgba(21,42,65,.28)!important;
+}
+body.light-theme .historyClose{
+  background:#dfe9f2!important;
+  border-color:#aebfd0!important;
+}
+body.light-theme .historyClose:hover{background:#d2e2ee!important}
+body.light-theme .customerCard:hover,
+body.light-theme .historyItem:hover{
+  background:#dceaf5!important;
+  border-color:#79a8c6!important;
+}
