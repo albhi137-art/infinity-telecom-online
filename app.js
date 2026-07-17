@@ -229,6 +229,15 @@ suggestions.addEventListener('click',e=>{const b=e.target.closest('.suggestion')
 numberInput.addEventListener('input',updatePreview);
 numberInput.addEventListener('keydown',e=>{
   const visibleMatches=currentMatches;
+  const serviceShortcuts={m:'Mobile Recharge',r:'Rocket',b:'bKash',n:'Nagad'};
+  const shortcutService=serviceShortcuts[String(e.key||'').toLowerCase()];
+  const typedNumber=numberInput.value.replace(/\D/g,'');
+  if(shortcutService&&typedNumber.length>0){
+    e.preventDefault();
+    selectService(shortcutService);
+    setStatus(`${shortcutService} নির্বাচন করা হয়েছে`,true);
+    return;
+  }
   if(e.key==='ArrowDown'&&visibleMatches.length){e.preventDefault();activeIndex=Math.min(activeIndex+1,visibleMatches.length-1);paintActive()}
   else if(e.key==='ArrowUp'&&visibleMatches.length){e.preventDefault();activeIndex=Math.max(activeIndex-1,0);paintActive()}
   else if(e.key==='Enter'){
@@ -273,6 +282,13 @@ previewAmountInput.addEventListener('keydown',e=>{
   }
   if(e.key==='Escape'){previewAmountInput.value='';numberInput.focus()}
 });
+function selectService(service){
+  selectedService=service;
+  const selectedServiceEl=document.getElementById('selectedService');
+  if(selectedServiceEl)selectedServiceEl.textContent=selectedService;
+  refreshSelectedServiceIcons();
+  closeSummaryMenus();
+}
 function closeSummaryMenus(){
   serviceChoiceMenu?.classList.remove('show');
   summaryServiceCard?.setAttribute('aria-expanded','false');
@@ -289,10 +305,8 @@ summaryServiceCard?.addEventListener('click',e=>{
 summaryServiceCard?.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleServiceMenu()}});
 serviceChoiceMenu?.addEventListener('click',e=>{
   const b=e.target.closest('[data-preview-service]');if(!b)return;
-  selectedService=b.dataset.previewService;
-  document.getElementById('selectedService').textContent=selectedService;
-  refreshSelectedServiceIcons();
-  closeSummaryMenus();numberInput.focus();
+  selectService(b.dataset.previewService);
+  numberInput.focus();
 });
 document.addEventListener('click',e=>{if(!e.target.closest('#summaryServiceCard'))closeSummaryMenus()});
 function updateAmount(){setAmount(previewAmountInput.value)}
