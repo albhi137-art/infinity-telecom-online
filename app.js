@@ -209,11 +209,12 @@ function updateSuggestions(){
     .sort((a,b)=>Number(b.startsWith(q))-Number(a.startsWith(q)) || a.localeCompare(b));
   if(!currentMatches.length){hideSuggestions();return}
   activeIndex=0;
-  suggestions.innerHTML=currentMatches.slice(0,15).map((n,i)=>{
+  suggestions.innerHTML=currentMatches.map((n,i)=>{
     const rows=transactionHistory.filter(x=>x.number===n);
     const last=rows[0];
+    const operator=last?.operator||detectOperator(n);
     const meta=last?`শেষ ৳${Number(last.amount||0).toLocaleString('en-BD')} • ${rows.length} বার`:'Saved number';
-    return `<button class="suggestion${i===0?' active':''}" data-number="${n}"><span><strong>${n}</strong><small>${meta}</small></span><span>Enter</span></button>`;
+    return `<button class="suggestion${i===0?' active':''}" data-number="${n}"><span class="suggestionIdentity"><span class="suggestionLogo">${brandSvg('',operator)}</span><span><strong>${n}</strong><small>${meta}</small></span></span><span>Enter</span></button>`;
   }).join('');
   suggestions.classList.add('show');
 }
@@ -222,9 +223,9 @@ function chooseNumber(n){numberInput.value=n;updatePreview();hideSuggestions();n
 suggestions.addEventListener('click',e=>{const b=e.target.closest('.suggestion');if(b)chooseNumber(b.dataset.number)});
 numberInput.addEventListener('input',updatePreview);
 numberInput.addEventListener('keydown',e=>{
-  const visibleMatches=currentMatches.slice(0,15);
-  if(e.key==='ArrowDown'&&visibleMatches.length){e.preventDefault();activeIndex=(activeIndex+1)%visibleMatches.length;paintActive()}
-  else if(e.key==='ArrowUp'&&visibleMatches.length){e.preventDefault();activeIndex=(activeIndex-1+visibleMatches.length)%visibleMatches.length;paintActive()}
+  const visibleMatches=currentMatches;
+  if(e.key==='ArrowDown'&&visibleMatches.length){e.preventDefault();activeIndex=Math.min(activeIndex+1,visibleMatches.length-1);paintActive()}
+  else if(e.key==='ArrowUp'&&visibleMatches.length){e.preventDefault();activeIndex=Math.max(activeIndex-1,0);paintActive()}
   else if(e.key==='Enter'){
     e.preventDefault();
 
@@ -239,7 +240,7 @@ numberInput.addEventListener('keydown',e=>{
   }
   else if(e.key==='Escape'){numberInput.value='';updatePreview();hideSuggestions()}
 });
-function paintActive(){[...suggestions.children].forEach((x,i)=>x.classList.toggle('active',i===activeIndex))}
+function paintActive(){const items=[...suggestions.children];items.forEach((x,i)=>x.classList.toggle('active',i===activeIndex));items[activeIndex]?.scrollIntoView({block:'nearest',behavior:'smooth'})}
 
 function cleanAmount(value){
   let cleaned=String(value||'').replace(/[^0-9.]/g,'');
@@ -352,18 +353,20 @@ function formatHistoryDate(iso){
   return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})+' '+
     d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
 }
-function transactionLogo(service,operator){
+function brandSvg(service,operator){
   const text=String(service||operator||'').toLowerCase();
-  if(text.includes('bkash'))return 'b';
-  if(text.includes('nagad'))return 'N';
-  if(text.includes('rocket'))return 'R';
-  if(text.includes('grameen')||text.includes('gp'))return 'GP';
-  if(text.includes('robi'))return 'R';
-  if(text.includes('airtel'))return 'A';
-  if(text.includes('banglalink'))return 'BL';
-  if(text.includes('teletalk'))return 'T';
-  return '৳';
+  const svg=(body,label)=>`<svg class="brandSvg" viewBox="0 0 48 48" role="img" aria-label="${label}" xmlns="http://www.w3.org/2000/svg">${body}</svg>`;
+  if(text.includes('bkash'))return svg('<path fill="#E2136E" d="M7 8h23l11 8-12 5 8 9-14-4-7 14-2-17L7 8Z"/><path fill="#fff" d="m16 14 13 5-10 4-3-9Z"/>','bKash');
+  if(text.includes('nagad'))return svg('<circle cx="24" cy="24" r="21" fill="#F26522"/><path fill="#fff" d="M13 29c4-12 15-16 24-11-7 1-12 5-15 12 5-3 10-4 14-3-7 7-16 8-23 2Z"/>','Nagad');
+  if(text.includes('rocket'))return svg('<circle cx="24" cy="24" r="21" fill="#8B1E78"/><path fill="#fff" d="M16 35V13h10c8 0 12 4 12 10 0 5-3 8-8 9l8 3h-8l-8-7v7h-6Zm6-12h4c4 0 6-1 6-4 0-2-2-3-6-3h-4v7Z"/>','Rocket');
+  if(text.includes('grameen')||text.includes('gp'))return svg('<path fill="#16A4E0" d="M24 4c5 0 9 4 9 9 0 3-1 5-3 7 6 1 11 6 11 12 0 7-6 12-13 12-5 0-10-3-12-8-2 2-4 3-7 3-5 0-9-4-9-9 0-6 5-10 11-10h2c-1-2-1-4-1-6 0-6 5-10 12-10Z"/><circle cx="24" cy="24" r="6" fill="#fff"/>','Grameenphone');
+  if(text.includes('robi'))return svg('<circle cx="24" cy="24" r="21" fill="#E8242F"/><path fill="#fff" d="M12 31c4-11 12-17 25-17-8 4-13 9-16 16 5-3 10-4 15-3-6 6-15 8-24 4Z"/>','Robi');
+  if(text.includes('airtel'))return svg('<circle cx="24" cy="24" r="21" fill="#E51C23"/><path fill="#fff" d="M13 28c8-2 13-7 15-15 5 7 6 14 2 20-5 6-12 5-17-5Z"/>','Airtel');
+  if(text.includes('banglalink'))return svg('<rect x="5" y="5" width="38" height="38" rx="12" fill="#FF6B16"/><path fill="#fff" d="M15 34V14h9c7 0 11 3 11 8 0 3-2 5-5 6 4 1 6 3 6 6H15Zm6-12h4c3 0 4-1 4-3s-1-3-4-3h-4v6Zm0 8h5c3 0 5-1 5-3s-2-3-5-3h-5v6Z"/>','Banglalink');
+  if(text.includes('teletalk'))return svg('<circle cx="24" cy="24" r="21" fill="#69A83B"/><path fill="#fff" d="M12 13h24v6h-9v17h-6V19h-9v-6Z"/>','Teletalk');
+  return svg('<rect x="8" y="5" width="32" height="38" rx="7" fill="#345BFF"/><rect x="13" y="11" width="22" height="21" rx="3" fill="#fff"/><circle cx="24" cy="37" r="2.5" fill="#fff"/>','Mobile Recharge');
 }
+function transactionLogo(service,operator){return brandSvg(service,operator)}
 function transactionLogoClass(service,operator){
   const text=String(service||operator||'').toLowerCase();
   if(text.includes('bkash'))return 'bkash';
