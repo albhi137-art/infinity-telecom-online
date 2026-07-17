@@ -834,15 +834,7 @@ body.light-theme .customerCard,body.light-theme .historyItem,body.light-theme .h
 }
 
 
-/* ===== Final V5 Smart Features (UI preserved) ===== */
-.telegramStatus{display:inline-flex;align-items:center;justify-content:center;height:34px;padding:0 11px;border:1px solid #31506f;border-radius:9px;background:#0b1d31;color:#8faac4;font-size:10px;font-weight:900;letter-spacing:.45px;white-space:nowrap}
-.telegramStatus.online{color:#53df96;border-color:#277e55;background:rgba(14,86,55,.24)}
-.telegramStatus.offline{color:#ff8585;border-color:#8c3a47;background:rgba(105,28,42,.25)}
-.telegramStatus.checking{color:#f1c96b;border-color:#7b6630;background:rgba(103,79,18,.22)}
-body.light-theme .telegramStatus{background:#eef4fb;border-color:#b9cbe0;color:#536d86}
-body.light-theme .telegramStatus.online{background:#eaf9ef;border-color:#86d3a0;color:#16803a}
-body.light-theme .telegramStatus.offline{background:#fff0f1;border-color:#e6a6ac;color:#b4232d}
-
+/* Smart functions — existing layout unchanged */
 .customerSummary{display:none;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;width:100%;margin:16px 0 2px;padding:10px;border:1px solid #24486c;border-radius:13px;background:rgba(5,21,39,.72)}
 .customerSummary.show{display:grid}
 .customerSummary>div{min-height:58px;padding:10px 12px;border:1px solid #1d3c5d;border-radius:10px;background:rgba(8,29,51,.84)}
@@ -852,19 +844,13 @@ body.light-theme .customerSummary{background:#f4f8fd;border-color:#c5d8ea}
 body.light-theme .customerSummary>div{background:#fff;border-color:#d2e0ee}
 body.light-theme .customerSummary small{color:#627d98}
 body.light-theme .customerSummary strong{color:#132b45}
-
-.statGrid>div{position:relative}.statGrid i{display:block;margin-top:5px;color:#78a0c6;font-size:10px;font-style:normal;font-weight:800}
-.queueStatus{display:inline-flex;align-items:center;min-height:28px;padding:0 9px;border:1px solid #66552b;border-radius:8px;color:#eac96f;background:rgba(83,63,18,.25);font-size:11px;font-weight:850}
-.queueStatus.empty{border-color:#2b5f4b;color:#70d9a3;background:rgba(22,80,58,.20)}
-body.light-theme .queueStatus{background:#fff8dd;border-color:#e7c85d;color:#8a6500}
-body.light-theme .queueStatus.empty{background:#eaf9ef;border-color:#8bd2a2;color:#16803a}
-
-/* Amount color memory */
+.statGrid i{display:block;margin-top:5px;color:#78a0c6;font-size:10px;font-style:normal;font-weight:800}
+.onlineBadge.telegramOffline{color:#ff8585!important}
 .summaryAmountCard.amount-blue{border-color:#3c90e8!important;box-shadow:inset 0 3px 0 #3c90e8}
 .summaryAmountCard.amount-green{border-color:#35b979!important;box-shadow:inset 0 3px 0 #35b979}
 .summaryAmountCard.amount-purple{border-color:#9869ef!important;box-shadow:inset 0 3px 0 #9869ef}
 .summaryAmountCard.amount-orange{border-color:#ed9a3e!important;box-shadow:inset 0 3px 0 #ed9a3e}
 .summaryAmountCard.amount-pink{border-color:#ee5dab!important;box-shadow:inset 0 3px 0 #ee5dab}
 .summaryAmountCard.amount-custom{border-color:#4b759c!important;box-shadow:inset 0 3px 0 #4b759c}
-
-@media(max-width:900px){.customerSummary{grid-template-columns:repeat(2,1fr)}.telegramStatus{display:none}}
+.suggestion strong{display:block}.suggestion small{display:block;margin-top:3px;opacity:.7;font-size:10px}
+@media(max-width:900px){.customerSummary{grid-template-columns:repeat(2,1fr)}}

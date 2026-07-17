@@ -1,14 +1,15 @@
-# Infinity Telecom Final V5 Smart
+# Infinity Telecom — Smart Functions Edition
 
-Final V4-এর UI অপরিবর্তিত রেখে যোগ করা হয়েছে:
+এই সংস্করণটি Final V4-এর UI অপরিবর্তিত রেখে শুধু নির্বাচিত ফাংশন যোগ করে তৈরি করা হয়েছে।
 
+যোগ হয়েছে:
 - Customer Summary
-- Daily transaction count + amount
-- Telegram online/offline status
-- Offline Queue ও নেট এলে Auto Retry
-- Amount অনুযায়ী রঙ
-- Smart partial number search
-- Daily Telegram report (অ্যাপ খোলা থাকলে রাত ১২টার পর; বন্ধ থাকলে পরের login-এ আগের দিনের report)
-- Keyboard mode: F2 Number, F3 Amount, F4 Service, Service menu-তে 1-4, Enter Send
+- Daily Counter
+- Telegram Status
+- Offline Queue
+- Amount Color
+- Smart Search
+- Daily Telegram Report
+- Keyboard Mode (F2/F3/F4 এবং service menu-তে 1–4)
 
-Update: Extract করে GitHub repository folder-এ Replace → Commit → Push।
+আগের Firebase ও Render Environment Variables একই থাকবে।

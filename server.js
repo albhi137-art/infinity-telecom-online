@@ -54,4 +54,4 @@ app.post("/api/report",async(req,res)=>{
 });
 
 app.get("*", (_req, res) => res.sendFile(path.join(__dirname, "index.html")));
-app.listen(PORT, () => console.log(`Infinity Telecom V5 running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Infinity Telecom running on port ${PORT}`));

@@ -43,12 +43,11 @@ const loginMessage=document.getElementById('loginMessage');
 const loginSubmit=document.getElementById('loginSubmit');
 const registerSubmit=document.getElementById('registerSubmit');
 const cloudSync=document.getElementById('cloudSync');
-const telegramStatus=document.getElementById('telegramStatus');
-const queueStatus=document.getElementById('queueStatus');
-const customerSummary=document.getElementById('customerSummary');
-const OFFLINE_QUEUE_KEY='infinityOfflineQueueV5';
 
 const themeButton=document.getElementById('themeButton');
+const customerSummary=document.getElementById('customerSummary');
+const onlineBadge=document.querySelector('.onlineBadge');
+const OFFLINE_QUEUE_KEY='infinityOfflineQueueV5';
 
 function applyTheme(theme){
   const isLight=theme==='light';
@@ -210,9 +209,12 @@ function updateSuggestions(){
     .sort((a,b)=>Number(b.startsWith(q))-Number(a.startsWith(q)) || a.localeCompare(b));
   if(!currentMatches.length){hideSuggestions();return}
   activeIndex=0;
-  suggestions.innerHTML=currentMatches.slice(0,15).map((n,i)=>
-    `<button class="suggestion${i===0?' active':''}" data-number="${n}"><span>${n}</span><span>Enter</span></button>`
-  ).join('');
+  suggestions.innerHTML=currentMatches.slice(0,15).map((n,i)=>{
+    const rows=transactionHistory.filter(x=>x.number===n);
+    const last=rows[0];
+    const meta=last?`শেষ ৳${Number(last.amount||0).toLocaleString('en-BD')} • ${rows.length} বার`:'Saved number';
+    return `<button class="suggestion${i===0?' active':''}" data-number="${n}"><span><strong>${n}</strong><small>${meta}</small></span><span>Enter</span></button>`;
+  }).join('');
   suggestions.classList.add('show');
 }
 function hideSuggestions(){suggestions.classList.remove('show');suggestions.innerHTML='';currentMatches=[]}
@@ -225,10 +227,7 @@ numberInput.addEventListener('keydown',e=>{
   else if(e.key==='Enter'){
     e.preventDefault();
     const n=numberInput.value.replace(/\D/g,'');
-    if(n.length!==11){setStatus('সঠিক ১১ সংখ্যার মোবাইল নম্বর দিন',false);return}
-    hideSuggestions();
-    if(!Number(previewAmountInput.value||0)){previewAmountInput.focus();return}
-    send();
+    if(n.length===11){hideSuggestions();send()}
   }
   else if(e.key==='Escape'){numberInput.value='';updatePreview();hideSuggestions()}
 });
@@ -284,7 +283,6 @@ document.addEventListener('click',e=>{if(!e.target.closest('#summaryServiceCard'
 function updateAmount(){setAmount(previewAmountInput.value)}
 
 
-
 function relativeTime(iso){
   if(!iso)return '—';
   const diff=Math.max(0,Date.now()-new Date(iso).getTime());
@@ -292,23 +290,19 @@ function relativeTime(iso){
   if(min<1)return 'এইমাত্র';
   if(min<60)return `${min} মিনিট আগে`;
   const hour=Math.floor(min/60);if(hour<24)return `${hour} ঘণ্টা আগে`;
-  const day=Math.floor(hour/24);return `${day} দিন আগে`;
-}
-function getCustomerSummary(number){
-  const rows=transactionHistory.filter(x=>x.number===number).sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));
-  if(!rows.length)return null;
-  return {count:rows.length,last:rows[0]};
+  return `${Math.floor(hour/24)} দিন আগে`;
 }
 function updateCustomerSummary(){
   if(!customerSummary)return;
   const n=numberInput.value.replace(/\D/g,'');
-  const data=n.length>=3?getCustomerSummary(n):null;
-  customerSummary.classList.toggle('show',!!data);
-  if(!data)return;
-  document.getElementById('summaryVisits').textContent=data.count+' বার';
-  document.getElementById('summaryLastAmount').textContent=formatMoney(data.last.amount);
-  document.getElementById('summaryLastService').textContent=data.last.service||'—';
-  document.getElementById('summaryLastTime').textContent=relativeTime(data.last.timestamp);
+  const rows=n.length>=3?transactionHistory.filter(x=>x.number===n).sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp)):[];
+  customerSummary.classList.toggle('show',rows.length>0);
+  if(!rows.length)return;
+  const last=rows[0];
+  document.getElementById('summaryVisits').textContent=rows.length+' বার';
+  document.getElementById('summaryLastAmount').textContent=formatMoney(last.amount);
+  document.getElementById('summaryLastService').textContent=last.service||'—';
+  document.getElementById('summaryLastTime').textContent=relativeTime(last.timestamp);
 }
 
 async function saveTransaction(number,amount,service){
@@ -487,8 +481,7 @@ function messageText(n){
 }
 let isSending=false;
 function queueItems(){try{return JSON.parse(localStorage.getItem(OFFLINE_QUEUE_KEY)||'[]')}catch{return []}}
-function saveQueue(items){localStorage.setItem(OFFLINE_QUEUE_KEY,JSON.stringify(items));updateQueueStatus()}
-function updateQueueStatus(){const count=queueItems().length;queueStatus.textContent=`⏳ Queue: ${count}`;queueStatus.classList.toggle('empty',count===0)}
+function saveQueue(items){localStorage.setItem(OFFLINE_QUEUE_KEY,JSON.stringify(items))}
 function createPayload(n,amount,service){return {requestId:`${Date.now()}-${Math.random().toString(36).slice(2)}`,number:n,amount:Number(amount),service,message:messageText(n),queuedAt:new Date().toISOString()}}
 function addToOfflineQueue(payload){const items=queueItems();items.push(payload);saveQueue(items)}
 async function postTelegram(payload){
@@ -499,7 +492,7 @@ async function postTelegram(payload){
 }
 async function processOfflineQueue(){
   if(!navigator.onLine||isSending||!currentUser)return;
-  const items=queueItems();if(!items.length){updateQueueStatus();return}
+  const items=queueItems();if(!items.length)return;
   setStatus(`${items.length}টি অপেক্ষমাণ লেনদেন পাঠানো হচ্ছে...`,true);
   const remaining=[];
   for(const item of items){
@@ -571,19 +564,16 @@ document.getElementById('recentViewAll')?.addEventListener('click',openHistory);
 document.getElementById('topViewAll')?.addEventListener('click',openCustomers);
 
 
-/* ===== V5 Telegram status, daily report and keyboard-only mode ===== */
+/* Selected smart functions only — original UI preserved */
 async function checkTelegramStatus(){
-  if(!telegramStatus)return;
-  telegramStatus.className='telegramStatus checking';telegramStatus.textContent='● TELEGRAM CHECKING';
+  if(!onlineBadge)return;
+  onlineBadge.textContent='● CHECKING';
   try{
     const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),8000);
     const r=await fetch('/api/status',{cache:'no-store',signal:controller.signal});clearTimeout(timer);
-    const data=await r.json();
-    if(!r.ok||!data.ok)throw new Error(data.error||'Offline');
-    telegramStatus.className='telegramStatus online';telegramStatus.textContent='● TELEGRAM ONLINE';
-  }catch{
-    telegramStatus.className='telegramStatus offline';telegramStatus.textContent='● TELEGRAM OFFLINE';
-  }
+    const data=await r.json();if(!r.ok||!data.ok)throw new Error('Offline');
+    onlineBadge.textContent='● TELEGRAM ONLINE';onlineBadge.classList.remove('telegramOffline');
+  }catch{onlineBadge.textContent='● TELEGRAM OFFLINE';onlineBadge.classList.add('telegramOffline')}
 }
 function localDateKey(date){return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`}
 function reportForDate(date){
@@ -591,16 +581,15 @@ function reportForDate(date){
   const total=rows.reduce((s,x)=>s+Number(x.amount||0),0);const service={};
   rows.forEach(x=>{const k=x.service||'Unknown';service[k]=(service[k]||0)+1});
   const lines=Object.entries(service).map(([k,v])=>`${k}: ${v}`).join('\n')||'কোনো লেনদেন নেই';
-  return {count:rows.length,total,message:`📊 Infinity Telecom Daily Report\n\n📅 Date: ${date.toLocaleDateString('en-GB')}\n🧾 Total Transactions: ${rows.length}\n💰 Total Amount: ৳${total.toLocaleString('en-BD')}\n\n${lines}`};
+  return {message:`📊 Infinity Telecom Daily Report\n\n📅 Date: ${date.toLocaleDateString('en-GB')}\n🧾 Total Transactions: ${rows.length}\n💰 Total Amount: ৳${total.toLocaleString('en-BD')}\n\n${lines}`};
 }
 async function sendPendingDailyReport(){
   if(!currentUser||!navigator.onLine)return;
   const yesterday=new Date();yesterday.setDate(yesterday.getDate()-1);yesterday.setHours(12,0,0,0);
   const key=`dailyReport_${currentUser.uid}_${localDateKey(yesterday)}`;
   if(localStorage.getItem(key)==='sent')return;
-  const report=reportForDate(yesterday);
   try{
-    const r=await fetch('/api/report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(report)});
+    const r=await fetch('/api/report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(reportForDate(yesterday))});
     const data=await r.json();if(!r.ok||!data.ok)throw new Error(data.error||'Report failed');
     localStorage.setItem(key,'sent');
   }catch(e){console.error('Daily report pending',e)}
@@ -608,16 +597,13 @@ async function sendPendingDailyReport(){
 function msUntilNextMidnight(){const now=new Date(),next=new Date(now);next.setHours(24,0,5,0);return next-now}
 setTimeout(()=>{sendPendingDailyReport();setInterval(sendPendingDailyReport,24*60*60*1000)},msUntilNextMidnight());
 
-function focusAmount(){previewAmountInput.removeAttribute('aria-hidden');previewAmountInput.tabIndex=0;previewAmountInput.focus();previewAmountInput.select?.()}
-summaryAmountCard?.addEventListener('click',e=>{if(!e.target.closest('.summaryChoiceMenu'))focusAmount()});
 document.addEventListener('keydown',e=>{
   if(e.ctrlKey||e.metaKey||e.altKey)return;
   if(e.key==='F2'){e.preventDefault();numberInput.focus();numberInput.select()}
-  if(e.key==='F3'){e.preventDefault();focusAmount()}
+  if(e.key==='F3'){e.preventDefault();previewAmountInput.focus();previewAmountInput.select()}
   if(e.key==='F4'){e.preventDefault();toggleServiceMenu()}
   if(serviceChoiceMenu?.classList.contains('show')&&['1','2','3','4'].includes(e.key)){
     e.preventDefault();serviceChoiceMenu.querySelectorAll('[data-preview-service]')[Number(e.key)-1]?.click();
   }
 });
-
-updateQueueStatus();checkTelegramStatus();setInterval(checkTelegramStatus,45000);
+checkTelegramStatus();setInterval(checkTelegramStatus,45000);
