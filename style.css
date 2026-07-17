@@ -952,3 +952,9 @@ body.light-theme .colorResetButton{color:#17324f;background:rgba(var(--ui-accent
 .suggestionEnter{display:block!important;flex:0 0 auto!important;color:#8db7e4!important;font-size:11px!important;font-weight:800!important;position:static!important;margin-left:auto!important;opacity:1!important}
 body.light-theme .suggestionText small{color:#647d99!important}
 body.light-theme .suggestionEnter{color:#587795!important}
+
+/* Success popup language control */
+.successCard{position:relative}
+.successLanguageToggle{position:absolute;top:16px;right:16px;min-width:54px;height:34px;padding:0 12px;border:1px solid #315d89;border-radius:999px;background:#0c2540;color:#eef7ff;font-size:12px;font-weight:900;cursor:pointer;transition:.18s ease}
+.successLanguageToggle:hover{transform:translateY(-1px);border-color:#56a5ff;background:#123354}
+body.light-theme .successLanguageToggle{background:#eef6ff;color:#17324f;border-color:#aac8e6}

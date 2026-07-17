@@ -493,7 +493,24 @@ function detectOperator(n){
   if(p==='018')return 'Robi';
   return 'Unknown';
 }
+
+let successPopupLanguage='bn';
+function setSuccessPopupLanguage(language='bn'){
+  successPopupLanguage=language==='en'?'en':'bn';
+  const isBangla=successPopupLanguage==='bn';
+  document.getElementById('successTitle').textContent=isBangla?'লেনদেন সফল হয়েছে':'Transaction Successful';
+  document.getElementById('successText').textContent=isBangla?'আপনার অনুরোধটি সফলভাবে পাঠানো হয়েছে।':'Your request has been sent successfully.';
+  document.getElementById('successAmountLabel').textContent=isBangla?'পরিমাণ':'Amount';
+  document.getElementById('successGatewayLabel').textContent=isBangla?'গেটওয়ে':'Gateway';
+  document.getElementById('successDone').textContent=isBangla?'সম্পন্ন':'Done';
+  document.getElementById('successLanguageToggle').textContent=isBangla?'EN':'বাংলা';
+}
+document.getElementById('successLanguageToggle').addEventListener('click',()=>{
+  setSuccessPopupLanguage(successPopupLanguage==='bn'?'en':'bn');
+});
+
 function showSuccessPopup(n,amount,service){
+  setSuccessPopupLanguage('bn');
   document.getElementById('successNumber').textContent=n;
   document.getElementById('successAmount').textContent='৳'+amount;
   document.getElementById('successGateway').textContent=service;

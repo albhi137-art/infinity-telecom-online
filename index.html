@@ -88,13 +88,14 @@
 </main>
 <div class="successOverlay" id="successOverlay">
 <div aria-labelledby="successTitle" aria-modal="true" class="successCard" role="dialog">
+<button class="successLanguageToggle" id="successLanguageToggle" type="button" aria-label="Change language">EN</button>
 <div class="successIcon"><span>✓</span></div>
 <h2 class="successTitle" id="successTitle">লেনদেন সফল হয়েছে</h2>
-<div class="successText">আপনার রিচার্জ অনুরোধটি সফলভাবে পাঠানো হয়েছে।</div>
+<div class="successText" id="successText">আপনার অনুরোধটি সফলভাবে পাঠানো হয়েছে।</div>
 <div class="successNumber" id="successNumber">01XXXXXXXXX</div>
 <div class="successDetails">
-<div class="successRow"><span>Amount</span><strong id="successAmount">৳0</strong></div>
-<div class="successRow"><span>Gateway</span><strong id="successGateway">Mobile Recharge</strong></div>
+<div class="successRow"><span id="successAmountLabel">পরিমাণ</span><strong id="successAmount">৳0</strong></div>
+<div class="successRow"><span id="successGatewayLabel">গেটওয়ে</span><strong id="successGateway">Mobile Recharge</strong></div>
 </div>
 <button class="successDone" id="successDone">সম্পন্ন</button>
 </div>
