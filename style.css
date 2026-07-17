@@ -1036,3 +1036,20 @@ body.light-theme .suggestionsManagerIdentity span{color:#526d88}
 body.light-theme .suggestionsManagerSearchWrap{background:#f7faff;border-color:#b9cce1}
 body.light-theme .suggestionsManagerSearchWrap input{color:#10213a}
 @media(max-width:700px){.suggestionsManagerItem{align-items:flex-start;flex-direction:column}.suggestionsManagerActions{width:100%}.suggestionsManagerActions button{flex:1}}
+
+/* ===== Professional transparent brand marks (user supplied logos) ===== */
+.serviceBrandIcon{object-fit:contain!important;background:transparent!important;border:0!important;border-radius:0!important;padding:0!important;filter:drop-shadow(0 5px 9px rgba(0,0,0,.34))!important;transform:scale(1.18);transform-origin:center}
+.selectedServiceInputIcon,.selectedServicePreviewIcon,.customerServiceIcon,.successServiceIcon,.miniServiceIcon,.transactionLogo:has(.serviceBrandIcon){background:transparent!important;border-radius:0!important;padding:0!important;box-shadow:none!important;overflow:visible!important}
+.suggestionLogo{width:56px!important;height:56px!important;flex:0 0 56px!important;display:grid!important;place-items:center!important;overflow:visible!important}
+.suggestionLogo .serviceBrandIcon{transform:scale(1.28)}
+.suggestion{min-height:82px!important;padding:10px 20px!important}
+.suggestionIdentity{gap:20px!important}
+.transactionLogo{width:58px!important;height:58px!important;flex:0 0 58px!important;overflow:visible!important}
+.suggestionsManagerIcon{width:58px!important;height:58px!important;flex:0 0 58px!important;overflow:visible!important}
+.selectedServiceInputIcon{width:42px!important;height:42px!important;flex-basis:42px!important}
+.selectedServicePreviewIcon{width:72px!important;height:72px!important;flex-basis:72px!important}
+.customerServiceIcon{width:44px!important;height:44px!important;flex-basis:44px!important}
+.successServiceIcon{width:58px!important;height:58px!important;flex-basis:58px!important}
+.miniServiceIcon{width:30px!important;height:30px!important;flex-basis:30px!important}
+.logoBox,.serviceChoiceMenu button img{background:transparent!important;padding:0!important;border-radius:0!important;box-shadow:none!important;overflow:visible!important}
+@media(max-width:700px){.suggestionLogo{width:46px!important;height:46px!important;flex-basis:46px!important}.suggestion{min-height:72px!important;padding:8px 13px!important}.transactionLogo,.suggestionsManagerIcon{width:48px!important;height:48px!important;flex-basis:48px!important}.selectedServicePreviewIcon{width:54px!important;height:54px!important;flex-basis:54px!important}}
