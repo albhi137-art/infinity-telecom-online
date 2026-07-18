@@ -201,16 +201,16 @@ function updatePreview(){
   bigNumber.textContent=v||'01XXXXXXXXX';
   const p=[v.slice(0,3),v.slice(3,5),v.slice(5,7),v.slice(7,9),v.slice(9,11)];
   groupEls.forEach((e,i)=>e.textContent=p[i]);
-  update⚙️ Settings();
+  updateSuggestions();
   updateCustomerSummary();
 }
-function update⚙️ Settings(){
+function updateSuggestions(){
   const q=numberInput.value;
-  if(q.length<2){hide⚙️ Settings();return}
+  if(q.length<2){hideSuggestions();return}
   currentMatches=historyList
     .filter(n=>n!==q&&n.includes(q))
     .sort((a,b)=>Number(b.startsWith(q))-Number(a.startsWith(q)) || a.localeCompare(b));
-  if(!currentMatches.length){hide⚙️ Settings();return}
+  if(!currentMatches.length){hideSuggestions();return}
   activeIndex=0;
   suggestions.innerHTML=currentMatches.map((n,i)=>{
     const rows=transactionHistory.filter(x=>x.number===n);
@@ -223,8 +223,8 @@ function update⚙️ Settings(){
   }).join('');
   suggestions.classList.add('show');
 }
-function hide⚙️ Settings(){suggestions.classList.remove('show');suggestions.innerHTML='';currentMatches=[]}
-function chooseNumber(n){numberInput.value=n;updatePreview();hide⚙️ Settings();numberInput.focus()}
+function hideSuggestions(){suggestions.classList.remove('show');suggestions.innerHTML='';currentMatches=[]}
+function chooseNumber(n){numberInput.value=n;updatePreview();hideSuggestions();numberInput.focus()}
 suggestions.addEventListener('click',e=>{const b=e.target.closest('.suggestion');if(b)chooseNumber(b.dataset.number)});
 numberInput.addEventListener('input',updatePreview);
 numberInput.addEventListener('keydown',e=>{
@@ -250,9 +250,9 @@ numberInput.addEventListener('keydown',e=>{
     }
 
     const n=numberInput.value.replace(/\D/g,'');
-    if(n.length===11){hide⚙️ Settings();send()}
+    if(n.length===11){hideSuggestions();send()}
   }
-  else if(e.key==='Escape'){numberInput.value='';updatePreview();hide⚙️ Settings()}
+  else if(e.key==='Escape'){numberInput.value='';updatePreview();hideSuggestions()}
 });
 function paintActive(){const items=[...suggestions.children];items.forEach((x,i)=>x.classList.toggle('active',i===activeIndex));items[activeIndex]?.scrollIntoView({block:'nearest',behavior:'smooth'})}
 
@@ -534,7 +534,7 @@ const suggestionsManagerCount=document.getElementById('suggestionsManagerCount')
 function suggestionManagerRows(){
   return historyList.map(number=>({number,name:String(customerProfiles.get(number)?.name||'').trim()}));
 }
-function render⚙️ SettingsManager(){
+function renderSuggestionsManager(){
   const q=String(suggestionsManagerSearch?.value||'').trim().toLowerCase();
   const rows=suggestionManagerRows().filter(x=>!q||x.number.includes(q)||x.name.toLowerCase().includes(q));
   suggestionsManagerCount.textContent=`${rows.length} suggestion`;
@@ -547,12 +547,12 @@ function render⚙️ SettingsManager(){
     <div class="suggestionsManagerActions"><button class="suggestionEditButton" type="button">✎ নাম Edit</button><button class="suggestionRemoveButton" type="button">⌫ Remove</button></div>
   </article>`).join('');
 }
-function open⚙️ SettingsManager(){suggestionsManagerOverlay.classList.add('show');suggestionsManagerSearch.value='';render⚙️ SettingsManager();setTimeout(()=>suggestionsManagerSearch.focus(),80)}
-function close⚙️ SettingsManager(){suggestionsManagerOverlay.classList.remove('show')}
-document.getElementById('suggestionsManageButton')?.addEventListener('click',open⚙️ SettingsManager);
-document.getElementById('suggestionsManagerClose')?.addEventListener('click',close⚙️ SettingsManager);
-suggestionsManagerOverlay?.addEventListener('click',e=>{if(e.target===suggestionsManagerOverlay)close⚙️ SettingsManager()});
-suggestionsManagerSearch?.addEventListener('input',render⚙️ SettingsManager);
+function openSuggestionsManager(){suggestionsManagerOverlay.classList.add('show');suggestionsManagerSearch.value='';renderSuggestionsManager();setTimeout(()=>suggestionsManagerSearch.focus(),80)}
+function closeSuggestionsManager(){suggestionsManagerOverlay.classList.remove('show')}
+document.getElementById('suggestionsManageButton')?.addEventListener('click',openSuggestionsManager);
+document.getElementById('suggestionsManagerClose')?.addEventListener('click',closeSuggestionsManager);
+suggestionsManagerOverlay?.addEventListener('click',e=>{if(e.target===suggestionsManagerOverlay)closeSuggestionsManager()});
+suggestionsManagerSearch?.addEventListener('input',renderSuggestionsManager);
 suggestionsManagerList?.addEventListener('click',async e=>{
   const item=e.target.closest('.suggestionsManagerItem'); if(!item||!currentUser)return;
   const number=item.dataset.number;
@@ -564,7 +564,7 @@ suggestionsManagerList?.addEventListener('click',async e=>{
     try{
       await setDoc(doc(db,'users',currentUser.uid,'customers',number),{number,name:clean,updatedAt:serverTimestamp()},{merge:true});
       customerProfiles.set(number,{...(customerProfiles.get(number)||{}),number,name:clean});
-      render⚙️ SettingsManager(); update⚙️ Settings(); setCloud('☁️ Cloud Sync: Active');
+      renderSuggestionsManager(); updateSuggestions(); setCloud('☁️ Cloud Sync: Active');
     }catch(err){setStatus('নাম পরিবর্তন করা যায়নি: '+err.message,false)}
   }
   if(e.target.closest('.suggestionRemoveButton')){
@@ -572,7 +572,7 @@ suggestionsManagerList?.addEventListener('click',async e=>{
     try{
       await deleteDoc(doc(db,'users',currentUser.uid,'customers',number));
       historyList=historyList.filter(n=>n!==number); customerProfiles.delete(number);
-      render⚙️ SettingsManager(); update⚙️ Settings(); renderDashboard(); setCloud('☁️ Cloud Sync: Active');
+      renderSuggestionsManager(); updateSuggestions(); renderDashboard(); setCloud('☁️ Cloud Sync: Active');
     }catch(err){setStatus('Setting সরানো যায়নি: '+err.message,false)}
   }
 });
@@ -618,7 +618,7 @@ function closeSuccessPopup(){
 document.getElementById('successDone').addEventListener('click',closeSuccessPopup);
 document.getElementById('successOverlay').addEventListener('click',e=>{if(e.target.id==='successOverlay')closeSuccessPopup()});
 document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'&&suggestionsManagerOverlay?.classList.contains('show')){close⚙️ SettingsManager();return}
+  if(e.key==='Escape'&&suggestionsManagerOverlay?.classList.contains('show')){closeSuggestionsManager();return}
   if(e.key==='Escape'&&customersOverlay.classList.contains('show')){closeCustomers();return}
   if(e.key==='Escape'&&historyOverlay.classList.contains('show')){closeHistory();return}
   if(e.key==='Escape'&&document.getElementById('successOverlay').classList.contains('show'))closeSuccessPopup();
@@ -824,7 +824,7 @@ document.addEventListener('keydown', event => {
     event.stopImmediatePropagation();
     lastEnterPressAt = 0;
 
-    hide⚙️ Settings();
+    hideSuggestions();
     closeSummaryMenus();
 
     /* Close the success popup first, when it is currently open. */
