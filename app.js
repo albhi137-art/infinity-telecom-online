@@ -243,7 +243,7 @@ numberInput.addEventListener('keydown',e=>{
   else if(e.key==='Enter'){
     e.preventDefault();
 
-    // Setting দেখা গেলে Enter চাপলে active number-টি আগে select হবে।
+    // Suggestion দেখা গেলে Enter চাপলে active number-টি আগে select হবে।
     if(suggestions.classList.contains('show')&&visibleMatches.length){
       chooseNumber(visibleMatches[activeIndex]||visibleMatches[0]);
       return;
@@ -531,6 +531,170 @@ const suggestionsManagerOverlay=document.getElementById('suggestionsManagerOverl
 const suggestionsManagerSearch=document.getElementById('suggestionsManagerSearch');
 const suggestionsManagerList=document.getElementById('suggestionsManagerList');
 const suggestionsManagerCount=document.getElementById('suggestionsManagerCount');
+const suggestionsExportButton=document.getElementById('suggestionsExportButton');
+const todaySummaryPdfButton=document.getElementById('todaySummaryPdfButton');
+const dailyArchiveButton=document.getElementById('dailyArchiveButton');
+const dailyArchiveOverlay=document.getElementById('dailyArchiveOverlay');
+const dailyArchiveList=document.getElementById('dailyArchiveList');
+
+function crc32(bytes){
+  let crc=0xffffffff;
+  for(const byte of bytes){
+    crc^=byte;
+    for(let i=0;i<8;i++) crc=(crc>>>1)^((crc&1)?0xedb88320:0);
+  }
+  return (crc^0xffffffff)>>>0;
+}
+function u16(value){return [value&255,(value>>>8)&255]}
+function u32(value){return [value&255,(value>>>8)&255,(value>>>16)&255,(value>>>24)&255]}
+function makeStoredZip(files){
+  const encoder=new TextEncoder();
+  const localParts=[];
+  const centralParts=[];
+  let offset=0;
+  for(const file of files){
+    const nameBytes=encoder.encode(file.name);
+    const dataBytes=typeof file.data==='string'?encoder.encode(file.data):file.data;
+    const checksum=crc32(dataBytes);
+    const local=new Uint8Array([
+      ...u32(0x04034b50),...u16(20),...u16(0x0800),...u16(0),...u16(0),...u16(0),
+      ...u32(checksum),...u32(dataBytes.length),...u32(dataBytes.length),...u16(nameBytes.length),...u16(0),
+      ...nameBytes,...dataBytes
+    ]);
+    localParts.push(local);
+    const central=new Uint8Array([
+      ...u32(0x02014b50),...u16(20),...u16(20),...u16(0x0800),...u16(0),...u16(0),...u16(0),
+      ...u32(checksum),...u32(dataBytes.length),...u32(dataBytes.length),...u16(nameBytes.length),...u16(0),
+      ...u16(0),...u16(0),...u16(0),...u32(0),...u32(offset),...nameBytes
+    ]);
+    centralParts.push(central);
+    offset+=local.length;
+  }
+  const centralSize=centralParts.reduce((sum,p)=>sum+p.length,0);
+  const end=new Uint8Array([
+    ...u32(0x06054b50),...u16(0),...u16(0),...u16(files.length),...u16(files.length),
+    ...u32(centralSize),...u32(offset),...u16(0)
+  ]);
+  return new Blob([...localParts,...centralParts,end],{type:'application/zip'});
+}
+function csvCell(value){
+  const text=String(value??'');
+  return /[",\n\r]/.test(text)?`"${text.replace(/"/g,'""')}"`:text;
+}
+function exportAllSuggestionNumbers(){
+  const rows=suggestionManagerRows();
+  if(!rows.length){setStatus('Export করার মতো কোনো নাম্বার নেই',false);return}
+  const ordered=[...rows].sort((a,b)=>a.number.localeCompare(b.number));
+  const txt=ordered.map(x=>x.number).join('\r\n')+'\r\n';
+  const csv=['Number,Name',...ordered.map(x=>`${csvCell(x.number)},${csvCell(x.name)}`)].join('\r\n')+'\r\n';
+  const info=[
+    'Infinity Telecom - Exported Numbers',
+    `Total Numbers: ${ordered.length}`,
+    `Exported At: ${new Date().toLocaleString('en-BD')}`,
+    '',
+    'numbers.txt = শুধু সকল মোবাইল নাম্বার',
+    'numbers.csv = নাম্বার ও সংরক্ষিত নাম'
+  ].join('\r\n');
+  const zip=makeStoredZip([
+    {name:'numbers.txt',data:txt},
+    {name:'numbers.csv',data:'\ufeff'+csv},
+    {name:'README.txt',data:info}
+  ]);
+  const url=URL.createObjectURL(zip);
+  const link=document.createElement('a');
+  const date=new Date().toISOString().slice(0,10);
+  link.href=url;
+  link.download=`Infinity-Telecom-Numbers-${date}.zip`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1500);
+  setStatus(`${ordered.length}টি নাম্বার ZIP হিসেবে Export হয়েছে`,true);
+}
+
+function pdfEscape(text){return String(text??'').replace(/\\/g,'\\\\').replace(/\(/g,'\\(').replace(/\)/g,'\\)').replace(/[\r\n]+/g,' ')}
+function downloadSimplePdf(filename,title,lines){
+  const safeLines=[title,'',...lines].map(pdfEscape);
+  let stream='BT\n/F1 16 Tf\n50 790 Td\n';
+  safeLines.forEach((line,index)=>{
+    if(index===0) stream+=`(${line}) Tj\n/F1 10 Tf\n0 -24 Td\n`;
+    else stream+=`(${line}) Tj\n0 -16 Td\n`;
+  });
+  stream+='ET';
+  const objects=[
+    '<< /Type /Catalog /Pages 2 0 R >>',
+    '<< /Type /Pages /Kids [3 0 R] /Count 1 >>',
+    '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 5 0 R >> >> /Contents 4 0 R >>',
+    `<< /Length ${stream.length} >>\nstream\n${stream}\nendstream`,
+    '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>'
+  ];
+  let pdf='%PDF-1.4\n';const offsets=[0];
+  objects.forEach((obj,i)=>{offsets.push(pdf.length);pdf+=`${i+1} 0 obj\n${obj}\nendobj\n`});
+  const xref=pdf.length;pdf+=`xref\n0 ${objects.length+1}\n0000000000 65535 f \n`;
+  offsets.slice(1).forEach(o=>pdf+=String(o).padStart(10,'0')+' 00000 n \n');
+  pdf+=`trailer\n<< /Size ${objects.length+1} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF`;
+  const blob=new Blob([pdf],{type:'application/pdf'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);
+}
+function rowsForDate(date){return transactionHistory.filter(x=>sameDay(new Date(x.timestamp),date))}
+function summaryForDate(date){
+  const rows=rowsForDate(date),services={};
+  rows.forEach(x=>{const k=x.service||'Unknown',s=services[k]||(services[k]={count:0,total:0});s.count++;s.total+=Number(x.amount||0)});
+  return {date,rows,services,total:rows.reduce((s,x)=>s+Number(x.amount||0),0)};
+}
+function exportTodaySummaryPdf(){
+  const data=summaryForDate(new Date());
+  const lines=[
+    `Date: ${data.date.toLocaleDateString('en-GB')}`,
+    `Generated: ${new Date().toLocaleString('en-GB')}`,
+    '----------------------------------------------',
+    ...['Mobile Recharge','bKash','Nagad','Rocket'].map(name=>{
+      const s=data.services[name]||{count:0,total:0};return `${name}: ${s.count} transactions | BDT ${s.total.toLocaleString('en-US')}`;
+    }),
+    '----------------------------------------------',
+    `Grand Total Transactions: ${data.rows.length}`,
+    `Grand Total Amount: BDT ${data.total.toLocaleString('en-US')}`
+  ];
+  downloadSimplePdf(`Infinity-Telecom-Daily-Summary-${localDateKey(new Date())}.pdf`,'INFINITY TELECOM - DAILY SUMMARY',lines);
+  setStatus('আজকের Summary PDF ডাউনলোড হয়েছে',true);
+}
+function groupedDailyArchive(){
+  const map=new Map();
+  transactionHistory.forEach(x=>{
+    const d=new Date(x.timestamp);if(Number.isNaN(d.getTime()))return;
+    const key=localDateKey(d),v=map.get(key)||{date:new Date(d.getFullYear(),d.getMonth(),d.getDate()),rows:[]};v.rows.push(x);map.set(key,v);
+  });
+  return [...map.values()].sort((a,b)=>b.date-a.date);
+}
+function renderDailyArchive(){
+  const days=groupedDailyArchive();
+  if(!days.length){dailyArchiveList.innerHTML='<div class="suggestionsManagerEmpty">কোনো Daily History নেই।</div>';return}
+  dailyArchiveList.innerHTML=days.map(day=>{
+    const services={};day.rows.forEach(x=>{const k=x.service||'Unknown',s=services[k]||(services[k]={count:0,total:0});s.count++;s.total+=Number(x.amount||0)});
+    const total=day.rows.reduce((s,x)=>s+Number(x.amount||0),0);
+    const mfs=['bKash','Nagad','Rocket'].map(k=>{const s=services[k]||{count:0,total:0};return `<span><b>${k}</b> ${s.count} বার · ৳${s.total.toLocaleString('en-US')}</span>`}).join('');
+    return `<article class="dailyArchiveItem"><div><strong>${day.date.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</strong><small>${day.rows.length} লেনদেন · মোট ৳${total.toLocaleString('en-US')}</small></div><div class="dailyArchiveServices">${mfs}</div></article>`;
+  }).join('');
+}
+function openDailyArchive(){renderDailyArchive();dailyArchiveOverlay.classList.add('show')}
+function closeDailyArchive(){dailyArchiveOverlay.classList.remove('show')}
+async function resetNumberHistory(number){
+  const rows=transactionHistory.filter(x=>x.number===number);
+  if(!rows.length){setStatus('এই নাম্বারের কোনো History নেই',false);return}
+  if(!confirm(`${number} নাম্বারের ${rows.length}টি লেনদেন Reset করবেন?\n\nনাম্বার Suggestions-এ থাকবে, শুধু History ও Amount শূন্য হবে।`))return;
+  setCloud('☁️ History Reset হচ্ছে','busy');
+  try{
+    await Promise.all(rows.map(x=>deleteDoc(doc(db,'users',currentUser.uid,'transactions',x.id))));
+    await setDoc(doc(db,'users',currentUser.uid,'customers',number),{
+      number,visitCount:0,lastAmount:0,lastService:'',lastUsedAt:serverTimestamp(),updatedAt:serverTimestamp()
+    },{merge:true});
+    transactionHistory=transactionHistory.filter(x=>x.number!==number);
+    customerProfiles.set(number,{...(customerProfiles.get(number)||{}),number,visitCount:0,lastAmount:0,lastService:''});
+    renderSuggestionsManager();updateSuggestions();renderDashboard();updateCustomerSummary();renderDailyArchive();
+    setCloud('☁️ Cloud Sync: Active');setStatus(`${number} নাম্বারের History Reset হয়েছে`,true);
+  }catch(err){console.error(err);setCloud('☁️ Sync Error','error');setStatus('History Reset করা যায়নি: '+err.message,false)}
+}
+
 function suggestionManagerRows(){
   return historyList.map(number=>({number,name:String(customerProfiles.get(number)?.name||'').trim()}));
 }
@@ -538,18 +702,23 @@ function renderSuggestionsManager(){
   const q=String(suggestionsManagerSearch?.value||'').trim().toLowerCase();
   const rows=suggestionManagerRows().filter(x=>!q||x.number.includes(q)||x.name.toLowerCase().includes(q));
   suggestionsManagerCount.textContent=`${rows.length} suggestion`;
-  if(!rows.length){suggestionsManagerList.innerHTML='<div class="suggestionsManagerEmpty">কোনো Setting পাওয়া যায়নি।</div>';return}
+  if(!rows.length){suggestionsManagerList.innerHTML='<div class="suggestionsManagerEmpty">কোনো Suggestion পাওয়া যায়নি।</div>';return}
   suggestionsManagerList.innerHTML=rows.map(x=>`<article class="suggestionsManagerItem" data-number="${x.number}">
     <div class="suggestionsManagerIdentity">
       <div class="suggestionsManagerIcon">${brandSvg(transactionHistory.find(t=>t.number===x.number)?.service||'Mobile Recharge',detectOperator(x.number))}</div>
       <div><strong>${x.name?escapeHtml(x.name):'নাম দেওয়া হয়নি'}</strong><span>${x.number}</span></div>
     </div>
-    <div class="suggestionsManagerActions"><button class="suggestionEditButton" type="button">✎ নাম Edit</button><button class="suggestionRemoveButton" type="button">⌫ Remove</button></div>
+    <div class="suggestionsManagerActions"><button class="suggestionEditButton" type="button">✎ নাম Edit</button><button class="suggestionResetHistoryButton" type="button">↺ History Reset</button><button class="suggestionRemoveButton" type="button">⌫ Remove</button></div>
   </article>`).join('');
 }
 function openSuggestionsManager(){suggestionsManagerOverlay.classList.add('show');suggestionsManagerSearch.value='';renderSuggestionsManager();setTimeout(()=>suggestionsManagerSearch.focus(),80)}
 function closeSuggestionsManager(){suggestionsManagerOverlay.classList.remove('show')}
 document.getElementById('suggestionsManageButton')?.addEventListener('click',openSuggestionsManager);
+suggestionsExportButton?.addEventListener('click',exportAllSuggestionNumbers);
+todaySummaryPdfButton?.addEventListener('click',exportTodaySummaryPdf);
+dailyArchiveButton?.addEventListener('click',openDailyArchive);
+document.getElementById('dailyArchiveClose')?.addEventListener('click',closeDailyArchive);
+dailyArchiveOverlay?.addEventListener('click',e=>{if(e.target===dailyArchiveOverlay)closeDailyArchive()});
 document.getElementById('suggestionsManagerClose')?.addEventListener('click',closeSuggestionsManager);
 suggestionsManagerOverlay?.addEventListener('click',e=>{if(e.target===suggestionsManagerOverlay)closeSuggestionsManager()});
 suggestionsManagerSearch?.addEventListener('input',renderSuggestionsManager);
@@ -567,13 +736,16 @@ suggestionsManagerList?.addEventListener('click',async e=>{
       renderSuggestionsManager(); updateSuggestions(); setCloud('☁️ Cloud Sync: Active');
     }catch(err){setStatus('নাম পরিবর্তন করা যায়নি: '+err.message,false)}
   }
+  if(e.target.closest('.suggestionResetHistoryButton')){
+    await resetNumberHistory(number);return;
+  }
   if(e.target.closest('.suggestionRemoveButton')){
-    if(!confirm(`${number} নাম্বারটি ⚙️ Settings থেকে সরাবেন?`))return;
+    if(!confirm(`${number} নাম্বারটি Suggestions থেকে সরাবেন?`))return;
     try{
       await deleteDoc(doc(db,'users',currentUser.uid,'customers',number));
       historyList=historyList.filter(n=>n!==number); customerProfiles.delete(number);
       renderSuggestionsManager(); updateSuggestions(); renderDashboard(); setCloud('☁️ Cloud Sync: Active');
-    }catch(err){setStatus('Setting সরানো যায়নি: '+err.message,false)}
+    }catch(err){setStatus('Suggestion সরানো যায়নি: '+err.message,false)}
   }
 });
 
@@ -618,6 +790,7 @@ function closeSuccessPopup(){
 document.getElementById('successDone').addEventListener('click',closeSuccessPopup);
 document.getElementById('successOverlay').addEventListener('click',e=>{if(e.target.id==='successOverlay')closeSuccessPopup()});
 document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&dailyArchiveOverlay?.classList.contains('show')){closeDailyArchive();return}
   if(e.key==='Escape'&&suggestionsManagerOverlay?.classList.contains('show')){closeSuggestionsManager();return}
   if(e.key==='Escape'&&customersOverlay.classList.contains('show')){closeCustomers();return}
   if(e.key==='Escape'&&historyOverlay.classList.contains('show')){closeHistory();return}
@@ -702,9 +875,16 @@ function renderDashboard(){
   const top=Object.entries(counts).sort((a,b)=>b[1].count-a[1].count).slice(0,4);
   const topEl=document.getElementById('topCustomersList');
   if(topEl) topEl.innerHTML=top.map(([n,v])=>`<div class="miniRow"><strong>${n}</strong><span>${v.count} Times</span><em>${formatMoney(v.total)}</em></div>`).join('')||'<div class="emptyMini">No customer data yet</div>';
-  const sums={}; tx.forEach(x=>{const k=x.service||'Unknown';const s=sums[k]||(sums[k]={count:0,total:0});s.count++;s.total+=Number(x.amount||0)});
+  const sums={};
+  tx.forEach(x=>{
+    const k=x.service||'Unknown';
+    const isDailyMfs=['bKash','Nagad','Rocket'].includes(k);
+    if(isDailyMfs&&!sameDay(new Date(x.timestamp),now))return;
+    const s=sums[k]||(sums[k]={count:0,total:0});s.count++;s.total+=Number(x.amount||0);
+  });
+  const orderedServices=['Mobile Recharge','bKash','Nagad','Rocket'].filter(k=>sums[k]);
   const sumEl=document.getElementById('serviceSummaryList');
-  if(sumEl) sumEl.innerHTML=Object.entries(sums).slice(0,4).map(([k,v])=>`<div class="miniRow"><strong>${k}</strong><span>${formatMoney(v.total)}</span><em>${v.count}</em></div>`).join('')||'<div class="emptyMini">No service data yet</div>';
+  if(sumEl) sumEl.innerHTML=orderedServices.map(k=>{const v=sums[k];return `<div class="miniRow"><strong>${k}</strong><span>${formatMoney(v.total)}</span><em>${v.count}</em></div>`}).join('')||'<div class="emptyMini">No service data yet</div>';
 }
 function tickDateTime(){const e=document.getElementById('currentDateTime');if(e)e.textContent=new Date().toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'})}
 setInterval(tickDateTime,1000);tickDateTime();
@@ -744,7 +924,10 @@ async function sendPendingDailyReport(){
   }catch(e){console.error('Daily report pending',e)}
 }
 function msUntilNextMidnight(){const now=new Date(),next=new Date(now);next.setHours(24,0,5,0);return next-now}
-setTimeout(()=>{sendPendingDailyReport();setInterval(sendPendingDailyReport,24*60*60*1000)},msUntilNextMidnight());
+setTimeout(()=>{
+  sendPendingDailyReport();renderDashboard();
+  setInterval(()=>{sendPendingDailyReport();renderDashboard()},24*60*60*1000)
+},msUntilNextMidnight());
 
 document.addEventListener('keydown',e=>{
   if(e.ctrlKey||e.metaKey||e.altKey)return;

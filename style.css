@@ -725,7 +725,7 @@ body.light-theme .summaryChoiceMenu button:hover,body.light-theme .summaryChoice
 .inputHelp{margin-top:10px}
 .status{left:auto;right:24px;bottom:-27px}
 
-/* ⚙️ Settings: full width, spaced and always above preview */
+/* Suggestions: full width, spaced and always above preview */
 .suggestions{
   left:0;top:104px;width:100%;
   border:1px solid #3272b3;
@@ -941,7 +941,7 @@ body.light-theme .colorResetButton{color:#17324f;background:rgba(var(--ui-accent
 .suggestionLogo .brandSvg{filter:drop-shadow(0 2px 5px rgba(0,0,0,.25))}
 
 
-/* ===== Setting text visibility repair ===== */
+/* ===== Suggestion text visibility repair ===== */
 .suggestion::before{content:none!important;display:none!important}
 .suggestion{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:16px!important;text-align:left!important}
 .suggestionIdentity{display:flex!important;align-items:center!important;gap:14px!important;flex:1 1 auto!important;min-width:0!important;position:static!important;transform:none!important}
@@ -1009,7 +1009,7 @@ body.light-theme .selectedServiceInputIcon,body.light-theme .selectedServicePrev
   .selectedServicePreviewIcon{width:46px;height:46px;flex-basis:46px}
 }
 
-/* ⚙️ Settings manager — History ও All Numbers-এর জায়গায় একটিমাত্র control */
+/* Suggestions manager — History ও All Numbers-এর জায়গায় একটিমাত্র control */
 .suggestionsManagerOverlay{position:fixed;inset:0;z-index:930;background:#010712d9;display:none;place-items:center;padding:20px}
 .suggestionsManagerOverlay.show{display:grid}
 .suggestionsManagerModal{width:min(820px,96vw);max-height:88vh;overflow:auto;border:1px solid #2c5279;border-radius:17px;background:#07172a;padding:22px;box-shadow:0 35px 100px #000}
@@ -1187,7 +1187,7 @@ body.light-theme .historyItem:hover{
 }
 
 
-/* ===== Compact right-side ⚙️ Settings panel =====
+/* ===== Compact right-side Suggestions panel =====
    Keeps the number preview visible while suggestions are open. */
 @media (min-width: 901px){
   .suggestions{
@@ -1551,3 +1551,259 @@ body.light-theme .bigNumber{
 .groups{margin-bottom:22px!important;}
 .summary{margin-top:22px!important;gap:18px!important;}
 .warningBar,.warning-banner,.warningWrapper{margin-top:22px!important;}
+
+/* ===== PAYMASTER-STYLE LIGHT THEME (COLOR-ONLY OVERRIDE) =====
+   Dark mode and all layout/functionality remain unchanged. */
+body.light-theme{
+  --pro-bg:#ffffff;
+  --pro-bg-deep:#f3f3f3;
+  --pro-panel:#ffffff;
+  --pro-panel-2:#f6f6f6;
+  --pro-card:#f5f5f5;
+  --pro-line:#dedede;
+  --pro-line-soft:#e9e9e9;
+  --pro-text:#252525;
+  --pro-muted:#666666;
+  --pro-accent:#056b0b;
+  color:#252525!important;
+  background:#ffffff!important;
+  background-image:none!important;
+}
+body.light-theme .app{background:#ffffff!important}
+body.light-theme .topbar{
+  background:#056b0b!important;
+  border-color:#056b0b!important;
+  box-shadow:none!important;
+  color:#ffffff!important;
+}
+body.light-theme .brand,
+body.light-theme .brandMark{color:#ffffff!important;text-shadow:none!important}
+body.light-theme .topActions button,
+body.light-theme .userArea button,
+body.light-theme .themeButton,
+body.light-theme .colorButton,
+body.light-theme .suggestionsManageButton{
+  background:#ffffff!important;
+  border-color:#ffffff!important;
+  color:#056b0b!important;
+  box-shadow:none!important;
+}
+body.light-theme .topActions button:hover,
+body.light-theme .userArea button:hover,
+body.light-theme .themeButton:hover,
+body.light-theme .colorButton:hover,
+body.light-theme .suggestionsManageButton:hover{
+  background:#edf7ee!important;
+  border-color:#d6ead8!important;
+  color:#034f08!important;
+}
+body.light-theme .onlineBadge{
+  color:#ffffff!important;
+  background:#0b7a12!important;
+  border-color:#71b976!important;
+}
+body.light-theme .inputPanel,
+body.light-theme .dashCard{
+  background:#ffffff!important;
+  border-color:#eeeeee!important;
+  box-shadow:0 5px 18px rgba(0,0,0,.055)!important;
+}
+body.light-theme .inputColumn+.inputColumn{border-left-color:#ececec!important}
+body.light-theme .label,
+body.light-theme .rightTitle,
+body.light-theme .summaryLabel,
+body.light-theme .cardHead{color:#303030!important}
+body.light-theme .field,
+body.light-theme .serviceDisplay,
+body.light-theme .globalSearch,
+body.light-theme .historySearchWrap{
+  background:#f2f2f2!important;
+  border-color:#e3e3e3!important;
+  color:#252525!important;
+  box-shadow:none!important;
+}
+body.light-theme .numberColumn .field{
+  background:#f1f1f1!important;
+  border-color:#e1e1e1!important;
+  box-shadow:none!important;
+}
+body.light-theme .field input,
+body.light-theme .globalSearch input,
+body.light-theme .historySearchWrap input,
+body.light-theme .directAmountField input,
+body.light-theme .summaryValue,
+body.light-theme .miniRow strong,
+body.light-theme .miniRow em{color:#252525!important}
+body.light-theme .field input::placeholder,
+body.light-theme .globalSearch input::placeholder,
+body.light-theme .historySearchWrap input::placeholder,
+body.light-theme .directAmountField input::placeholder{color:#b9b9b9!important}
+body.light-theme .fieldIcon,
+body.light-theme .amountPrefix,
+body.light-theme .summaryAmountField>span,
+body.light-theme .directAmountField>span{color:#056b0b!important}
+body.light-theme .inputHelp,
+body.light-theme .miniRow span,
+body.light-theme .emptyMini,
+body.light-theme .statGrid small,
+body.light-theme .appFooter{color:#666666!important}
+body.light-theme .previewPanel{
+  background:#ffffff!important;
+  border-color:#ededed!important;
+  box-shadow:0 5px 18px rgba(0,0,0,.055)!important;
+}
+body.light-theme .bigNumber{
+  color:#056b0b!important;
+  text-shadow:none!important;
+}
+body.light-theme .digitBox,
+body.light-theme .summaryCard,
+body.light-theme .historyStat,
+body.light-theme .customerCard,
+body.light-theme .historyItem{
+  background:#f5f5f5!important;
+  border-color:#e5e5e5!important;
+  color:#252525!important;
+  box-shadow:none!important;
+}
+body.light-theme .digitBox{color:#252525!important}
+body.light-theme .summaryIcon{
+  color:#ffffff!important;
+  background:#056b0b!important;
+}
+body.light-theme .summaryAmountCard:hover,
+body.light-theme .summaryAmountCard:focus-within{
+  border-color:#16821e!important;
+  box-shadow:0 0 0 2px rgba(5,107,11,.10)!important;
+}
+body.light-theme .customerSummary{background:#f5f5f5!important;border-color:#e5e5e5!important}
+body.light-theme .customerSummary>div{background:#ffffff!important;border-color:#e8e8e8!important}
+body.light-theme .customerSummary small{color:#666666!important}
+body.light-theme .customerSummary strong{color:#252525!important}
+body.light-theme .verificationNotice{
+  background:#f6f6f6!important;
+  border-color:#dedede!important;
+  color:#333333!important;
+}
+body.light-theme .noticeIcon{background:#056b0b!important;color:#ffffff!important}
+body.light-theme .cardHead{border-bottom-color:#e7e7e7!important}
+body.light-theme .cardHead button{color:#056b0b!important}
+body.light-theme .miniRow{border-bottom-color:#e8e8e8!important}
+body.light-theme .statGrid b{color:#056b0b!important}
+body.light-theme .statGrid div:nth-child(1) b,
+body.light-theme .statGrid div:nth-child(3) b,
+body.light-theme .statGrid div:nth-child(4) b{color:#056b0b!important}
+body.light-theme .cloudSync{color:#056b0b!important}
+body.light-theme .suggestions{
+  background:#ffffff!important;
+  border-color:#dcdcdc!important;
+  box-shadow:0 12px 35px rgba(0,0,0,.16)!important;
+}
+body.light-theme .suggestion{
+  color:#252525!important;
+  border-bottom-color:#e9e9e9!important;
+  background:#ffffff!important;
+}
+body.light-theme .suggestion:hover,
+body.light-theme .suggestion.active{
+  background:#edf7ee!important;
+  border-color:#cfe6d2!important;
+}
+body.light-theme .suggestionText small,
+body.light-theme .suggestionEnter{color:#666666!important}
+body.light-theme .historyOverlay,
+body.light-theme .customersOverlay,
+body.light-theme .successOverlay{background:rgba(0,0,0,.38)!important}
+body.light-theme .historyModal,
+body.light-theme .customersModal,
+body.light-theme .successCard,
+body.light-theme .suggestionsManagerModal,
+body.light-theme .colorModal{
+  background:#ffffff!important;
+  border-color:#e1e1e1!important;
+  color:#252525!important;
+  box-shadow:0 25px 75px rgba(0,0,0,.22)!important;
+}
+body.light-theme .historyHeader h2,
+body.light-theme .successTitle,
+body.light-theme .successNumber,
+body.light-theme .successRow strong,
+body.light-theme .suggestionsManagerIdentity strong{color:#252525!important}
+body.light-theme .historyHeader p,
+body.light-theme .historyEmpty,
+body.light-theme .customersCount,
+body.light-theme .successText,
+body.light-theme .successRow,
+body.light-theme .suggestionsManagerIdentity span{color:#666666!important}
+body.light-theme .historyClose{
+  background:#f3f3f3!important;
+  border-color:#dddddd!important;
+  color:#333333!important;
+}
+body.light-theme .historyClose:hover{background:#e9e9e9!important}
+body.light-theme .customerCard:hover,
+body.light-theme .historyItem:hover{background:#edf7ee!important;border-color:#b7d9bb!important}
+body.light-theme .successDone,
+body.light-theme .successLanguageToggle{
+  background:#056b0b!important;
+  border-color:#056b0b!important;
+  color:#ffffff!important;
+}
+body.light-theme .recentTransactionCard{background:#f5f5f5!important;border-color:#e7e7e7!important;box-shadow:none!important}
+body.light-theme .transactionType{color:#252525!important}
+body.light-theme .transactionOperator,
+body.light-theme .transactionDetails time{color:#666666!important}
+body.light-theme .transactionDetails{border-color:#16821e!important}
+body.light-theme .summaryChoiceMenu,
+body.light-theme .serviceChoiceMenu{
+  background:#ffffff!important;
+  border-color:#dddddd!important;
+  box-shadow:0 16px 45px rgba(0,0,0,.15)!important;
+}
+body.light-theme .summaryChoiceMenu button,
+body.light-theme .serviceChoiceMenu button{
+  background:#f6f6f6!important;
+  border-color:#e2e2e2!important;
+  color:#252525!important;
+}
+body.light-theme .summaryChoiceMenu button:hover,
+body.light-theme .summaryChoiceMenu button.active,
+body.light-theme .serviceChoiceMenu button:hover,
+body.light-theme .serviceChoiceMenu button.active{
+  background:#edf7ee!important;
+  border-color:#16821e!important;
+}
+body.light-theme .suggestionsManagerItem,
+body.light-theme .suggestionsManagerSearchWrap,
+body.light-theme .colorWheelCard,
+body.light-theme .shadowControlCard{
+  background:#f6f6f6!important;
+  border-color:#e0e0e0!important;
+}
+body.light-theme .suggestionsManagerSearchWrap input{color:#252525!important}
+body.light-theme .colorResetButton{background:#edf7ee!important;color:#056b0b!important}
+
+/* Suggestions export — existing manager features remain unchanged */
+.suggestionsManagerToolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.suggestionsExportButton{height:40px;padding:0 16px;border:1px solid #2f8f55;border-radius:10px;background:#08752f;color:#fff;font-weight:850;cursor:pointer;box-shadow:0 8px 20px #0003;transition:transform .15s ease,filter .15s ease}
+.suggestionsExportButton:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.suggestionsExportButton:active{transform:translateY(0)}
+.suggestionsExportButton:disabled{opacity:.55;cursor:not-allowed;transform:none}
+body.light-theme .suggestionsExportButton{background:#006b1b;border-color:#006b1b;color:#fff;box-shadow:0 8px 18px #006b1b24}
+@media(max-width:700px){.suggestionsManagerToolbar{align-items:stretch}.suggestionsExportButton{width:100%}}
+
+
+/* Daily archive + per-number history reset additions */
+.suggestionsManagerToolbarActions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.suggestionResetHistoryButton{border:1px solid rgba(255,170,0,.45);background:rgba(255,170,0,.12);color:#ffb52e;border-radius:10px;padding:9px 12px;font-weight:800;cursor:pointer}
+.light-theme .suggestionResetHistoryButton{color:#9b5b00;background:#fff7df;border-color:#e8bd62}
+.summaryPdfButton,.archiveButton{white-space:nowrap}
+.dailyArchiveOverlay{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;align-items:center;justify-content:center;padding:20px;z-index:10050}
+.dailyArchiveOverlay.show{display:flex}
+.dailyArchiveModal{width:min(900px,96vw);max-height:88vh;overflow:hidden;border-radius:22px;background:var(--panel,#151829);border:1px solid var(--border,rgba(255,255,255,.12));box-shadow:0 28px 80px rgba(0,0,0,.45);display:flex;flex-direction:column}
+.dailyArchiveList{padding:14px 20px 24px;overflow:auto;display:grid;gap:10px}
+.dailyArchiveItem{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:16px;border-radius:15px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08)}
+.dailyArchiveItem>div:first-child{display:grid;gap:5px}.dailyArchiveItem strong{font-size:17px}.dailyArchiveItem small{opacity:.72}
+.dailyArchiveServices{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}.dailyArchiveServices span{padding:7px 10px;border-radius:999px;background:rgba(0,180,90,.12);border:1px solid rgba(0,180,90,.25);font-size:12px}
+.light-theme .dailyArchiveModal{background:#fff;color:#172018}.light-theme .dailyArchiveItem{background:#f7f9f7;border-color:#dde5dd}.light-theme .dailyArchiveServices span{background:#edf8ef;border-color:#b8dcbc}
+@media(max-width:760px){.suggestionsManagerToolbar{align-items:flex-start}.suggestionsManagerToolbarActions{justify-content:flex-start}.dailyArchiveItem{align-items:flex-start;flex-direction:column}.dailyArchiveServices{justify-content:flex-start}}
