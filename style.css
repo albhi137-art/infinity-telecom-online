@@ -1807,3 +1807,14 @@ body.light-theme .suggestionsExportButton{background:#006b1b;border-color:#006b1
 .dailyArchiveServices{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}.dailyArchiveServices span{padding:7px 10px;border-radius:999px;background:rgba(0,180,90,.12);border:1px solid rgba(0,180,90,.25);font-size:12px}
 .light-theme .dailyArchiveModal{background:#fff;color:#172018}.light-theme .dailyArchiveItem{background:#f7f9f7;border-color:#dde5dd}.light-theme .dailyArchiveServices span{background:#edf8ef;border-color:#b8dcbc}
 @media(max-width:760px){.suggestionsManagerToolbar{align-items:flex-start}.suggestionsManagerToolbarActions{justify-content:flex-start}.dailyArchiveItem{align-items:flex-start;flex-direction:column}.dailyArchiveServices{justify-content:flex-start}}
+
+/* Dashboard Today / All Time toggle — no existing layout or function changed */
+.dashboardPeriodBar{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin-top:18px;margin-bottom:-8px;color:#78bdff;font-size:11px;font-weight:800;letter-spacing:.35px}
+.dashboardPeriodToggle{display:inline-flex;padding:3px;border:1px solid #244766;border-radius:10px;background:#061323;box-shadow:0 8px 20px #0003}
+.dashboardPeriodToggle button{min-width:72px;height:29px;padding:0 12px;border:0;border-radius:7px;background:transparent;color:#82a4c4;font-size:11px;font-weight:900;cursor:pointer;transition:.16s ease}
+.dashboardPeriodToggle button.active{background:linear-gradient(135deg,#2e74ff,#7134ff);color:#fff;box-shadow:0 5px 14px #2e74ff45}
+body.light-theme .dashboardPeriodBar{color:#315e87}
+body.light-theme .dashboardPeriodToggle{background:#fff;border-color:#b9cce1;box-shadow:0 7px 18px rgba(31,60,96,.10)}
+body.light-theme .dashboardPeriodToggle button{color:#617b96}
+body.light-theme .dashboardPeriodToggle button.active{color:#fff}
+@media(max-width:700px){.dashboardPeriodBar{justify-content:center;margin-bottom:0}.dashboardPeriodBar>span{display:none}.dashboardPeriodToggle{width:100%}.dashboardPeriodToggle button{flex:1}}

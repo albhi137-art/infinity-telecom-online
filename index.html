@@ -75,10 +75,17 @@
 </div>
 </section>
 
+<div class="dashboardPeriodBar" aria-label="Dashboard period">
+  <span>Dashboard View</span>
+  <div class="dashboardPeriodToggle" role="group" aria-label="Dashboard view">
+    <button class="active" id="dashboardTodayButton" type="button">Today</button>
+    <button id="dashboardAllTimeButton" type="button">All Time</button>
+  </div>
+</div>
 <section class="dashboardGrid">
 <article class="dashCard statsCard"><div class="cardHead"><span>▥ QUICK STATISTICS</span></div><div class="statGrid">
 <div><b id="statNumbers">0</b><small>Total Numbers</small></div>
-<div><b id="statRecharge">৳0</b><small>Total Recharge</small></div>
+<div><b id="statRecharge">৳0</b><small id="statRechargeLabel">Total Recharge (Today)</small></div>
 <div><b id="statToday">৳0</b><small>Today Recharge</small><i id="statTodayCount">0 টি লেনদেন</i></div>
 <div><b id="statCustomers">0</b><small>Total Customers</small></div>
 </div></article>

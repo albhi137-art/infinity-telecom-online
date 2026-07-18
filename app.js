@@ -857,6 +857,19 @@ updatePreview();updateAmount();
 
 function formatMoney(v){return '৳'+Number(v||0).toLocaleString('en-US')}
 function sameDay(a,b){return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate()}
+let dashboardPeriod=localStorage.getItem('dashboardPeriod')==='all'?'all':'today';
+function updateDashboardPeriodButtons(){
+  const todayButton=document.getElementById('dashboardTodayButton');
+  const allButton=document.getElementById('dashboardAllTimeButton');
+  todayButton?.classList.toggle('active',dashboardPeriod==='today');
+  allButton?.classList.toggle('active',dashboardPeriod==='all');
+}
+function setDashboardPeriod(period){
+  dashboardPeriod=period==='all'?'all':'today';
+  localStorage.setItem('dashboardPeriod',dashboardPeriod);
+  updateDashboardPeriodButtons();
+  renderDashboard();
+}
 function renderDashboard(){
   const tx=transactionHistory||[];
   const unique=[...new Set(tx.map(x=>x.number).filter(Boolean))];
@@ -865,21 +878,23 @@ function renderDashboard(){
   const todayRows=tx.filter(x=>sameDay(new Date(x.timestamp),now));
   const today=todayRows.reduce((s,x)=>s+Number(x.amount||0),0);
   const set=(id,val)=>{const e=document.getElementById(id);if(e)e.textContent=val};
+  const dashboardRows=dashboardPeriod==='all'?tx:todayRows;
+  const dashboardTotal=dashboardPeriod==='all'?total:today;
   set('statNumbers',historyList.length.toLocaleString('en-US'));
   set('statCustomers',unique.length.toLocaleString('en-US'));
-  set('statRecharge',formatMoney(total)); set('statToday',formatMoney(today)); set('statTodayCount',todayRows.length+' টি লেনদেন');
+  set('statRecharge',formatMoney(dashboardTotal));
+  set('statRechargeLabel',dashboardPeriod==='all'?'Total Recharge (All Time)':'Total Recharge (Today)');
+  set('statToday',formatMoney(today)); set('statTodayCount',todayRows.length+' টি লেনদেন');
   const recent=document.getElementById('recentHistoryList');
   if(recent) recent.innerHTML=tx.slice(0,4).map(x=>`<div class="miniRow"><strong class="miniNumberWithIcon">${serviceIconHtml(x.service,'miniServiceIcon')}<span>${x.number}</span></strong><span>${x.service}</span><em>${formatMoney(x.amount)}</em></div>`).join('')||'<div class="emptyMini">No recharge history yet</div>';
   const counts={};
-  todayRows.forEach(x=>{const c=counts[x.number]||(counts[x.number]={count:0,total:0});c.count++;c.total+=Number(x.amount||0)});
+  dashboardRows.forEach(x=>{const c=counts[x.number]||(counts[x.number]={count:0,total:0});c.count++;c.total+=Number(x.amount||0)});
   const top=Object.entries(counts).sort((a,b)=>b[1].count-a[1].count).slice(0,4);
   const topEl=document.getElementById('topCustomersList');
   if(topEl) topEl.innerHTML=top.map(([n,v])=>`<div class="miniRow"><strong>${n}</strong><span>${v.count} Times</span><em>${formatMoney(v.total)}</em></div>`).join('')||'<div class="emptyMini">No customer data yet</div>';
   const sums={};
-  tx.forEach(x=>{
+  dashboardRows.forEach(x=>{
     const k=x.service||'Unknown';
-    const isDailyMfs=['bKash','Nagad','Rocket'].includes(k);
-    if(isDailyMfs&&!sameDay(new Date(x.timestamp),now))return;
     const s=sums[k]||(sums[k]={count:0,total:0});s.count++;s.total+=Number(x.amount||0);
   });
   const orderedServices=['Mobile Recharge','bKash','Nagad','Rocket'].filter(k=>sums[k]);
@@ -891,6 +906,9 @@ setInterval(tickDateTime,1000);tickDateTime();
 const globalSearch=document.getElementById('globalSearch');
 document.getElementById('recentViewAll')?.addEventListener('click',openHistory);
 document.getElementById('topViewAll')?.addEventListener('click',openCustomers);
+document.getElementById('dashboardTodayButton')?.addEventListener('click',()=>setDashboardPeriod('today'));
+document.getElementById('dashboardAllTimeButton')?.addEventListener('click',()=>setDashboardPeriod('all'));
+updateDashboardPeriodButtons();
 
 
 /* Selected smart functions only — original UI preserved */
