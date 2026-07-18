@@ -1551,3 +1551,228 @@ body.light-theme .bigNumber{
 .groups{margin-bottom:22px!important;}
 .summary{margin-top:22px!important;gap:18px!important;}
 .warningBar,.warning-banner,.warningWrapper{margin-top:22px!important;}
+
+/* =========================================================
+   PAYMASTER-INSPIRED LIGHT GREEN COLOR PALETTE
+   Color-only override: layout, sizing, buttons and functions unchanged.
+   ========================================================= */
+:root{
+  --pm-green:#006400;
+  --pm-green-2:#087b19;
+  --pm-green-soft:#eaf6ec;
+  --pm-green-pale:#f4faf5;
+  --pm-page:#ffffff;
+  --pm-surface:#f5f5f5;
+  --pm-surface-2:#eeeeee;
+  --pm-line:#d9dfd9;
+  --pm-text:#242424;
+  --pm-muted:#6d736d;
+  --pm-shadow:rgba(0,75,16,.10);
+}
+
+/* Keep both theme states in the same requested light appearance. */
+body,
+body.light-theme{
+  background:#ffffff!important;
+  background-image:none!important;
+  color:var(--pm-text)!important;
+}
+
+.topbar,
+body.light-theme .topbar{
+  background:var(--pm-green)!important;
+  border-color:var(--pm-green)!important;
+  color:#fff!important;
+  box-shadow:0 5px 16px rgba(0,70,10,.14)!important;
+}
+.brand,.brandMark{color:#fff!important;text-shadow:none!important}
+.topActions button,.userArea button,
+body.light-theme .topActions button,body.light-theme .userArea button,
+body.light-theme .topbar button{
+  background:#fff!important;
+  border-color:#d6ddd6!important;
+  color:var(--pm-green)!important;
+  box-shadow:none!important;
+}
+.topActions button:hover,.userArea button:hover,
+body.light-theme .topActions button:hover,body.light-theme .userArea button:hover,
+body.light-theme .topbar button:hover{
+  background:#f0f7f1!important;
+  border-color:#97bd9d!important;
+  color:#004f00!important;
+}
+.userArea{color:#fff!important}.onlineBadge{background:#fff!important;border-color:#d9e5da!important;color:var(--pm-green)!important}
+
+.inputPanel,
+body.light-theme .inputPanel{
+  background:#fff!important;
+  border-color:#ecefec!important;
+  box-shadow:0 8px 24px rgba(0,0,0,.055)!important;
+}
+.inputColumn+.inputColumn{border-color:#e4e8e4!important}
+.label,.rightTitle,.cardHead,.summaryLabel,
+body.light-theme .label,body.light-theme .rightTitle,body.light-theme .cardHead,body.light-theme .summaryLabel{
+  color:var(--pm-green)!important;
+}
+.field,.serviceDisplay,
+body.light-theme .field,body.light-theme .serviceDisplay{
+  background:var(--pm-surface-2)!important;
+  border-color:#e1e3e1!important;
+  color:var(--pm-text)!important;
+  box-shadow:none!important;
+}
+.numberColumn .field,body.light-theme .numberColumn .field{
+  background:var(--pm-surface-2)!important;
+  border-color:#dfe4df!important;
+  box-shadow:none!important;
+}
+.field input,.historySearchWrap input,
+body.light-theme .field input,body.light-theme .historySearchWrap input{
+  color:var(--pm-text)!important;
+}
+.field input::placeholder,.historySearchWrap input::placeholder,
+body.light-theme .field input::placeholder,body.light-theme .historySearchWrap input::placeholder{
+  color:#b7bbb7!important;
+}
+.fieldIcon,.amountPrefix,.inputHelp,
+body.light-theme .fieldIcon,body.light-theme .amountPrefix,body.light-theme .inputHelp{
+  color:var(--pm-green)!important;
+}
+
+.suggestions,body.light-theme .suggestions{
+  background:#fff!important;
+  border-color:#d9dfd9!important;
+  box-shadow:0 16px 38px rgba(0,60,10,.14)!important;
+}
+.suggestion,body.light-theme .suggestion{
+  background:#fff!important;
+  color:var(--pm-text)!important;
+  border-bottom-color:#ecefec!important;
+}
+.suggestion:hover,.suggestion.active,
+body.light-theme .suggestion:hover,body.light-theme .suggestion.active{
+  background:var(--pm-green-soft)!important;
+  color:var(--pm-green)!important;
+}
+
+.previewPanel,
+body.light-theme .previewPanel{
+  background:#fff!important;
+  border-color:#e5e9e5!important;
+  box-shadow:0 10px 30px rgba(0,0,0,.06)!important;
+}
+.bigNumber,body.light-theme .bigNumber{
+  color:var(--pm-green)!important;
+  text-shadow:none!important;
+}
+.digitBox,body.light-theme .digitBox{
+  background:var(--pm-surface)!important;
+  border-color:#e3e6e3!important;
+  color:var(--pm-text)!important;
+  box-shadow:none!important;
+}
+.customerSummary{
+  background:#fff!important;
+  border-color:#e1e6e1!important;
+  color:var(--pm-text)!important;
+}
+.customerSummary>div{border-color:#e8ece8!important}
+.customerSummary small{color:var(--pm-muted)!important}
+.customerSummary strong{color:var(--pm-green)!important}
+.summaryCard,body.light-theme .summaryCard{
+  background:var(--pm-surface)!important;
+  border-color:#e3e6e3!important;
+  color:var(--pm-text)!important;
+  box-shadow:none!important;
+}
+.summaryIcon,body.light-theme .summaryIcon{
+  background:var(--pm-green)!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+.summaryValue,body.light-theme .summaryValue{color:var(--pm-text)!important}
+.directAmountField,.directAmountField input{background:transparent!important;color:var(--pm-text)!important}
+.directAmountField span{color:var(--pm-green)!important}
+.serviceChoiceMenu,body.light-theme .serviceChoiceMenu{
+  background:#fff!important;border-color:#d8ded8!important;box-shadow:0 14px 34px rgba(0,70,10,.14)!important;
+}
+.serviceChoiceMenu button,body.light-theme .serviceChoiceMenu button{background:#fff!important;color:var(--pm-text)!important;border-color:#e7eae7!important}
+.serviceChoiceMenu button:hover,body.light-theme .serviceChoiceMenu button:hover{background:var(--pm-green-soft)!important;border-color:#9fc4a4!important}
+
+.dashCard,body.light-theme .dashCard{
+  background:#fff!important;
+  border-color:#e5e9e5!important;
+  box-shadow:0 7px 22px rgba(0,0,0,.055)!important;
+}
+.cardHead{border-bottom-color:#e8ece8!important}
+.cardHead button,body.light-theme .cardHead button{color:var(--pm-green)!important}
+.miniRow,body.light-theme .miniRow{border-bottom-color:#ecefec!important}
+.miniRow strong,.miniRow em,body.light-theme .miniRow strong,body.light-theme .miniRow em{color:var(--pm-text)!important}
+.miniRow span,.emptyMini,.statGrid small,.appFooter,
+body.light-theme .miniRow span,body.light-theme .emptyMini,body.light-theme .statGrid small,body.light-theme .appFooter{color:var(--pm-muted)!important}
+.statGrid b,.statGrid div:nth-child(1) b,.statGrid div:nth-child(3) b,.statGrid div:nth-child(4) b{color:var(--pm-green)!important}
+.cloudSync,body.light-theme .cloudSync{color:var(--pm-green)!important}
+
+.historyOverlay,.customersOverlay,.successOverlay,.suggestionsManagerOverlay,.colorOverlay,
+body.light-theme .historyOverlay,body.light-theme .customersOverlay,body.light-theme .successOverlay{
+  background:rgba(22,42,24,.30)!important;
+  backdrop-filter:blur(5px)!important;
+}
+.historyModal,.customersModal,.successCard,.suggestionsManagerModal,.colorModal,
+body.light-theme .historyModal,body.light-theme .customersModal,body.light-theme .successCard,
+body.light-theme .suggestionsManagerModal,body.light-theme .colorModal{
+  background:#fff!important;
+  border-color:#dce3dc!important;
+  color:var(--pm-text)!important;
+  box-shadow:0 28px 75px rgba(0,55,10,.20)!important;
+}
+.historyHeader h2,.colorHeader h2,body.light-theme .historyHeader h2{color:var(--pm-green)!important}
+.historyHeader p,.colorHeader p,.historyEmpty,.customersCount,.suggestionsManagerCount,
+body.light-theme .historyHeader p,body.light-theme .historyEmpty,body.light-theme .customersCount{color:var(--pm-muted)!important}
+.historyClose,body.light-theme .historyClose{
+  background:var(--pm-surface)!important;border-color:#d7ddd7!important;color:var(--pm-green)!important;
+}
+.historyClose:hover,body.light-theme .historyClose:hover{background:var(--pm-green-soft)!important}
+.historySearchWrap,body.light-theme .historySearchWrap{
+  background:var(--pm-surface)!important;border-color:#dce2dc!important;box-shadow:none!important;
+}
+.historyStat,.customerCard,.historyItem,.suggestionsManagerItem,
+body.light-theme .historyStat,body.light-theme .customerCard,body.light-theme .historyItem{
+  background:var(--pm-surface)!important;
+  border-color:#e0e5e0!important;
+  color:var(--pm-text)!important;
+  box-shadow:none!important;
+}
+.customerCard:hover,.historyItem:hover,.suggestionsManagerItem:hover,
+body.light-theme .customerCard:hover,body.light-theme .historyItem:hover{
+  background:var(--pm-green-soft)!important;border-color:#a8c9ac!important;
+}
+.successDone,.loginSubmit,body.light-theme .successDone{
+  background:var(--pm-green)!important;color:#fff!important;box-shadow:none!important;
+}
+.successDetails{background:var(--pm-surface)!important;border-color:#dfe4df!important}
+.successNumber,.historyNumber,.customerNumber,.managerNumber,.transactionNumber{color:var(--pm-green)!important}
+.successBadge{background:#42aa51!important;color:#fff!important;box-shadow:none!important}
+
+.loginOverlay{background:rgba(238,243,238,.94)!important}
+.loginCard{
+  background:#fff!important;border-color:#dce3dc!important;color:var(--pm-text)!important;box-shadow:0 25px 70px rgba(0,65,10,.18)!important;
+}
+.loginLogo,.loginCard label{color:var(--pm-green)!important}
+.loginCard p,.loginCard small{color:var(--pm-muted)!important}
+.loginCard input{background:var(--pm-surface)!important;border-color:#d9dfd9!important;color:var(--pm-text)!important}
+.registerSubmit{background:var(--pm-surface)!important;color:var(--pm-green)!important;border:1px solid #d5ddd5!important}
+
+.colorWheelCard,.shadowControlCard,.colorPreviewBar{
+  background:var(--pm-surface)!important;border-color:#dbe2db!important;color:var(--pm-text)!important;
+}
+.colorResetButton{background:var(--pm-green)!important;color:#fff!important;border-color:var(--pm-green)!important}
+
+/* Warning remains highly visible, but its red/yellow tones are softened to suit the light UI. */
+.verificationBanner{border-color:#cf2e2e!important;box-shadow:none!important}
+.verificationBanner .vbTop{background:#c90000!important;color:#fff!important}
+.verificationBanner .vbBody{background:#fff3a6!important;color:#202020!important}
+
+::-webkit-scrollbar-track{background:#f0f2f0!important}
+::-webkit-scrollbar-thumb{background:#a8b8a9!important;border:3px solid #f0f2f0!important}
+::-webkit-scrollbar-thumb:hover{background:#809c83!important}
