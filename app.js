@@ -872,7 +872,6 @@ function setDashboardPeriod(period){
 }
 function renderDashboard(){
   const tx=transactionHistory||[];
-  const unique=[...new Set(tx.map(x=>x.number).filter(Boolean))];
   const total=tx.reduce((s,x)=>s+Number(x.amount||0),0);
   const now=new Date();
   const todayRows=tx.filter(x=>sameDay(new Date(x.timestamp),now));
@@ -880,11 +879,15 @@ function renderDashboard(){
   const set=(id,val)=>{const e=document.getElementById(id);if(e)e.textContent=val};
   const dashboardRows=dashboardPeriod==='all'?tx:todayRows;
   const dashboardTotal=dashboardPeriod==='all'?total:today;
+  const dashboardCustomers=[...new Set(dashboardRows.map(x=>x.number).filter(Boolean))];
   set('statNumbers',historyList.length.toLocaleString('en-US'));
-  set('statCustomers',unique.length.toLocaleString('en-US'));
   set('statRecharge',formatMoney(dashboardTotal));
-  set('statRechargeLabel',dashboardPeriod==='all'?'Total Recharge (All Time)':'Total Recharge (Today)');
-  set('statToday',formatMoney(today)); set('statTodayCount',todayRows.length+' টি লেনদেন');
+  set('statRechargeLabel',dashboardPeriod==='all'?"All-Time Total Amount":"Today's Total Amount");
+  set('statToday',dashboardRows.length.toLocaleString('en-US'));
+  set('statTransactionLabel',dashboardPeriod==='all'?"All-Time Transactions":"Today's Transactions");
+  set('statTodayCount','');
+  set('statCustomers',dashboardCustomers.length.toLocaleString('en-US'));
+  set('statCustomersLabel',dashboardPeriod==='all'?"All-Time Customers":"Today's Customers");
   const recent=document.getElementById('recentHistoryList');
   if(recent) recent.innerHTML=tx.slice(0,4).map(x=>`<div class="miniRow"><strong class="miniNumberWithIcon">${serviceIconHtml(x.service,'miniServiceIcon')}<span>${x.number}</span></strong><span>${x.service}</span><em>${formatMoney(x.amount)}</em></div>`).join('')||'<div class="emptyMini">No recharge history yet</div>';
   const counts={};
