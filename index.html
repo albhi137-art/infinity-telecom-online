@@ -27,7 +27,7 @@
 <header class="topbar">
 <div class="brand"><span class="brandMark">ϟ</span><span>Infinity Telecom</span></div>
 <nav class="topActions">
-<button class="suggestionsManageButton" id="suggestionsManageButton" type="button">⚙ Suggestions</button>
+<button class="suggestionsManageButton" id="suggestionsManageButton" type="button">⚙ ⚙️ Settings</button>
 <button class="themeButton" id="themeButton" type="button">☀️ Light</button>
 <button class="colorButton" id="colorButton" type="button">🎨 Color</button>
 </nav>
@@ -142,30 +142,12 @@
 <div class="suggestionsManagerOverlay" id="suggestionsManagerOverlay">
   <div class="suggestionsManagerModal" role="dialog" aria-modal="true" aria-labelledby="suggestionsManagerTitle">
     <div class="historyHeader">
-      <div><h2 id="suggestionsManagerTitle">Suggestions পরিচালনা</h2><p>সেভ করা নাম্বারের নাম পরিবর্তন অথবা Suggestion থেকে সরিয়ে দিন</p></div>
+      <div><h2 id="suggestionsManagerTitle">⚙️ Settings পরিচালনা</h2><p>সেভ করা নাম্বারের নাম পরিবর্তন অথবা Setting থেকে সরিয়ে দিন</p></div>
       <button aria-label="Close" class="historyClose" id="suggestionsManagerClose">×</button>
     </div>
     <div class="historySearchWrap suggestionsManagerSearchWrap"><span>🔎</span><input id="suggestionsManagerSearch" placeholder="নাম বা নাম্বার দিয়ে খুঁজুন" autocomplete="off"/></div>
-    <div class="suggestionsManagerToolbar">
-      <div class="suggestionsManagerCount" id="suggestionsManagerCount">0 suggestion</div>
-      <div class="suggestionsManagerToolbarActions">
-        <button class="suggestionsExportButton" id="suggestionsExportButton" type="button">⇩ Export All Numbers</button>
-        <button class="suggestionsExportButton summaryPdfButton" id="todaySummaryPdfButton" type="button">▧ Today's Summary PDF</button>
-        <button class="suggestionsExportButton archiveButton" id="dailyArchiveButton" type="button">▦ Daily Archive</button>
-      </div>
-    </div>
+    <div class="suggestionsManagerCount" id="suggestionsManagerCount">0 suggestion</div>
     <div class="suggestionsManagerList" id="suggestionsManagerList"></div>
-  </div>
-</div>
-
-
-<div class="dailyArchiveOverlay" id="dailyArchiveOverlay">
-  <div class="dailyArchiveModal" role="dialog" aria-modal="true" aria-labelledby="dailyArchiveTitle">
-    <div class="historyHeader">
-      <div><h2 id="dailyArchiveTitle">Daily MFS Archive</h2><p>আগের দিনের হিসাব মুছে যাবে না—তারিখ অনুযায়ী এখানে থাকবে</p></div>
-      <button aria-label="Close" class="historyClose" id="dailyArchiveClose">×</button>
-    </div>
-    <div class="dailyArchiveList" id="dailyArchiveList"></div>
   </div>
 </div>
 
