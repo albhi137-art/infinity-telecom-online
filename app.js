@@ -889,7 +889,7 @@ function renderDashboard(){
   if(recent) recent.innerHTML=tx.slice(0,4).map(x=>`<div class="miniRow"><strong class="miniNumberWithIcon">${serviceIconHtml(x.service,'miniServiceIcon')}<span>${x.number}</span></strong><span>${x.service}</span><em>${formatMoney(x.amount)}</em></div>`).join('')||'<div class="emptyMini">No recharge history yet</div>';
   const counts={};
   dashboardRows.forEach(x=>{const c=counts[x.number]||(counts[x.number]={count:0,total:0});c.count++;c.total+=Number(x.amount||0)});
-  const top=Object.entries(counts).sort((a,b)=>b[1].count-a[1].count).slice(0,4);
+  const top=Object.entries(counts).sort((a,b)=>b[1].total-a[1].total || b[1].count-a[1].count).slice(0,4);
   const topEl=document.getElementById('topCustomersList');
   if(topEl) topEl.innerHTML=top.map(([n,v])=>`<div class="miniRow"><strong>${n}</strong><span>${v.count} Times</span><em>${formatMoney(v.total)}</em></div>`).join('')||'<div class="emptyMini">No customer data yet</div>';
   const sums={};
