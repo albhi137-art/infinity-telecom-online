@@ -222,23 +222,57 @@
     <div class="accountsGrid accountsGridPrivateHidden">
       <section class="accountsFormCard">
         <h3>নতুন হিসাব যোগ করুন</h3>
-        <div class="accountsFormGrid">
-          <label>লেনদেনের ধরন<select id="accType"><option value="Personal Cash Out">Personal Cash Out — নিজের নম্বরে টাকা নিন</option><option value="Agent Cash Out">Agent Cash Out — এজেন্ট থেকে ক্যাশ আউট</option><option value="Cash In">Cash In — ক্যাশ ইন</option><option value="Send Money">Send Money — টাকা পাঠানো</option><option value="Mobile Recharge">Mobile Recharge — মোবাইল রিচার্জ</option><option value="Expense">Expense — দোকানের খরচ</option><option value="Adjustment">Adjustment — হিসাব সমন্বয়</option></select></label>
-          <label>সার্ভিস<select id="accService"><option value="bKash">bKash</option><option value="Nagad">Nagad</option><option value="Rocket">Rocket</option><option value="Mobile Recharge">Mobile Recharge</option><option value="Cash">Cash</option></select></label>
-          <label id="accWalletLabel">আমার Personal নম্বর
+        <div class="accountTypeIntro" id="accountTypeIntro">
+          <span class="accountTypeIcon" id="accountTypeIcon">💳</span>
+          <div><strong id="accountTypeTitle">Personal Cash Out</strong><small id="accountTypeHelp">কাস্টমারের টাকা আপনার Personal নম্বরে নিন এবং ক্যাশ দিন</small></div>
+        </div>
+        <div class="accountsFormGrid premiumAccountForm">
+          <label class="accountField accountFieldWide">লেনদেনের ধরন
+            <select id="accType">
+              <option value="Personal Cash Out">Personal Cash Out</option>
+              <option value="Agent Cash Out">Agent Cash Out</option>
+              <option value="Cash In">Cash In</option>
+              <option value="Send Money">Send Money</option>
+              <option value="Mobile Recharge">Mobile Recharge</option>
+              <option value="Expense">দোকানের খরচ</option>
+              <option value="Adjustment">ক্যাশ সমন্বয়</option>
+            </select>
+          </label>
+          <label class="accountField" id="accServiceLabel">সার্ভিস
+            <select id="accService"><option value="bKash">bKash</option><option value="Nagad">Nagad</option><option value="Rocket">Rocket</option><option value="Mobile Recharge">Mobile Recharge</option><option value="Cash">Cash</option></select>
+          </label>
+          <label class="accountField accountFieldWide" id="accWalletLabel">আমার যে Personal নম্বরে টাকা এসেছে
             <div class="accWalletPicker">
               <select id="accWalletNumber"><option value="">নম্বর নির্বাচন করুন</option></select>
               <button id="accAddWallet" type="button" title="নতুন Personal নম্বর যোগ করুন">+ নম্বর</button>
             </div>
           </label>
-          <label>কাস্টমার যত টাকা Cash Out করবে<input id="accAmount" type="number" min="0" step="0.01" placeholder="যেমন 1000"/></label>
-          <label id="accReceivedLabel">Personal নম্বরে মোট এসেছে<input id="accReceived" type="number" min="0" step="0.01" placeholder="যেমন 1018.50"/></label>
-          <label id="accRateLabel">প্রতি হাজারে চার্জ<input id="accRate" type="number" min="0" step="0.01" placeholder="18.50"/></label>
+          <label class="accountField" id="accCustomerLabel">কাস্টমারের নম্বর
+            <input id="accCustomerNumber" inputmode="numeric" maxlength="11" placeholder="01XXXXXXXXX"/>
+          </label>
+          <label class="accountField" id="accAmountLabel"><span id="accAmountText">Cash Out Amount (৳)</span>
+            <input id="accAmount" type="number" min="0" step="0.01" placeholder="যেমন 1000"/>
+          </label>
+          <label class="accountField" id="accReceivedLabel">Personal নম্বরে মোট এসেছে (৳)
+            <input id="accReceived" type="number" min="0" step="0.01" placeholder="যেমন 1018.50"/>
+          </label>
+          <label class="accountField" id="accRateLabel">প্রতি হাজারে চার্জ (৳)
+            <input id="accRate" type="number" min="0" step="0.01" placeholder="18.50"/>
+          </label>
+          <label class="accountField" id="accManualProfitLabel">লাভ/কমিশন (৳)
+            <input id="accManualProfit" type="number" min="0" step="0.01" placeholder="যেমন 10"/>
+          </label>
+          <label class="accountField accountFieldWide" id="accDetailsLabel">বিস্তারিত (ঐচ্ছিক)
+            <input id="accDetails" placeholder="যেমন দোকানের বিদ্যুৎ বিল"/>
+          </label>
         </div>
-        <div class="personalHint" id="personalHint">
-          <strong>হিসাবের প্রিভিউ</strong><br>
-          নির্বাচিত Personal নম্বরে এসেছে: <b id="accWalletReceive">৳0</b> &nbsp;•&nbsp; কাস্টমারকে ক্যাশ দেবেন: <b id="accCashGiven">৳0</b><br>
-          এই লেনদেনে লাভ: <b id="accProfitPreview">৳0</b>
+        <div class="personalHint premiumPreview" id="personalHint">
+          <strong>হিসাবের প্রিভিউ</strong>
+          <div class="previewMetrics">
+            <span><small id="accPreviewOneLabel">Personal-এ যোগ হবে</small><b id="accWalletReceive">৳0</b></span>
+            <span><small id="accPreviewTwoLabel">ক্যাশ কমবে</small><b id="accCashGiven">৳0</b></span>
+            <span><small>লাভ/ক্ষতি</small><b id="accProfitPreview">৳0</b></span>
+          </div>
         </div>
         <button class="accPrimary" id="accSave" type="button">হিসাব সেভ করুন</button>
       </section>

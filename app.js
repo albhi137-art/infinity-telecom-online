@@ -1072,6 +1072,14 @@ const accReceivedLabel=document.getElementById('accReceivedLabel');
 const accAmount=document.getElementById('accAmount');
 const accRate=document.getElementById('accRate');
 const accRateLabel=document.getElementById('accRateLabel');
+const accServiceLabel=document.getElementById('accServiceLabel');
+const accCustomerLabel=document.getElementById('accCustomerLabel');
+const accCustomerNumber=document.getElementById('accCustomerNumber');
+const accManualProfitLabel=document.getElementById('accManualProfitLabel');
+const accManualProfit=document.getElementById('accManualProfit');
+const accDetailsLabel=document.getElementById('accDetailsLabel');
+const accDetails=document.getElementById('accDetails');
+const accAmountText=document.getElementById('accAmountText');
 const accOpeningCash=document.getElementById('accOpeningCash');
 const accActualCash=document.getElementById('accActualCash');
 const cashCheckResult=document.getElementById('cashCheckResult');
@@ -1095,14 +1103,14 @@ function todayAccounts(){const k=localDateKey();return readAccounts().filter(x=>
 function accountMoney(v){return '৳'+Number(v||0).toLocaleString('en-US',{maximumFractionDigits:2})}
 function escapeAccountHtml(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
 function accountCalculation(){
-  const type=accType.value,amount=Number(accAmount.value||0),rate=Number(accRate.value||0),received=Number(accReceived?.value||0);
+  const type=accType.value,amount=Number(accAmount.value||0),rate=Number(accRate.value||0),received=Number(accReceived?.value||0),manualProfit=Number(accManualProfit?.value||0);
   let charge=0,profit=0,cashDelta=0,walletReceive=0;
   if(type==='Personal Cash Out'){
     walletReceive=received||amount+((amount*rate)/1000);charge=Math.max(0,walletReceive-amount);profit=walletReceive-amount;cashDelta=-amount;
   }else if(type==='Agent Cash Out'){
     charge=(amount*rate)/1000;profit=charge;cashDelta=-amount;walletReceive=amount+charge;
   }else if(type==='Cash In'||type==='Send Money'||type==='Mobile Recharge'){
-    profit=0;cashDelta=amount;walletReceive=0;
+    profit=manualProfit;cashDelta=amount;walletReceive=0;
   }else if(type==='Expense'){
     profit=-amount;cashDelta=-amount;walletReceive=0;
   }else if(type==='Adjustment'){
@@ -1110,17 +1118,43 @@ function accountCalculation(){
   }
   return {amount,rate,charge,profit,cashDelta,walletReceive};
 }
+const accountTypeUi={
+  'Personal Cash Out':{icon:'💳',title:'Personal Cash Out',help:'কাস্টমারের টাকা আপনার Personal নম্বরে নিন এবং সমপরিমাণ ক্যাশ দিন',amount:'Cash Out Amount (৳)',one:'Personal-এ যোগ হবে',two:'ক্যাশ কমবে'},
+  'Agent Cash Out':{icon:'🏧',title:'Agent Cash Out',help:'এজেন্ট অ্যাকাউন্ট থেকে কাস্টমারকে ক্যাশ দিন',amount:'Cash Out Amount (৳)',one:'চার্জসহ লেনদেন',two:'ক্যাশ কমবে'},
+  'Cash In':{icon:'📥',title:'Cash In',help:'কাস্টমারের অ্যাকাউন্টে টাকা পাঠিয়ে ক্যাশ গ্রহণ করুন',amount:'Cash In Amount (৳)',one:'লেনদেনের পরিমাণ',two:'ক্যাশ বাড়বে'},
+  'Send Money':{icon:'📤',title:'Send Money',help:'কাস্টমারের হয়ে অন্য নম্বরে টাকা পাঠানোর হিসাব রাখুন',amount:'Send Money Amount (৳)',one:'লেনদেনের পরিমাণ',two:'ক্যাশ বাড়বে'},
+  'Mobile Recharge':{icon:'⚡',title:'Mobile Recharge',help:'কাস্টমারের নম্বর, রিচার্জের টাকা ও আপনার লাভ লিখুন',amount:'Recharge Amount (৳)',one:'রিচার্জের পরিমাণ',two:'ক্যাশ বাড়বে'},
+  'Expense':{icon:'🧾',title:'দোকানের খরচ',help:'দোকানের যেকোনো খরচ লিখে রাখুন',amount:'খরচের পরিমাণ (৳)',one:'খরচ',two:'ক্যাশ কমবে'},
+  'Adjustment':{icon:'⚖️',title:'ক্যাশ সমন্বয়',help:'ক্যাশ বাড়লে ধনাত্মক, কমলে ঋণাত্মক পরিমাণ লিখুন',amount:'ক্যাশ পরিবর্তন (৳)',one:'সমন্বয়',two:'ক্যাশ পরিবর্তন'}
+};
 function updateAccountForm(){
-  const isPersonal=accType.value==='Personal Cash Out';
-  const cashOut=isPersonal||accType.value==='Agent Cash Out';
-  accRateLabel.hidden=!cashOut;
+  const type=accType.value,isPersonal=type==='Personal Cash Out',cashOut=isPersonal||type==='Agent Cash Out';
+  const needsCustomer=['Cash In','Send Money','Mobile Recharge'].includes(type);
+  const needsManualProfit=['Cash In','Send Money','Mobile Recharge'].includes(type);
+  const needsDetails=['Expense','Adjustment'].includes(type);
+  const config=accountTypeUi[type]||accountTypeUi['Personal Cash Out'];
+  document.getElementById('accountTypeIcon').textContent=config.icon;
+  document.getElementById('accountTypeTitle').textContent=config.title;
+  document.getElementById('accountTypeHelp').textContent=config.help;
+  if(accAmountText)accAmountText.textContent=config.amount;
   if(accWalletLabel)accWalletLabel.hidden=!isPersonal;
   if(accReceivedLabel)accReceivedLabel.hidden=!isPersonal;
+  if(accRateLabel)accRateLabel.hidden=!cashOut;
+  if(accCustomerLabel)accCustomerLabel.hidden=!needsCustomer;
+  if(accManualProfitLabel)accManualProfitLabel.hidden=!needsManualProfit;
+  if(accDetailsLabel)accDetailsLabel.hidden=!needsDetails;
+  if(accServiceLabel)accServiceLabel.hidden=type==='Expense'||type==='Adjustment';
+  if(type==='Mobile Recharge'&&accService.value!=='Mobile Recharge')accService.value='Mobile Recharge';
+  if(type!=='Mobile Recharge'&&accService.value==='Mobile Recharge')accService.value='bKash';
+  accAmount.removeAttribute('min');
+  if(type!=='Adjustment')accAmount.min='0';
   if(cashOut&&!accRate.value)accRate.value=accountDefaultRates[accService.value]??0;
   if(isPersonal&&accAmount.value&&!accReceived.value){const a=Number(accAmount.value||0),r=Number(accRate.value||0);accReceived.placeholder=String((a+(a*r/1000)).toFixed(2));}
   const c=accountCalculation();
-  document.getElementById('accWalletReceive').textContent=isPersonal?accountMoney(c.walletReceive):'—';
-  document.getElementById('accCashGiven').textContent=cashOut?accountMoney(c.amount):accountMoney(Math.abs(c.cashDelta));
+  document.getElementById('accPreviewOneLabel').textContent=config.one;
+  document.getElementById('accPreviewTwoLabel').textContent=config.two;
+  document.getElementById('accWalletReceive').textContent=isPersonal?accountMoney(c.walletReceive):accountMoney(c.amount);
+  document.getElementById('accCashGiven').textContent=accountMoney(Math.abs(c.cashDelta));
   document.getElementById('accProfitPreview').textContent=(c.profit<0?'-':'')+accountMoney(Math.abs(c.profit));
   const hint=document.getElementById('personalHint');
   if(hint)hint.style.borderColor=c.profit<0?'rgba(248,113,113,.45)':'rgba(96,165,250,.35)';
@@ -1159,7 +1193,7 @@ accountsClose?.addEventListener('click',()=>accountsOverlay.classList.remove('sh
 accountsOverlay?.addEventListener('click',event=>{if(event.target===accountsOverlay)accountsOverlay.classList.remove('show')});
 accType?.addEventListener('change',updateAccountForm);
 accService?.addEventListener('change',()=>{if(accType.value==='Personal Cash Out'||accType.value==='Agent Cash Out')accRate.value=accountDefaultRates[accService.value]??0;renderAccountWallets();updateAccountForm()});
-[accAmount,accRate,accReceived].forEach(el=>el?.addEventListener('input',updateAccountForm));
+[accAmount,accRate,accReceived,accManualProfit].forEach(el=>el?.addEventListener('input',updateAccountForm));
 accAddWallet?.addEventListener('click',()=>{
   const service=accService.value;
   const number=prompt(`${service} Personal নম্বর লিখুন (১১ ডিজিট):`)?.replace(/\D/g,'').slice(0,11)||'';
@@ -1170,12 +1204,15 @@ accAddWallet?.addEventListener('click',()=>{
   writeAccountWallets(rows);renderAccountWallets();accWalletNumber.value=number;
 });
 document.getElementById('accSave')?.addEventListener('click',()=>{
-  const c=accountCalculation();
-  if(c.amount<=0){alert('লেনদেনের টাকার পরিমাণ লিখুন।');return}
-  if(accType.value==='Personal Cash Out'&&!accWalletNumber.value){alert('আপনার যে Personal নম্বরে টাকা এসেছে, সেটি নির্বাচন করুন।');return}
-  if(accType.value==='Personal Cash Out'&&Number(accReceived.value||0)<=0){alert('Personal নম্বরে মোট কত টাকা এসেছে লিখুন।');return}
-  saveAccountRow({type:accType.value,service:accService.value,number:accType.value==='Personal Cash Out'?accWalletNumber.value:'',walletNumber:accWalletNumber.value,amount:c.amount,rate:c.rate,charge:c.charge,cost:0,profit:c.profit,cashDelta:c.cashDelta,walletReceive:c.walletReceive,note:''});
-  [accAmount,accReceived].forEach(el=>{if(el)el.value=''});updateAccountForm();
+  const c=accountCalculation(),type=accType.value;
+  if(type==='Adjustment'&&c.amount===0){alert('ক্যাশ পরিবর্তনের পরিমাণ লিখুন।');return}
+  if(type!=='Adjustment'&&c.amount<=0){alert('লেনদেনের টাকার পরিমাণ লিখুন।');return}
+  if(type==='Personal Cash Out'&&!accWalletNumber.value){alert('আপনার যে Personal নম্বরে টাকা এসেছে, সেটি নির্বাচন করুন।');return}
+  if(type==='Personal Cash Out'&&Number(accReceived.value||0)<=0){alert('Personal নম্বরে মোট কত টাকা এসেছে লিখুন।');return}
+  if(['Cash In','Send Money','Mobile Recharge'].includes(type)&&accCustomerNumber.value.replace(/\D/g,'').length!==11){alert('কাস্টমারের সঠিক ১১ ডিজিটের নম্বর লিখুন।');return}
+  const shownNumber=type==='Personal Cash Out'?accWalletNumber.value:(accCustomerNumber.value||'');
+  saveAccountRow({type,service:type==='Mobile Recharge'?'Mobile Recharge':accService.value,number:shownNumber,walletNumber:accWalletNumber.value,amount:c.amount,rate:c.rate,charge:c.charge,cost:0,profit:c.profit,cashDelta:c.cashDelta,walletReceive:c.walletReceive,note:accDetails?.value||''});
+  [accAmount,accReceived,accManualProfit,accCustomerNumber,accDetails].forEach(el=>{if(el)el.value=''});updateAccountForm();
 });
 function updateCashCheck(){
   const rows=todayAccounts(),opening=Number(accOpeningCash.value||0),actual=Number(accActualCash.value||0),expected=opening+rows.reduce((sum,x)=>sum+Number(x.cashDelta||0),0),diff=actual-expected;
