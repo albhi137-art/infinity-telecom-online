@@ -1066,10 +1066,7 @@ const accReceived=document.getElementById('accReceived');
 const accReceivedLabel=document.getElementById('accReceivedLabel');
 const accAmount=document.getElementById('accAmount');
 const accRate=document.getElementById('accRate');
-const accManualProfit=document.getElementById('accManualProfit');
 const accRateLabel=document.getElementById('accRateLabel');
-const accManualProfitLabel=document.getElementById('accManualProfitLabel');
-const accNote=document.getElementById('accNote');
 const accOpeningCash=document.getElementById('accOpeningCash');
 const accActualCash=document.getElementById('accActualCash');
 const cashCheckResult=document.getElementById('cashCheckResult');
@@ -1100,18 +1097,18 @@ function accountCalculation(){
   }else if(type==='Agent Cash Out'){
     charge=(amount*rate)/1000;profit=charge;cashDelta=-amount;walletReceive=amount+charge;
   }else if(type==='Cash In'||type==='Send Money'||type==='Mobile Recharge'){
-    profit=Number(accManualProfit.value||0);cashDelta=amount;walletReceive=0;
+    profit=0;cashDelta=amount;walletReceive=0;
   }else if(type==='Expense'){
     profit=-amount;cashDelta=-amount;walletReceive=0;
   }else if(type==='Adjustment'){
-    profit=Number(accManualProfit.value||0);cashDelta=amount;walletReceive=0;
+    profit=0;cashDelta=amount;walletReceive=0;
   }
   return {amount,rate,charge,profit,cashDelta,walletReceive};
 }
 function updateAccountForm(){
   const isPersonal=accType.value==='Personal Cash Out';
   const cashOut=isPersonal||accType.value==='Agent Cash Out';
-  accRateLabel.hidden=!cashOut;accManualProfitLabel.hidden=cashOut||accType.value==='Expense';
+  accRateLabel.hidden=!cashOut;
   if(accWalletLabel)accWalletLabel.hidden=!isPersonal;
   if(accReceivedLabel)accReceivedLabel.hidden=!isPersonal;
   if(cashOut&&!accRate.value)accRate.value=accountDefaultRates[accService.value]??0;
@@ -1149,7 +1146,7 @@ accountsClose?.addEventListener('click',()=>accountsOverlay.classList.remove('sh
 accountsOverlay?.addEventListener('click',event=>{if(event.target===accountsOverlay)accountsOverlay.classList.remove('show')});
 accType?.addEventListener('change',updateAccountForm);
 accService?.addEventListener('change',()=>{if(accType.value==='Personal Cash Out'||accType.value==='Agent Cash Out')accRate.value=accountDefaultRates[accService.value]??0;renderAccountWallets();updateAccountForm()});
-[accAmount,accRate,accReceived,accManualProfit].forEach(el=>el?.addEventListener('input',updateAccountForm));
+[accAmount,accRate,accReceived].forEach(el=>el?.addEventListener('input',updateAccountForm));
 accAddWallet?.addEventListener('click',()=>{
   const service=accService.value;
   const number=prompt(`${service} Personal নম্বর লিখুন (১১ ডিজিট):`)?.replace(/\D/g,'').slice(0,11)||'';
@@ -1164,8 +1161,8 @@ document.getElementById('accSave')?.addEventListener('click',()=>{
   if(c.amount<=0){alert('লেনদেনের টাকার পরিমাণ লিখুন।');return}
   if(accType.value==='Personal Cash Out'&&!accWalletNumber.value){alert('আপনার যে Personal নম্বরে টাকা এসেছে, সেটি নির্বাচন করুন।');return}
   if(accType.value==='Personal Cash Out'&&Number(accReceived.value||0)<=0){alert('Personal নম্বরে মোট কত টাকা এসেছে লিখুন।');return}
-  saveAccountRow({type:accType.value,service:accService.value,number:accType.value==='Personal Cash Out'?accWalletNumber.value:'',walletNumber:accWalletNumber.value,amount:c.amount,rate:c.rate,charge:c.charge,cost:0,profit:c.profit,cashDelta:c.cashDelta,walletReceive:c.walletReceive,note:accNote.value.trim()});
-  [accAmount,accReceived,accManualProfit,accNote].forEach(el=>el.value='');updateAccountForm();
+  saveAccountRow({type:accType.value,service:accService.value,number:accType.value==='Personal Cash Out'?accWalletNumber.value:'',walletNumber:accWalletNumber.value,amount:c.amount,rate:c.rate,charge:c.charge,cost:0,profit:c.profit,cashDelta:c.cashDelta,walletReceive:c.walletReceive,note:''});
+  [accAmount,accReceived].forEach(el=>{if(el)el.value=''});updateAccountForm();
 });
 function updateCashCheck(){
   const rows=todayAccounts(),opening=Number(accOpeningCash.value||0),actual=Number(accActualCash.value||0),expected=opening+rows.reduce((sum,x)=>sum+Number(x.cashDelta||0),0),diff=actual-expected;
