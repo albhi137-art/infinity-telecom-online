@@ -27,7 +27,6 @@
 <header class="topbar">
 <div class="brand"><span class="brandMark">ϟ</span><span>Infinity Telecom</span></div>
 <nav class="topActions">
-<button class="suggestionsManageButton accountsButton" id="accountsButton" type="button">▦ Accounts</button>
 <button class="suggestionsManageButton" id="suggestionsManageButton" type="button">⚙ Settings</button>
 <button class="themeButton" id="themeButton" type="button">☀️ Light</button>
 <button class="colorButton" id="colorButton" type="button">🎨 Color</button>
@@ -200,95 +199,20 @@
   </div>
 </div>
 
-<div class="accountsOverlay" id="accountsOverlay">
-  <div class="accountsModal" role="dialog" aria-modal="true" aria-labelledby="accountsTitle">
-    <div class="historyHeader">
-      <div><h2 id="accountsTitle">Infinity Accounts</h2><p>Personal Cash Out, লাভ এবং ক্যাশ গরমিলের সহজ হিসাব</p></div>
-      <div class="accountsHeaderActions">
-        <button class="personalAccountsToggle" id="personalAccountsToggle" type="button" aria-expanded="false">👁 Personal হিসাব</button>
-        <button aria-label="Close" class="historyClose" id="accountsClose">×</button>
-      </div>
+<!-- bKash SMS live alert: hidden until a verified SMS arrives -->
+<div class="smsMoneyAlertOverlay" id="smsMoneyAlertOverlay" aria-hidden="true">
+  <div class="smsMoneyAlertCard" role="alertdialog" aria-modal="true" aria-labelledby="smsMoneyAlertTitle">
+    <div class="smsMoneyAlertBrand">Infinity Telecom</div>
+    <div class="smsMoneyAlertIcon">৳</div>
+    <h2 id="smsMoneyAlertTitle">MONEY RECEIVED</h2>
+    <div class="smsVerifiedBadge">● Verified bKash SMS</div>
+    <div class="smsMoneyAlertDetails">
+      <div><span>Amount</span><strong id="smsAlertAmount">৳0.00</strong></div>
+      <div><span>Number</span><strong id="smsAlertNumber">—</strong></div>
+      <div><span>Time</span><strong id="smsAlertTime">—</strong></div>
+      <div><span>TrxID</span><strong id="smsAlertTrxId">—</strong></div>
     </div>
-    <div class="personalAccountsPrivate" id="personalAccountsPrivate">
-    <div class="accountsSummary">
-      <div><small>আজ মোট লেনদেন</small><strong id="accTotal">৳0</strong></div>
-      <div><small>আজ মোট লাভ</small><strong id="accProfit">৳0</strong></div>
-      <div><small>আজ মোট খরচ/ক্ষতি</small><strong id="accLoss">৳0</strong></div>
-      <div><small>নেট লাভ</small><strong id="accNet">৳0</strong></div>
-      <div><small>ক্যাশ থাকার কথা</small><strong id="accExpectedCash">৳0</strong></div>
-      <div><small>ক্যাশ গরমিল</small><strong id="accDifference">৳0</strong></div>
-    </div>
-    </div>
-    <div class="accountsGrid accountsGridPrivateHidden">
-      <section class="accountsFormCard">
-        <h3>নতুন হিসাব যোগ করুন</h3>
-        <div class="accountTypeIntro" id="accountTypeIntro">
-          <span class="accountTypeIcon" id="accountTypeIcon">💳</span>
-          <div><strong id="accountTypeTitle">Personal Cash Out</strong><small id="accountTypeHelp">কাস্টমারের টাকা আপনার Personal নম্বরে নিন এবং ক্যাশ দিন</small></div>
-        </div>
-        <div class="accountsFormGrid premiumAccountForm">
-          <label class="accountField accountFieldWide">লেনদেনের ধরন
-            <select id="accType">
-              <option value="Personal Cash Out">Personal Cash Out</option>
-              <option value="Agent Cash Out">Agent Cash Out</option>
-              <option value="Cash In">Cash In</option>
-              <option value="Send Money">Send Money</option>
-              <option value="Mobile Recharge">Mobile Recharge</option>
-              <option value="Expense">দোকানের খরচ</option>
-              <option value="Adjustment">ক্যাশ সমন্বয়</option>
-            </select>
-          </label>
-          <label class="accountField" id="accServiceLabel">সার্ভিস
-            <select id="accService"><option value="bKash">bKash</option><option value="Nagad">Nagad</option><option value="Rocket">Rocket</option><option value="Mobile Recharge">Mobile Recharge</option><option value="Cash">Cash</option></select>
-          </label>
-          <label class="accountField accountFieldWide" id="accWalletLabel">আমার যে Personal নম্বরে টাকা এসেছে
-            <div class="accWalletPicker">
-              <select id="accWalletNumber"><option value="">নম্বর নির্বাচন করুন</option></select>
-              <button id="accAddWallet" type="button" title="নতুন Personal নম্বর যোগ করুন">+ নম্বর</button>
-            </div>
-          </label>
-          <label class="accountField" id="accCustomerLabel">কাস্টমারের নম্বর
-            <input id="accCustomerNumber" inputmode="numeric" maxlength="11" placeholder="01XXXXXXXXX"/>
-          </label>
-          <label class="accountField" id="accAmountLabel"><span id="accAmountText">Cash Out Amount (৳)</span>
-            <input id="accAmount" type="number" min="0" step="0.01" placeholder="যেমন 1000"/>
-          </label>
-          <label class="accountField" id="accReceivedLabel">Personal নম্বরে মোট এসেছে (৳)
-            <input id="accReceived" type="number" min="0" step="0.01" placeholder="যেমন 1018.50"/>
-          </label>
-          <label class="accountField" id="accRateLabel">প্রতি হাজারে চার্জ (৳)
-            <input id="accRate" type="number" min="0" step="0.01" placeholder="18.50"/>
-          </label>
-          <label class="accountField" id="accManualProfitLabel">লাভ/কমিশন (৳)
-            <input id="accManualProfit" type="number" min="0" step="0.01" placeholder="যেমন 10"/>
-          </label>
-          <label class="accountField accountFieldWide" id="accDetailsLabel">বিস্তারিত (ঐচ্ছিক)
-            <input id="accDetails" placeholder="যেমন দোকানের বিদ্যুৎ বিল"/>
-          </label>
-        </div>
-        <div class="personalHint premiumPreview" id="personalHint">
-          <strong>হিসাবের প্রিভিউ</strong>
-          <div class="previewMetrics">
-            <span><small id="accPreviewOneLabel">Personal-এ যোগ হবে</small><b id="accWalletReceive">৳0</b></span>
-            <span><small id="accPreviewTwoLabel">ক্যাশ কমবে</small><b id="accCashGiven">৳0</b></span>
-            <span><small>লাভ/ক্ষতি</small><b id="accProfitPreview">৳0</b></span>
-          </div>
-        </div>
-        <button class="accPrimary" id="accSave" type="button">হিসাব সেভ করুন</button>
-      </section>
-      <section class="cashCheckCard personalAccountsPrivate" id="personalCashCheck">
-        <h3>দিনের ক্যাশ মিলান</h3>
-        <label>দিনের শুরুর ক্যাশ<input id="accOpeningCash" type="number" min="0" step="0.01" placeholder="0"/></label>
-        <label>এখন বাস্তবে হাতে ক্যাশ<input id="accActualCash" type="number" min="0" step="0.01" placeholder="0"/></label>
-        <div class="cashCheckResult" id="cashCheckResult">শুরুর ক্যাশ এবং বর্তমান ক্যাশ লিখুন।</div>
-        <button class="accSecondary" id="accSaveCash" type="button">ক্যাশ হিসাব সেভ</button>
-        <button class="accCloseDay" id="accCloseDay" type="button">দিন শেষ করুন (Day Close)</button>
-      </section>
-    </div>
-    <div class="personalAccountsPrivate" id="personalLedgerSection">
-      <div class="accountsLedgerHead"><h3>আজকের হিসাব</h3><button id="accExportCsv" type="button">CSV Export</button></div>
-      <div class="accountsLedger" id="accountsLedger"></div>
-    </div>
+    <button class="smsMoneyAlertOk" id="smsMoneyAlertOk" type="button">OK</button>
   </div>
 </div>
 <script src="app.js" type="module"></script></body>
