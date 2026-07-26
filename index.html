@@ -204,8 +204,12 @@
   <div class="accountsModal" role="dialog" aria-modal="true" aria-labelledby="accountsTitle">
     <div class="historyHeader">
       <div><h2 id="accountsTitle">Infinity Accounts</h2><p>Personal Cash Out, লাভ এবং ক্যাশ গরমিলের সহজ হিসাব</p></div>
-      <button aria-label="Close" class="historyClose" id="accountsClose">×</button>
+      <div class="accountsHeaderActions">
+        <button class="personalAccountsToggle" id="personalAccountsToggle" type="button" aria-expanded="false">👁 Personal হিসাব</button>
+        <button aria-label="Close" class="historyClose" id="accountsClose">×</button>
+      </div>
     </div>
+    <div class="personalAccountsPrivate" id="personalAccountsPrivate">
     <div class="accountsSummary">
       <div><small>আজ মোট লেনদেন</small><strong id="accTotal">৳0</strong></div>
       <div><small>আজ মোট লাভ</small><strong id="accProfit">৳0</strong></div>
@@ -214,7 +218,8 @@
       <div><small>ক্যাশ থাকার কথা</small><strong id="accExpectedCash">৳0</strong></div>
       <div><small>ক্যাশ গরমিল</small><strong id="accDifference">৳0</strong></div>
     </div>
-    <div class="accountsGrid">
+    </div>
+    <div class="accountsGrid accountsGridPrivateHidden">
       <section class="accountsFormCard">
         <h3>নতুন হিসাব যোগ করুন</h3>
         <div class="accountsFormGrid">
@@ -237,7 +242,7 @@
         </div>
         <button class="accPrimary" id="accSave" type="button">হিসাব সেভ করুন</button>
       </section>
-      <section class="cashCheckCard">
+      <section class="cashCheckCard personalAccountsPrivate" id="personalCashCheck">
         <h3>দিনের ক্যাশ মিলান</h3>
         <label>দিনের শুরুর ক্যাশ<input id="accOpeningCash" type="number" min="0" step="0.01" placeholder="0"/></label>
         <label>এখন বাস্তবে হাতে ক্যাশ<input id="accActualCash" type="number" min="0" step="0.01" placeholder="0"/></label>
@@ -246,8 +251,10 @@
         <button class="accCloseDay" id="accCloseDay" type="button">দিন শেষ করুন (Day Close)</button>
       </section>
     </div>
-    <div class="accountsLedgerHead"><h3>আজকের হিসাব</h3><button id="accExportCsv" type="button">CSV Export</button></div>
-    <div class="accountsLedger" id="accountsLedger"></div>
+    <div class="personalAccountsPrivate" id="personalLedgerSection">
+      <div class="accountsLedgerHead"><h3>আজকের হিসাব</h3><button id="accExportCsv" type="button">CSV Export</button></div>
+      <div class="accountsLedger" id="accountsLedger"></div>
+    </div>
   </div>
 </div>
 <script src="app.js" type="module"></script></body>

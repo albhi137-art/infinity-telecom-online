@@ -1057,6 +1057,11 @@ const accountsButton=document.getElementById('accountsButton');
 const accountsOverlay=document.getElementById('accountsOverlay');
 const accountsClose=document.getElementById('accountsClose');
 const accountsLedger=document.getElementById('accountsLedger');
+const personalAccountsToggle=document.getElementById('personalAccountsToggle');
+const personalAccountsPrivate=document.getElementById('personalAccountsPrivate');
+const personalCashCheck=document.getElementById('personalCashCheck');
+const personalLedgerSection=document.getElementById('personalLedgerSection');
+const accountsGridPrivate=document.querySelector('.accountsGridPrivateHidden');
 const accType=document.getElementById('accType');
 const accService=document.getElementById('accService');
 const accWalletNumber=document.getElementById('accWalletNumber');
@@ -1141,7 +1146,15 @@ function autoAccountFromRecharge(number,amount,service){
   const rows=readAccounts();if(rows.some(x=>x.signature===signature))return;
   rows.push({id:(crypto.randomUUID?.()||String(Date.now()+Math.random())),timestamp:new Date().toISOString(),dateKey:localDateKey(),signature,type:'App Transaction',service,number,amount:Number(amount),charge:0,cost:0,profit:0,cashDelta:0,note:'Telegram সফল লেনদেন'});writeAccounts(rows);
 }
-accountsButton?.addEventListener('click',()=>{accountsOverlay.classList.add('show');renderAccountWallets();renderAccounts();updateAccountForm()});
+function setPersonalAccountsVisible(visible){
+  [personalAccountsPrivate,personalCashCheck,personalLedgerSection].forEach(el=>el?.classList.toggle('personal-visible',visible));
+  accountsGridPrivate?.classList.toggle('private-visible',visible);
+  personalAccountsToggle?.classList.toggle('active',visible);
+  personalAccountsToggle?.setAttribute('aria-expanded',String(visible));
+  if(personalAccountsToggle)personalAccountsToggle.textContent=visible?'🙈 Personal হিসাব লুকান':'👁 Personal হিসাব';
+}
+personalAccountsToggle?.addEventListener('click',()=>setPersonalAccountsVisible(personalAccountsToggle.getAttribute('aria-expanded')!=='true'));
+accountsButton?.addEventListener('click',()=>{setPersonalAccountsVisible(false);accountsOverlay.classList.add('show');renderAccountWallets();renderAccounts();updateAccountForm()});
 accountsClose?.addEventListener('click',()=>accountsOverlay.classList.remove('show'));
 accountsOverlay?.addEventListener('click',event=>{if(event.target===accountsOverlay)accountsOverlay.classList.remove('show')});
 accType?.addEventListener('change',updateAccountForm);
