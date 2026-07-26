@@ -1059,7 +1059,11 @@ const accountsClose=document.getElementById('accountsClose');
 const accountsLedger=document.getElementById('accountsLedger');
 const accType=document.getElementById('accType');
 const accService=document.getElementById('accService');
-const accNumber=document.getElementById('accNumber');
+const accWalletNumber=document.getElementById('accWalletNumber');
+const accAddWallet=document.getElementById('accAddWallet');
+const accWalletLabel=document.getElementById('accWalletLabel');
+const accReceived=document.getElementById('accReceived');
+const accReceivedLabel=document.getElementById('accReceivedLabel');
 const accAmount=document.getElementById('accAmount');
 const accRate=document.getElementById('accRate');
 const accManualProfit=document.getElementById('accManualProfit');
@@ -1076,14 +1080,23 @@ function readAccounts(){try{return JSON.parse(localStorage.getItem(accountKey('l
 function writeAccounts(rows){localStorage.setItem(accountKey('ledger'),JSON.stringify(rows))}
 function readCash(){try{return JSON.parse(localStorage.getItem(accountKey('cash'))||'{}')}catch{return {}}}
 function writeCash(data){localStorage.setItem(accountKey('cash'),JSON.stringify(data))}
+function readAccountWallets(){try{return JSON.parse(localStorage.getItem(accountKey('wallets'))||'[]')}catch{return []}}
+function writeAccountWallets(rows){localStorage.setItem(accountKey('wallets'),JSON.stringify(rows))}
+function renderAccountWallets(){
+  if(!accWalletNumber)return;
+  const service=accService?.value||'bKash',selected=accWalletNumber.value;
+  const rows=readAccountWallets().filter(x=>x.service===service);
+  accWalletNumber.innerHTML='<option value="">নম্বর নির্বাচন করুন</option>'+rows.map(x=>`<option value="${escapeAccountHtml(x.number)}">${escapeAccountHtml(x.label||x.number)} — ${escapeAccountHtml(x.number)}</option>`).join('');
+  if(rows.some(x=>x.number===selected))accWalletNumber.value=selected;
+}
 function todayAccounts(){const k=localDateKey();return readAccounts().filter(x=>x.dateKey===k)}
 function accountMoney(v){return '৳'+Number(v||0).toLocaleString('en-US',{maximumFractionDigits:2})}
 function escapeAccountHtml(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
 function accountCalculation(){
-  const type=accType.value,amount=Number(accAmount.value||0),rate=Number(accRate.value||0);
+  const type=accType.value,amount=Number(accAmount.value||0),rate=Number(accRate.value||0),received=Number(accReceived?.value||0);
   let charge=0,profit=0,cashDelta=0,walletReceive=0;
   if(type==='Personal Cash Out'){
-    charge=(amount*rate)/1000;profit=charge;cashDelta=-amount;walletReceive=amount+charge;
+    walletReceive=received||amount+((amount*rate)/1000);charge=Math.max(0,walletReceive-amount);profit=walletReceive-amount;cashDelta=-amount;
   }else if(type==='Agent Cash Out'){
     charge=(amount*rate)/1000;profit=charge;cashDelta=-amount;walletReceive=amount+charge;
   }else if(type==='Cash In'||type==='Send Money'||type==='Mobile Recharge'){
@@ -1096,12 +1109,16 @@ function accountCalculation(){
   return {amount,rate,charge,profit,cashDelta,walletReceive};
 }
 function updateAccountForm(){
-  const personal=accType.value==='Personal Cash Out'||accType.value==='Agent Cash Out';
-  accRateLabel.hidden=!personal;accManualProfitLabel.hidden=personal||accType.value==='Expense';
-  if(personal&&!accRate.value)accRate.value=accountDefaultRates[accService.value]??0;
+  const isPersonal=accType.value==='Personal Cash Out';
+  const cashOut=isPersonal||accType.value==='Agent Cash Out';
+  accRateLabel.hidden=!cashOut;accManualProfitLabel.hidden=cashOut||accType.value==='Expense';
+  if(accWalletLabel)accWalletLabel.hidden=!isPersonal;
+  if(accReceivedLabel)accReceivedLabel.hidden=!isPersonal;
+  if(cashOut&&!accRate.value)accRate.value=accountDefaultRates[accService.value]??0;
+  if(isPersonal&&accAmount.value&&!accReceived.value){const a=Number(accAmount.value||0),r=Number(accRate.value||0);accReceived.placeholder=String((a+(a*r/1000)).toFixed(2));}
   const c=accountCalculation();
-  document.getElementById('accWalletReceive').textContent=personal?accountMoney(c.walletReceive):'—';
-  document.getElementById('accCashGiven').textContent=personal?accountMoney(c.amount):accountMoney(Math.abs(c.cashDelta));
+  document.getElementById('accWalletReceive').textContent=isPersonal?accountMoney(c.walletReceive):'—';
+  document.getElementById('accCashGiven').textContent=cashOut?accountMoney(c.amount):accountMoney(Math.abs(c.cashDelta));
   document.getElementById('accProfitPreview').textContent=(c.profit<0?'-':'')+accountMoney(Math.abs(c.profit));
   const hint=document.getElementById('personalHint');
   if(hint)hint.style.borderColor=c.profit<0?'rgba(248,113,113,.45)':'rgba(96,165,250,.35)';
@@ -1127,17 +1144,28 @@ function autoAccountFromRecharge(number,amount,service){
   const rows=readAccounts();if(rows.some(x=>x.signature===signature))return;
   rows.push({id:(crypto.randomUUID?.()||String(Date.now()+Math.random())),timestamp:new Date().toISOString(),dateKey:localDateKey(),signature,type:'App Transaction',service,number,amount:Number(amount),charge:0,cost:0,profit:0,cashDelta:0,note:'Telegram সফল লেনদেন'});writeAccounts(rows);
 }
-accountsButton?.addEventListener('click',()=>{accountsOverlay.classList.add('show');renderAccounts();updateAccountForm()});
+accountsButton?.addEventListener('click',()=>{accountsOverlay.classList.add('show');renderAccountWallets();renderAccounts();updateAccountForm()});
 accountsClose?.addEventListener('click',()=>accountsOverlay.classList.remove('show'));
 accountsOverlay?.addEventListener('click',event=>{if(event.target===accountsOverlay)accountsOverlay.classList.remove('show')});
 accType?.addEventListener('change',updateAccountForm);
-accService?.addEventListener('change',()=>{if(accType.value==='Personal Cash Out'||accType.value==='Agent Cash Out')accRate.value=accountDefaultRates[accService.value]??0;updateAccountForm()});
-[accAmount,accRate,accManualProfit].forEach(el=>el?.addEventListener('input',updateAccountForm));
+accService?.addEventListener('change',()=>{if(accType.value==='Personal Cash Out'||accType.value==='Agent Cash Out')accRate.value=accountDefaultRates[accService.value]??0;renderAccountWallets();updateAccountForm()});
+[accAmount,accRate,accReceived,accManualProfit].forEach(el=>el?.addEventListener('input',updateAccountForm));
+accAddWallet?.addEventListener('click',()=>{
+  const service=accService.value;
+  const number=prompt(`${service} Personal নম্বর লিখুন (১১ ডিজিট):`)?.replace(/\D/g,'').slice(0,11)||'';
+  if(number.length!==11){if(number)alert('সঠিক ১১ ডিজিটের Personal নম্বর লিখুন।');return}
+  const label=prompt('নম্বরটির নাম দিন (যেমন Personal 1):')?.trim()||'Personal';
+  const rows=readAccountWallets();
+  if(!rows.some(x=>x.service===service&&x.number===number))rows.push({service,number,label});
+  writeAccountWallets(rows);renderAccountWallets();accWalletNumber.value=number;
+});
 document.getElementById('accSave')?.addEventListener('click',()=>{
   const c=accountCalculation();
   if(c.amount<=0){alert('লেনদেনের টাকার পরিমাণ লিখুন।');return}
-  saveAccountRow({type:accType.value,service:accService.value,number:accNumber.value.replace(/\D/g,'').slice(0,11),amount:c.amount,rate:c.rate,charge:c.charge,cost:0,profit:c.profit,cashDelta:c.cashDelta,walletReceive:c.walletReceive,note:accNote.value.trim()});
-  [accNumber,accAmount,accManualProfit,accNote].forEach(el=>el.value='');updateAccountForm();
+  if(accType.value==='Personal Cash Out'&&!accWalletNumber.value){alert('আপনার যে Personal নম্বরে টাকা এসেছে, সেটি নির্বাচন করুন।');return}
+  if(accType.value==='Personal Cash Out'&&Number(accReceived.value||0)<=0){alert('Personal নম্বরে মোট কত টাকা এসেছে লিখুন।');return}
+  saveAccountRow({type:accType.value,service:accService.value,number:accType.value==='Personal Cash Out'?accWalletNumber.value:'',walletNumber:accWalletNumber.value,amount:c.amount,rate:c.rate,charge:c.charge,cost:0,profit:c.profit,cashDelta:c.cashDelta,walletReceive:c.walletReceive,note:accNote.value.trim()});
+  [accAmount,accReceived,accManualProfit,accNote].forEach(el=>el.value='');updateAccountForm();
 });
 function updateCashCheck(){
   const rows=todayAccounts(),opening=Number(accOpeningCash.value||0),actual=Number(accActualCash.value||0),expected=opening+rows.reduce((sum,x)=>sum+Number(x.cashDelta||0),0),diff=actual-expected;
@@ -1153,7 +1181,7 @@ document.getElementById('accCloseDay')?.addEventListener('click',()=>{
   const blob=new Blob([report],{type:'text/plain;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`Infinity-Day-Close-${localDateKey()}.txt`;a.click();URL.revokeObjectURL(a.href);
 });
 document.getElementById('accExportCsv')?.addEventListener('click',()=>{
-  const rows=todayAccounts(),csv=['Time,Type,Service,Number,Amount,Rate,Charge,Wallet Receive,Profit,Cash Change,Note',...rows.map(x=>[x.timestamp,x.type,x.service,x.number||'',x.amount,x.rate||0,x.charge||0,x.walletReceive||0,x.profit,x.cashDelta,`"${String(x.note||'').replace(/"/g,'""')}"`].join(','))].join('\n');
+  const rows=todayAccounts(),csv=['Time,Type,Service,Personal Number,Amount,Rate,Charge,Wallet Receive,Profit,Cash Change,Note',...rows.map(x=>[x.timestamp,x.type,x.service,x.number||'',x.amount,x.rate||0,x.charge||0,x.walletReceive||0,x.profit,x.cashDelta,`"${String(x.note||'').replace(/"/g,'""')}"`].join(','))].join('\n');
   const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`Infinity-Accounts-${localDateKey()}.csv`;a.click();URL.revokeObjectURL(a.href);
 });
 document.addEventListener('keydown',event=>{if(event.key==='Escape'&&accountsOverlay?.classList.contains('show'))accountsOverlay.classList.remove('show')});
