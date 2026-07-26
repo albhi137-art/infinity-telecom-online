@@ -926,7 +926,7 @@ async function checkTelegramStatus(){
     onlineBadge.textContent='● TELEGRAM ONLINE';onlineBadge.classList.remove('telegramOffline');
   }catch{onlineBadge.textContent='● TELEGRAM OFFLINE';onlineBadge.classList.add('telegramOffline')}
 }
-function localDateKey(date){return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`}
+function localDateKey(date=new Date()){return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`}
 function reportForDate(date){
   const rows=transactionHistory.filter(x=>sameDay(new Date(x.timestamp),date));
   const total=rows.reduce((s,x)=>s+Number(x.amount||0),0);const service={};
@@ -1070,7 +1070,6 @@ const accActualCash=document.getElementById('accActualCash');
 const cashCheckResult=document.getElementById('cashCheckResult');
 function accountOwner(){return currentUser?.uid||'guest'}
 function accountKey(suffix){return `infinityAccounts_${accountOwner()}_${suffix}`}
-function localDateKey(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
 function readAccounts(){try{return JSON.parse(localStorage.getItem(accountKey('ledger'))||'[]')}catch{return []}}
 function writeAccounts(rows){localStorage.setItem(accountKey('ledger'),JSON.stringify(rows))}
 function readCash(){try{return JSON.parse(localStorage.getItem(accountKey('cash'))||'{}')}catch{return {}}}
