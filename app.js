@@ -1061,13 +1061,15 @@ const accType=document.getElementById('accType');
 const accService=document.getElementById('accService');
 const accNumber=document.getElementById('accNumber');
 const accAmount=document.getElementById('accAmount');
-const accCharge=document.getElementById('accCharge');
-const accCost=document.getElementById('accCost');
-const accCashDelta=document.getElementById('accCashDelta');
+const accRate=document.getElementById('accRate');
+const accManualProfit=document.getElementById('accManualProfit');
+const accRateLabel=document.getElementById('accRateLabel');
+const accManualProfitLabel=document.getElementById('accManualProfitLabel');
 const accNote=document.getElementById('accNote');
 const accOpeningCash=document.getElementById('accOpeningCash');
 const accActualCash=document.getElementById('accActualCash');
 const cashCheckResult=document.getElementById('cashCheckResult');
+const accountDefaultRates={bKash:18.5,Nagad:15,Rocket:16.7};
 function accountOwner(){return currentUser?.uid||'guest'}
 function accountKey(suffix){return `infinityAccounts_${accountOwner()}_${suffix}`}
 function readAccounts(){try{return JSON.parse(localStorage.getItem(accountKey('ledger'))||'[]')}catch{return []}}
@@ -1077,54 +1079,81 @@ function writeCash(data){localStorage.setItem(accountKey('cash'),JSON.stringify(
 function todayAccounts(){const k=localDateKey();return readAccounts().filter(x=>x.dateKey===k)}
 function accountMoney(v){return '৳'+Number(v||0).toLocaleString('en-US',{maximumFractionDigits:2})}
 function escapeAccountHtml(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+function accountCalculation(){
+  const type=accType.value,amount=Number(accAmount.value||0),rate=Number(accRate.value||0);
+  let charge=0,profit=0,cashDelta=0,walletReceive=0;
+  if(type==='Personal Cash Out'){
+    charge=(amount*rate)/1000;profit=charge;cashDelta=-amount;walletReceive=amount+charge;
+  }else if(type==='Agent Cash Out'){
+    charge=(amount*rate)/1000;profit=charge;cashDelta=-amount;walletReceive=amount+charge;
+  }else if(type==='Cash In'||type==='Send Money'||type==='Mobile Recharge'){
+    profit=Number(accManualProfit.value||0);cashDelta=amount;walletReceive=0;
+  }else if(type==='Expense'){
+    profit=-amount;cashDelta=-amount;walletReceive=0;
+  }else if(type==='Adjustment'){
+    profit=Number(accManualProfit.value||0);cashDelta=amount;walletReceive=0;
+  }
+  return {amount,rate,charge,profit,cashDelta,walletReceive};
+}
+function updateAccountForm(){
+  const personal=accType.value==='Personal Cash Out'||accType.value==='Agent Cash Out';
+  accRateLabel.hidden=!personal;accManualProfitLabel.hidden=personal||accType.value==='Expense';
+  if(personal&&!accRate.value)accRate.value=accountDefaultRates[accService.value]??0;
+  const c=accountCalculation();
+  document.getElementById('accWalletReceive').textContent=personal?accountMoney(c.walletReceive):'—';
+  document.getElementById('accCashGiven').textContent=personal?accountMoney(c.amount):accountMoney(Math.abs(c.cashDelta));
+  document.getElementById('accProfitPreview').textContent=(c.profit<0?'-':'')+accountMoney(Math.abs(c.profit));
+  const hint=document.getElementById('personalHint');
+  if(hint)hint.style.borderColor=c.profit<0?'rgba(248,113,113,.45)':'rgba(96,165,250,.35)';
+}
 function renderAccounts(){
   const rows=todayAccounts().sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));
-  const total=rows.reduce((s,x)=>s+Number(x.amount||0),0);
-  const profit=rows.reduce((s,x)=>s+Math.max(0,Number(x.profit||0)),0);
-  const loss=rows.reduce((s,x)=>s+Math.max(0,-Number(x.profit||0)),0);
-  const net=rows.reduce((s,x)=>s+Number(x.profit||0),0);
+  const total=rows.reduce((sum,x)=>sum+Number(x.amount||0),0);
+  const profit=rows.reduce((sum,x)=>sum+Math.max(0,Number(x.profit||0)),0);
+  const loss=rows.reduce((sum,x)=>sum+Math.max(0,-Number(x.profit||0)),0);
+  const net=rows.reduce((sum,x)=>sum+Number(x.profit||0),0);
   const cash=readCash()[localDateKey()]||{};
-  const expected=Number(cash.opening||0)+rows.reduce((s,x)=>s+Number(x.cashDelta||0),0);
-  const actual=Number(cash.actual||0);
-  const diff=actual-expected;
+  const expected=Number(cash.opening||0)+rows.reduce((sum,x)=>sum+Number(x.cashDelta||0),0);
+  const actual=Number(cash.actual||0),diff=actual-expected;
   const put=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v};
   put('accTotal',accountMoney(total));put('accProfit',accountMoney(profit));put('accLoss',accountMoney(loss));put('accNet',accountMoney(net));put('accExpectedCash',accountMoney(expected));put('accDifference',(diff>0?'+':'')+accountMoney(diff));
   const diffEl=document.getElementById('accDifference');if(diffEl)diffEl.style.color=diff===0?'#86efac':diff<0?'#fca5a5':'#fcd34d';
-  accOpeningCash.value=cash.opening??'';accActualCash.value=cash.actual??'';
-  updateCashCheck();
+  accOpeningCash.value=cash.opening??'';accActualCash.value=cash.actual??'';updateCashCheck();
   accountsLedger.innerHTML=rows.length?rows.map(x=>`<div class="accRow"><span><strong>${escapeAccountHtml(x.type)}</strong><br><small>${new Date(x.timestamp).toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'})}</small></span><span>${escapeAccountHtml(x.service)}</span><span>${escapeAccountHtml(x.number||x.note||'—')}</span><span>${accountMoney(x.amount)}</span><span class="profit">+${accountMoney(Math.max(0,Number(x.profit||0)))}</span><span class="loss">-${accountMoney(Math.max(0,-Number(x.profit||0)))}</span><button class="accDelete" data-acc-delete="${x.id}" title="Delete">×</button></div>`).join(''):'<div class="accEmpty">আজ কোনো হিসাব যোগ করা হয়নি।</div>';
 }
 function saveAccountRow(row){const rows=readAccounts();rows.push({id:(crypto.randomUUID?.()||String(Date.now()+Math.random())),timestamp:new Date().toISOString(),dateKey:localDateKey(),...row});writeAccounts(rows);renderAccounts()}
 function autoAccountFromRecharge(number,amount,service){
   const signature=`auto:${number}:${amount}:${service}:${new Date().toISOString().slice(0,16)}`;
   const rows=readAccounts();if(rows.some(x=>x.signature===signature))return;
-  rows.push({id:(crypto.randomUUID?.()||String(Date.now()+Math.random())),timestamp:new Date().toISOString(),dateKey:localDateKey(),signature,type:'App Transaction',service,number,amount:Number(amount),charge:0,cost:0,profit:0,cashDelta:0,note:'Telegram সফল লেনদেন—চার্জ/খরচ পরে সম্পাদনার জন্য আলাদা হিসাব যোগ করুন'});writeAccounts(rows);
+  rows.push({id:(crypto.randomUUID?.()||String(Date.now()+Math.random())),timestamp:new Date().toISOString(),dateKey:localDateKey(),signature,type:'App Transaction',service,number,amount:Number(amount),charge:0,cost:0,profit:0,cashDelta:0,note:'Telegram সফল লেনদেন'});writeAccounts(rows);
 }
-accountsButton?.addEventListener('click',()=>{accountsOverlay.classList.add('show');renderAccounts()});
+accountsButton?.addEventListener('click',()=>{accountsOverlay.classList.add('show');renderAccounts();updateAccountForm()});
 accountsClose?.addEventListener('click',()=>accountsOverlay.classList.remove('show'));
-accountsOverlay?.addEventListener('click',e=>{if(e.target===accountsOverlay)accountsOverlay.classList.remove('show')});
+accountsOverlay?.addEventListener('click',event=>{if(event.target===accountsOverlay)accountsOverlay.classList.remove('show')});
+accType?.addEventListener('change',updateAccountForm);
+accService?.addEventListener('change',()=>{if(accType.value==='Personal Cash Out'||accType.value==='Agent Cash Out')accRate.value=accountDefaultRates[accService.value]??0;updateAccountForm()});
+[accAmount,accRate,accManualProfit].forEach(el=>el?.addEventListener('input',updateAccountForm));
 document.getElementById('accSave')?.addEventListener('click',()=>{
-  const amount=Number(accAmount.value||0),charge=Number(accCharge.value||0),cost=Number(accCost.value||0),cashDelta=Number(accCashDelta.value||0);
-  if(amount<=0&&accType.value!=='Adjustment'){alert('লেনদেনের টাকার পরিমাণ লিখুন।');return}
-  const profit=charge-cost;
-  saveAccountRow({type:accType.value,service:accService.value,number:accNumber.value.replace(/\D/g,'').slice(0,11),amount,charge,cost,profit,cashDelta,note:accNote.value.trim()});
-  [accNumber,accAmount,accCharge,accCost,accCashDelta,accNote].forEach(x=>x.value='');
+  const c=accountCalculation();
+  if(c.amount<=0){alert('লেনদেনের টাকার পরিমাণ লিখুন।');return}
+  saveAccountRow({type:accType.value,service:accService.value,number:accNumber.value.replace(/\D/g,'').slice(0,11),amount:c.amount,rate:c.rate,charge:c.charge,cost:0,profit:c.profit,cashDelta:c.cashDelta,walletReceive:c.walletReceive,note:accNote.value.trim()});
+  [accNumber,accAmount,accManualProfit,accNote].forEach(el=>el.value='');updateAccountForm();
 });
 function updateCashCheck(){
-  const rows=todayAccounts();const opening=Number(accOpeningCash.value||0);const actual=Number(accActualCash.value||0);const expected=opening+rows.reduce((s,x)=>s+Number(x.cashDelta||0),0);const diff=actual-expected;
+  const rows=todayAccounts(),opening=Number(accOpeningCash.value||0),actual=Number(accActualCash.value||0),expected=opening+rows.reduce((sum,x)=>sum+Number(x.cashDelta||0),0),diff=actual-expected;
   cashCheckResult.className='cashCheckResult '+(diff===0?'ok':'danger');
   cashCheckResult.innerHTML=`হিসাব অনুযায়ী থাকার কথা: <strong>${accountMoney(expected)}</strong><br>বাস্তবে আছে: <strong>${accountMoney(actual)}</strong><br>গরমিল: <strong>${diff>0?'+':''}${accountMoney(diff)}</strong>`;
 }
 accOpeningCash?.addEventListener('input',updateCashCheck);accActualCash?.addEventListener('input',updateCashCheck);
 document.getElementById('accSaveCash')?.addEventListener('click',()=>{const all=readCash();all[localDateKey()]={opening:Number(accOpeningCash.value||0),actual:Number(accActualCash.value||0),savedAt:new Date().toISOString()};writeCash(all);renderAccounts();alert('আজকের ক্যাশ হিসাব সেভ হয়েছে।')});
-accountsLedger?.addEventListener('click',e=>{const b=e.target.closest('[data-acc-delete]');if(!b)return;if(!confirm('এই হিসাবটি মুছবেন?'))return;writeAccounts(readAccounts().filter(x=>x.id!==b.dataset.accDelete));renderAccounts()});
+accountsLedger?.addEventListener('click',event=>{const button=event.target.closest('[data-acc-delete]');if(!button)return;if(!confirm('এই হিসাবটি মুছবেন?'))return;writeAccounts(readAccounts().filter(x=>x.id!==button.dataset.accDelete));renderAccounts()});
 document.getElementById('accCloseDay')?.addEventListener('click',()=>{
-  const rows=todayAccounts();const cash=readCash()[localDateKey()]||{};const expected=Number(cash.opening||0)+rows.reduce((s,x)=>s+Number(x.cashDelta||0),0);const actual=Number(cash.actual||0);const net=rows.reduce((s,x)=>s+Number(x.profit||0),0);const diff=actual-expected;
-  const report=`Infinity Telecom — Day Close\nDate: ${localDateKey()}\nTransactions: ${rows.length}\nTotal Amount: ${accountMoney(rows.reduce((s,x)=>s+Number(x.amount||0),0))}\nNet Profit: ${accountMoney(net)}\nExpected Cash: ${accountMoney(expected)}\nActual Cash: ${accountMoney(actual)}\nDifference: ${accountMoney(diff)}`;
-  const blob=new Blob([report],{type:'text/plain;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`Infinity-Day-Close-${localDateKey()}.txt`;a.click();URL.revokeObjectURL(a.href);
+  const rows=todayAccounts(),cash=readCash()[localDateKey()]||{},expected=Number(cash.opening||0)+rows.reduce((sum,x)=>sum+Number(x.cashDelta||0),0),actual=Number(cash.actual||0),net=rows.reduce((sum,x)=>sum+Number(x.profit||0),0),diff=actual-expected;
+  const report=`Infinity Telecom — Day Close\nDate: ${localDateKey()}\nTransactions: ${rows.length}\nTotal Amount: ${accountMoney(rows.reduce((sum,x)=>sum+Number(x.amount||0),0))}\nNet Profit: ${accountMoney(net)}\nExpected Cash: ${accountMoney(expected)}\nActual Cash: ${accountMoney(actual)}\nDifference: ${accountMoney(diff)}`;
+  const blob=new Blob([report],{type:'text/plain;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`Infinity-Day-Close-${localDateKey()}.txt`;a.click();URL.revokeObjectURL(a.href);
 });
 document.getElementById('accExportCsv')?.addEventListener('click',()=>{
-  const rows=todayAccounts();const csv=['Time,Type,Service,Number,Amount,Charge,Cost,Profit,Cash Change,Note',...rows.map(x=>[x.timestamp,x.type,x.service,x.number||'',x.amount,x.charge,x.cost,x.profit,x.cashDelta,`"${String(x.note||'').replace(/"/g,'""')}"`].join(','))].join('\n');
-  const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`Infinity-Accounts-${localDateKey()}.csv`;a.click();URL.revokeObjectURL(a.href);
+  const rows=todayAccounts(),csv=['Time,Type,Service,Number,Amount,Rate,Charge,Wallet Receive,Profit,Cash Change,Note',...rows.map(x=>[x.timestamp,x.type,x.service,x.number||'',x.amount,x.rate||0,x.charge||0,x.walletReceive||0,x.profit,x.cashDelta,`"${String(x.note||'').replace(/"/g,'""')}"`].join(','))].join('\n');
+  const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`Infinity-Accounts-${localDateKey()}.csv`;a.click();URL.revokeObjectURL(a.href);
 });
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&accountsOverlay?.classList.contains('show'))accountsOverlay.classList.remove('show')});
+document.addEventListener('keydown',event=>{if(event.key==='Escape'&&accountsOverlay?.classList.contains('show'))accountsOverlay.classList.remove('show')});
