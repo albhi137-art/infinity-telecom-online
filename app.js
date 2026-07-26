@@ -5,7 +5,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 import {
   getFirestore, collection, doc, setDoc, addDoc, getDocs,
-  serverTimestamp, query, orderBy, increment, deleteDoc, onSnapshot, limit
+  serverTimestamp, query, orderBy, increment, deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 import { firebaseConfig } from "./firebase-config.js";
 
@@ -13,82 +13,6 @@ import { firebaseConfig } from "./firebase-config.js";
 const firebaseApp=initializeApp(firebaseConfig);
 const auth=getAuth(firebaseApp);
 const db=getFirestore(firebaseApp);
-
-
-/* Live verified bKash SMS alert */
-const smsMoneyAlertOverlay=document.getElementById('smsMoneyAlertOverlay');
-const smsMoneyAlertOk=document.getElementById('smsMoneyAlertOk');
-const smsAlertAmount=document.getElementById('smsAlertAmount');
-const smsAlertNumber=document.getElementById('smsAlertNumber');
-const smsAlertTime=document.getElementById('smsAlertTime');
-const smsAlertTrxId=document.getElementById('smsAlertTrxId');
-let stopSmsAlertListener=null;
-let smsAlertSoundPlayedFor='';
-
-function moneyText(value){
-  const amount=Number(String(value??0).replace(/,/g,''));
-  return `৳${Number.isFinite(amount)?amount.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}):'0.00'}`;
-}
-function playSmsAlertTingOnce(key){
-  if(!key||smsAlertSoundPlayedFor===key)return;
-  smsAlertSoundPlayedFor=key;
-  try{
-    const AudioCtx=window.AudioContext||window.webkitAudioContext;
-    if(!AudioCtx)return;
-    const ctx=new AudioCtx();
-    const osc=ctx.createOscillator();
-    const gain=ctx.createGain();
-    osc.type='sine';osc.frequency.setValueAtTime(880,ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(1320,ctx.currentTime+.12);
-    gain.gain.setValueAtTime(.0001,ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(.18,ctx.currentTime+.015);
-    gain.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+.32);
-    osc.connect(gain);gain.connect(ctx.destination);osc.start();osc.stop(ctx.currentTime+.34);
-    osc.addEventListener('ended',()=>ctx.close().catch(()=>{}),{once:true});
-  }catch(error){console.warn('Alert sound blocked',error)}
-}
-function showSmsMoneyAlert(data,id=''){
-  if(!smsMoneyAlertOverlay)return;
-  const trxId=String(data.trxId||data.trxID||data.transactionId||id||'').trim();
-  const uniqueKey=trxId||id||`${data.amount}-${data.time}`;
-  smsAlertAmount.textContent=moneyText(data.amount);
-  smsAlertNumber.textContent=String(data.number||data.fromNumber||data.customerNumber||'—');
-  smsAlertTime.textContent=String(data.time||data.smsTime||data.dateTime||'—');
-  smsAlertTrxId.textContent=trxId||'—';
-  smsMoneyAlertOverlay.dataset.alertKey=uniqueKey;
-  smsMoneyAlertOverlay.classList.add('show');
-  smsMoneyAlertOverlay.setAttribute('aria-hidden','false');
-  document.body.style.overflow='hidden';
-  playSmsAlertTingOnce(uniqueKey);
-  setTimeout(()=>smsMoneyAlertOk?.focus(),50);
-}
-function hideSmsMoneyAlert(){
-  if(!smsMoneyAlertOverlay)return;
-  smsMoneyAlertOverlay.classList.remove('show');
-  smsMoneyAlertOverlay.setAttribute('aria-hidden','true');
-  document.body.style.overflow='';
-}
-smsMoneyAlertOk?.addEventListener('click',hideSmsMoneyAlert);
-
-function startSmsAlertListener(user){
-  stopSmsAlertListener?.();stopSmsAlertListener=null;
-  if(!user)return;
-  const alertsQuery=query(collection(db,'users',user.uid,'smsAlerts'),orderBy('createdAt','desc'),limit(1));
-  stopSmsAlertListener=onSnapshot(alertsQuery,snapshot=>{
-    for(const change of snapshot.docChanges()){
-      if(change.type!=='added')continue;
-      const data=change.doc.data()||{};
-      const sender=String(data.sender||data.service||'').toLowerCase();
-      const verified=data.verified===true||data.isVerified===true;
-      if(!verified||!sender.includes('bkash'))continue;
-      const trxId=String(data.trxId||data.trxID||data.transactionId||change.doc.id).trim();
-      const seenKey=`infinitySmsAlertSeen_${user.uid}_${trxId}`;
-      if(localStorage.getItem(seenKey)==='yes')continue;
-      localStorage.setItem(seenKey,'yes');
-      showSmsMoneyAlert(data,change.doc.id);
-    }
-  },error=>console.error('SMS alert listener error',error));
-}
 
 const numberInput=document.getElementById('numberInput');
 const previewAmountInput=document.getElementById('previewAmountInput');
@@ -180,7 +104,6 @@ document.getElementById('logoutButton').addEventListener('click',()=>signOut(aut
 
 onAuthStateChanged(auth,async user=>{
   currentUser=user;
-  startSmsAlertListener(user);
   if(!user){
     loginOverlay.classList.remove('hidden');
     document.getElementById('userArea').classList.remove('show');
